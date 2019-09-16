@@ -1,7 +1,7 @@
 package com.auth.configuration;
 
-//import com.jwt.test.demo.filters.JwtAuthenticationFilter;
-//import com.jwt.test.demo.filters.JwtAuthorizationFilter;
+import com.auth.filters.JwtAuthenticationFilter;
+import com.auth.filters.JwtAuthorizationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -18,20 +18,27 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+    /*private UserRepo userRepo;
+    private AuthProvider authProvider;*/
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and()
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/").permitAll()
-                .antMatchers("/login").permitAll()
-                .antMatchers("/register").permitAll()
-                .antMatchers("/scoreboard").permitAll()
-                .anyRequest().authenticated()
+                    .antMatchers("/login", "/", "/register", "/scoreboard", "/style/**", "/js/**", "/img/**").permitAll()
+                    .anyRequest().authenticated()//authenticated()
+                /*.and()
+                    .formLogin()
+                    .loginPage("/login")
+                    .permitAll()*/
                 .and()
-                //.addFilter(new JwtAuthenticationFilter(authenticationManager()))
-                //.addFilter(new JwtAuthorizationFilter(authenticationManager()))
+                    .logout()
+                    .logoutUrl("**/logout")
+                    .permitAll()
+                .and()
+                    .addFilter(new JwtAuthorizationFilter(authenticationManager()))
+                    .addFilter(new JwtAuthenticationFilter(authenticationManager()))
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
@@ -53,7 +60,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public CorsConfigurationSource corsConfigurationSource() {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
-
         return source;
     }
 }

@@ -21,4 +21,9 @@ public class TemplateController {
         return "scoreboard";
     }
 
+    @GetMapping("/any")
+    public String any(){
+        return "any";
+    }
+
 }
