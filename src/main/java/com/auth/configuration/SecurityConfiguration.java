@@ -26,21 +26,24 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.cors().and()
                 .csrf().disable()
                 .authorizeRequests()
-                    .antMatchers("/login", "/", "/register", "/scoreboard", "/style/**", "/js/**", "/img/**").permitAll()
+                    .antMatchers("/login", "/", "/register", "/scoreboard", "/style/**", "/js/**", "/img/**")
+                    .permitAll()
                     .anyRequest().authenticated()//authenticated()
-                /*.and()
+                .and()
                     .formLogin()
                     .loginPage("/login")
-                    .permitAll()*/
+                    .permitAll()
                 .and()
                     .logout()
-                    .logoutUrl("**/logout")
+                    .logoutUrl("/logout")
+                    .invalidateHttpSession(true)
+                    .deleteCookies("JSESSIONID")
                     .permitAll()
                 .and()
                     .addFilter(new JwtAuthorizationFilter(authenticationManager()))
                     .addFilter(new JwtAuthenticationFilter(authenticationManager()))
                 .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS);
     }
 
     @Override
@@ -48,6 +51,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         auth.inMemoryAuthentication()
                 .withUser("user")
                 .password(passwordEncoder().encode("password"))
+                .authorities("ROLE_USER");
+        auth.inMemoryAuthentication()
+                .withUser("lol")
+                .password(passwordEncoder().encode("kekeke"))
                 .authorities("ROLE_USER");
     }
 

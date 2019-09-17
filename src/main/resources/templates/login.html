@@ -14,18 +14,52 @@
         <input id ="username" name="username" type="text" maxlength="20"></label><br>
     <label>Password:<br>
         <input id ="password" name="password" type="password" maxlength="20"></label><br>
-    <input type="submit" name="submit" value="Sign in" id="signIn" onclick="validation(this)"><br>
-    <label>Or create new account<br>
-    <input type="button" name="submit" value="Sign up" id="signUp" onclick="location.href='/register'"></label>
+    <input type="button" name="signIn" value="Sign in" id="signIn" onclick="validation(this)"><br>
+        <label>Or create new account<br>
+            <input type="button" name="signUp" value="Sign up" id="signUp" onclick="location.href='/register'">
+        </label>
 </form>
-<script>
+<script src="http://code.jquery.com/jquery-2.0.2.min.js"></script>
+<script type="text/javascript">
     function validation(input) {
-        var playerName = document.getElementById('player').value;
-        if (playerName === ''){
+        var username = document.getElementById("username").value;
+        var password = document.getElementById("password").value;
+        if (username === ''){
             input.setCustomValidity('Player name is empty');
-        }else {
+        } else if (username.length < 3){
+            input.setCustomValidity('Password is too short');
+        }else if (password === ''){
+            input.setCustomValidity('Password is empty');
+        } else if (password < 5){
+            input.setCustomValidity('Password is too short');
+        } else {
             input.setCustomValidity('');
+            $.ajax({
+                type: 'POST',
+                url: '/auth',
+                data: "username=" + username + "&password=" + password,
+                success: function (data, status, header) {
+                    localStorage.setItem('token', data.token);
+
+                    console.log(header.getResponseHeader('authorization'));
+                    var token = header.getResponseHeader('authorization');
+
+                    menu(token);
+                }
+            });
         }
+    }
+
+    function menu(token){
+    console.log("send");
+        $.ajax({
+            type: 'GET',
+            url: '/any',
+            headers: {'authorization': token},
+            success: function (data, status, header) {
+                window.location.href = '/any';
+            }
+        });
     }
 </script>
 <footer>The game was created by Nickolay Moiseyenko in 2019.</footer>

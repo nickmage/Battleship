@@ -3,7 +3,7 @@ package com.auth.filters;
 public final class SecurityConstants {
 
     //DO NOT touch this
-    public static final String AUTH_LOGIN_URL = "/kek";
+    public static final String AUTH_LOGIN_URL = "/auth";
 
     // Signing key for HS512 algorithm
     // You can use the page http://www.allkeysgenerator.com/ to generate all kinds of keys
