@@ -1,0 +1,853 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Battleship Game</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Battleship Game</title>
+    <link rel="stylesheet" type="text/css" href="style/game.css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
+    <link rel="icon" href="img/icon.png" type="image/icon type">
+</head>
+<body>
+<header><h1>The Battleship Game</h1></header>
+<p hidden id="token" th:text="${token}"></p>
+<div class="overlay_popup"></div>
+<div class="popup" id="popup1">
+    <div class="object">
+        <p id="state"></p>
+        <button class="exitButton" onclick="scoreboard()">Scoreboard</button>
+        <button class="exitButton" onclick="gotoMenu()">Exit to menu</button>
+    </div>
+</div>
+<div id="gameBoard" style=" overflow: hidden;">
+  <div style="width: 500px; float: left;"><!--   -->
+        <p id="playerName">Your ships, <span th:text="${player}"></span></p>
+        <table id="playerShips">
+            <tr>
+                <td class="playerShipIndicator"><img src="img/1d.png" id="playerShip1" width="25"></td>
+                <td class="playerShipIndicator"><img src="img/2dv.png" id="playerShip2" width="25"></td>
+                <td class="playerShipIndicator"><img src="img/3dv.png" id="playerShip3" width="25"></td>
+                <td class="playerShipIndicator"><img src="img/4dv.png" id="playerShip4" width="25"></td>
+            </tr>
+            <tr>
+                <td id="playerShip1Quantity">x4</td>
+                <td id="playerShip2Quantity">x3</td>
+                <td id="playerShip3Quantity">x2</td>
+                <td id="playerShip4Quantity">x1</td>
+            </tr>
+        </table>
+        <table id="playerBoard">
+            <tr>
+                <td>
+                    <button id="p00" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p01" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p02" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p03" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p04" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p05" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p06" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p07" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p08" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p09" class="playerCell"></button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button id="p10" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p11" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p12" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p13" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p14" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p15" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p16" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p17" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p18" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p19" class="playerCell"></button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button id="p20" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p21" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p22" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p23" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p24" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p25" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p26" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p27" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p28" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p29" class="playerCell"></button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button id="p30" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p31" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p32" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p33" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p34" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p35" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p36" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p37" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p38" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p39" class="playerCell"></button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button id="p40" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p41" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p42" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p43" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p44" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p45" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p46" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p47" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p48" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p49" class="playerCell"></button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button id="p50" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p51" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p52" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p53" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p54" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p55" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p56" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p57" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p58" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p59" class="playerCell"></button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button id="p60" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p61" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p62" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p63" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p64" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p65" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p66" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p67" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p68" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p69" class="playerCell"></button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button id="p70" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p71" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p72" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p73" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p74" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p75" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p76" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p77" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p78" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p79" class="playerCell"></button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button id="p80" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p81" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p82" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p83" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p84" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p85" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p86" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p87" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p88" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p89" class="playerCell"></button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button id="p90" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p91" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p92" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p93" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p94" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p95" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p96" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p97" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p98" class="playerCell"></button>
+                </td>
+                <td>
+                    <button id="p99" class="playerCell"></button>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div style="margin-left: 500px;"><!---->
+        <p id="enemyName"><span th:text="${enemy}"></span>'s enemy ships</p>
+        <table id="enemyShips">
+            <tr>
+                <td class="enemyShipIndicator"><img src="img/1d.png" id="enemyShip1" width="25"></td>
+                <td class="enemyShipIndicator"><img src="img/2dv.png" id="enemyShip2" width="25"></td>
+                <td class="enemyShipIndicator"><img src="img/3dv.png" id="enemyShip3" width="25"></td>
+                <td class="enemyShipIndicator"><img src="img/4dv.png" id="enemyShip4" width="25"></td>
+            </tr>
+            <tr>
+                <td id="enemyShip1Quantity">x4</td>
+                <td id="enemyShip2Quantity">x3</td>
+                <td id="enemyShip3Quantity">x2</td>
+                <td id="enemyShip4Quantity">x1</td>
+            </tr>
+        </table>
+        <table id="enemyBoard">
+            <tr>
+                <td>
+                    <button id="e00" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e01" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e02" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e03" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e04" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e05" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e06" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e07" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e08" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e09" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button id="e10" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e11" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e12" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e13" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e14" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e15" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e16" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e17" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e18" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e19" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button id="e20" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e21" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e22" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e23" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e24" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e25" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e26" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e27" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e28" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e29" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button id="e30" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e31" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e32" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e33" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e34" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e35" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e36" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e37" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e38" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e39" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button id="e40" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e41" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e42" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e43" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e44" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e45" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e46" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e47" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e48" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e49" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button id="e50" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e51" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e52" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e53" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e54" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e55" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e56" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e57" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e58" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e59" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button id="e60" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e61" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e62" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e63" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e64" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e65" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e66" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e67" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e68" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e69" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button id="e70" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e71" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e72" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e73" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e74" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e75" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e76" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e77" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e78" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e79" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button id="e80" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e81" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e82" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e83" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e84" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e85" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e86" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e87" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e88" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e89" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button id="e90" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e91" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e92" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e93" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e94" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e95" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e96" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e97" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e98" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+                <td>
+                    <button id="e99" class="enemyCell" onclick="makeShot(this)"></button>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<script src="http://code.jquery.com/jquery-2.0.2.min.js"></script>
+<script type="text/javascript">
+    // 0 empty cell
+    // 1-4 decks
+    // -1 my broken ship
+    // -2 miss
+    // > 0 enemy board ship
+    // < 0 enemy board misses
+    var playerBoard;
+    var enemyBoard;
+    var token = document.getElementById("token").innerText;
+    var ableToShot;
+    var playerShips;
+    var enemyShips;
+
+    window.onload = function () {
+        //gameOver('w');
+        $.ajax({
+            type: 'GET',
+            url: '/game/util',
+            data: "token=" + token + "&newGame=" + true,
+            success: function (data) {
+                console.log(data);
+                playerBoard = data.playerBoard;
+                enemyBoard = data.enemyBoard;
+                ableToShot = data.myTurn;
+                printShips(!ableToShot);
+            }
+        });
+        shotRequest();
+    };
+
+    function shotRequest() {
+        setInterval(function () {
+            $.ajax({
+                type: 'GET',
+                url: '/game/util',
+                data: "token=" + token + "&ableToShot=" + true,
+                success: function (data) {
+                    playerBoard = data.playerBoard;
+                    enemyBoard = data.enemyBoard;
+                    ableToShot = data.myTurn;
+                    playerShips = data.playerShips;
+                    enemyShips = data.enemyShips;
+                    shipCounter();
+                    printShips(!ableToShot);
+                    console.log(data.winnerState);
+                    if (data.winnerState === 'w' || data.winnerState === 'l') {
+                        gameOver(data.winnerState);
+                    }
+                },
+            });
+        }, 500);
+    }
+
+    function makeShot(element) {
+        if (ableToShot) {
+            var x = parseInt(element.id.charAt(1));
+            var y = parseInt(element.id.charAt(2));
+            if (enemyBoard[x][y] === 0) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/game',
+                    data: "token=" + token + "&x=" + x + "&y=" + y,
+                    success: function (data) {
+                        //console.log(data);
+                        playerBoard = data.playerBoard;
+                        enemyBoard = data.enemyBoard;
+                        ableToShot = data.myTurn;
+                        playerShips = data.playerShips;
+                        enemyShips = data.enemyShips;
+                        printShips(!ableToShot);
+                        shipCounter();
+                        //console.log(playerShips);
+                        //console.log(enemyShips);
+                    },
+                    error: function (data) {
+                        console.log(data);
+                    }
+                });
+            }
+        } else {
+            alert("It's a turn of your opponent, please wait.");
+        }
+    }
+
+    function shipCounter() {
+        for (var i = 0; i < playerShips.length; i++) {
+            document.getElementById("playerShip" + (i + 1) + "Quantity").innerText = "x" + playerShips[i];
+            document.getElementById("enemyShip" + (i + 1) + "Quantity").innerText = "x" + enemyShips[i];
+        }
+    }
+
+    function printShips(isBlocked) {
+        for (var i = 0; i < enemyBoard.length; i++) {
+            for (var j = 0; j < enemyBoard.length; j++) {
+                if (playerBoard[i][j] > 0) {
+                    document.getElementById("p" + i + j).style.backgroundColor = "rgb(227, 227, 117)";
+                }
+                if (playerBoard[i][j] < 0) {
+                    if (playerBoard[i][j] >= -4 && playerBoard[i][j] <= -1) {
+                        document.getElementById("p" + i + j).style.backgroundColor = "rgb(255,2,0)";
+                    } else {
+                        document.getElementById("p" + i + j).style.backgroundColor = "rgb(106,167,215)";
+                    }
+                }
+                if (enemyBoard[i][j] > 0) {
+                    if (isBlocked) {
+                        document.getElementById("e" + i + j).style.backgroundColor = "rgba(255,2,0,0.5)";
+                    } else {
+                        document.getElementById("e" + i + j).style.backgroundColor = "rgb(255,2,0)";
+                    }
+                }
+                if (enemyBoard[i][j] === -5) {
+                    if (isBlocked) {
+                        document.getElementById("e" + i + j).style.backgroundColor = "rgba(106,167,215,0.5)";
+                    } else {
+                        document.getElementById("e" + i + j).style.backgroundColor = "rgb(106,167,215)";
+                    }
+                }
+                if (enemyBoard[i][j] === 0) {
+                    if (isBlocked) {
+                        document.getElementById("e" + i + j).style.backgroundColor = "rgba(36, 79, 154, 0.5)";
+                    } else {
+                        document.getElementById("e" + i + j).style.backgroundColor = "rgba(36, 79, 154, 0.9)";
+                    }
+                }
+            }
+        }
+    }
+
+    function gameOver(state) {
+        document.getElementById("state").innerHTML = (state === 'w') ?
+            'Congratulations, you win!': 'You lose, better luck next time!';
+        $('.popup').show();
+        $('.overlay_popup').show();
+        $('.object').show();
+    }
+
+    function scoreboard(){
+        window.location.replace("/");
+    }
+
+    function gotoMenu(){
+        window.location.replace("/");
+    }
+
+</script>
+<footer>The game was created by Nickolay Moiseyenko in 2019.</footer>
+</body>
+</html>

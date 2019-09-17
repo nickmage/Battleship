@@ -43,7 +43,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .addFilter(new JwtAuthorizationFilter(authenticationManager()))
                     .addFilter(new JwtAuthenticationFilter(authenticationManager()))
                 .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS);
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
     }
 
     @Override

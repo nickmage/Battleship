@@ -9,7 +9,7 @@
 </head>
 <body>
 <header><h1>The Battleship Game</h1></header>
-<form action="/kek" method="POST">
+<form action="/auth" method="POST">
     <label>Username:<br>
         <input id ="username" name="username" type="text" maxlength="20"></label><br>
     <label>Password:<br>
@@ -39,28 +39,25 @@
                 url: '/auth',
                 data: "username=" + username + "&password=" + password,
                 success: function (data, status, header) {
-                    localStorage.setItem('token', data.token);
-
-                    console.log(header.getResponseHeader('authorization'));
                     var token = header.getResponseHeader('authorization');
-
-                    menu(token);
+                    $.ajax({
+                        type: 'GET',
+                        url: 'get_id',
+                        headers: {'authorization': token},
+                        //data: {}, PLAYER NAME PLACE HERE
+                        success: function (data, status, header) {
+                            window.location.replace('/any');
+                        }
+                    });
                 }
             });
         }
     }
 
-    function menu(token){
-    console.log("send");
-        $.ajax({
-            type: 'GET',
-            url: '/any',
-            headers: {'authorization': token},
-            success: function (data, status, header) {
-                window.location.href = '/any';
-            }
-        });
-    }
+
+
+
+
 </script>
 <footer>The game was created by Nickolay Moiseyenko in 2019.</footer>
 </body>
