@@ -8,12 +8,17 @@
     <link rel="icon" href="img/icon.png" type="image/icon type">
 </head>
 <body>
-<header><h1>The Battleship Game</h1></header>
-<form action="/start" method="GET">
-    <label>Please enter your name: <br>
-        <input id ="player" name="playerName" type="text" maxlength="20"></label><br>
-        <input type="submit" name="submit" value="Submit" id="button" onclick="validation(this)">
-</form><script>
+<header><h1>The Battleship Game</h1><button onclick="location.href='/logout'" type="button">Logout</button></header>
+<p>
+    GAME MENU<br>
+    <button onclick="location.href='/start'" type="button">Quick game</button>
+    <button onclick="location.href='/login'" type="button">Create room</button>
+    <button onclick="location.href='/login'" type="button">Enter room</button>
+    <button onclick="location.href='/scoreboard'" type="button">Scoreboard</button>
+    <button onclick="location.href='/logout'" type="button">Logout</button>
+</p>
+
+<script>
     function validation(input) {
         var playerName = document.getElementById('player').value;
         if (playerName === ''){

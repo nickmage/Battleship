@@ -42,22 +42,17 @@
                     var token = header.getResponseHeader('authorization');
                     $.ajax({
                         type: 'GET',
-                        url: 'get_id',
+                        url: 'get_cookie',
                         headers: {'authorization': token},
                         //data: {}, PLAYER NAME PLACE HERE
                         success: function (data, status, header) {
-                            window.location.replace('/any');
+                            window.location.replace(data);
                         }
                     });
                 }
             });
         }
     }
-
-
-
-
-
 </script>
 <footer>The game was created by Nickolay Moiseyenko in 2019.</footer>
 </body>

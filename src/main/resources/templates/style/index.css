@@ -1,6 +1,6 @@
 body{
-	padding: 0;
-	margin: 0;
+	padding: 0px;
+	margin: 0px;
 	background: rgba(50, 59, 94, 1);
 	font-family: "Sniglet", Arial, sans-serif;
 	text-align: center;
@@ -12,10 +12,10 @@ header{
 	font-size: 24px;
 	text-align: center;
 	font-style: italic;
-	margin-top: 0;
+	margin-top: 0px;
 	padding: 8px;
 }
-p{
+form{
 	border-radius: 45px;
 	background: rgba(50, 94, 60, 1);
 	margin: 64px 124px;
@@ -51,9 +51,9 @@ footer{
 	padding: 46px 46px 24px;
 }
 button{
-	border-radius: 5px;
+	border-radius: 45px;
 	background: rgba(50, 94, 60, 1);
-	border-spacing:0;
+	border-spacing:0p;
 	padding: 12px;
 	font-size: 24px;
 	table-layout: fixed;

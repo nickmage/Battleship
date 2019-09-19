@@ -1,7 +1,8 @@
-package com;
+package com.controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 
@@ -13,9 +14,9 @@ public class TemplateController {
         return "login";
     }
 
-    @GetMapping("/register")
-    public String register(){
-        return "register";
+    @GetMapping("/registration")
+    public String registration(){
+        return "registration";
     }
 
     @GetMapping("/scoreboard")
@@ -23,14 +24,14 @@ public class TemplateController {
         return "scoreboard";
     }
 
-    @GetMapping("/any")
+    @GetMapping("/menu")
     public String any(@RequestHeader("cookie") String cookie) {
-        System.out.println(cookie + " from any");
-        return "any";
+        System.out.println(cookie + " from menu");
+        return "menu";
     }
 
     @GetMapping("/")
-    public String index(@RequestHeader("cookie") String cookie/*MultiValueMap<String, String> headers*/) {
+    public String index(@RequestHeader(value = "cookie", required = false) String cookie/*MultiValueMap<String, String> headers*/) {
         System.out.println(cookie + " from index");
         //headers.forEach((key, value) -> System.out.println(String.format("Header '%s' = %s", key, String.join("|", value))));
         return "index";
@@ -53,12 +54,5 @@ public class TemplateController {
         System.out.println(cookie + " from game");
         return "game";
     }
-
-    @GetMapping("/get_id")
-    public String get_id(@RequestHeader("cookie") String cookie) {
-        System.out.println(cookie + " get_id");
-        return "start";
-    }
-
 
 }

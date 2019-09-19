@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
     <meta charset="utf-8">
     <title>Battleship Game</title>
     <link rel="stylesheet" type="text/css" href="style/index.css">
@@ -9,9 +9,10 @@
 </head>
 <body>
 <header><h1>The Battleship Game</h1></header>
-<form action="/register" method="POST">
+<form action="/registration" method="POST">
     <label>Username:<br>
         <input id ="username" name="username" type="text" maxlength="20"></label><br>
+    <p id="user" th:text="${message}"></p>
     <label>Password:<br>
         <input id ="password" name="password" type="password" maxlength="20"></label><br>
     <label>Confirm password:<br>
