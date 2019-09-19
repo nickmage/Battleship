@@ -16,7 +16,7 @@
         <input id ="password" name="password" type="password" maxlength="20"></label><br>
     <input type="button" name="signIn" value="Sign in" id="signIn" onclick="validation(this)"><br>
         <label>Or create new account<br>
-            <input type="button" name="signUp" value="Sign up" id="signUp" onclick="location.href='/register'">
+            <input type="button" name="signUp" value="Sign up" id="signUp" onclick="location.href='/registration'">
         </label>
 </form>
 <script src="http://code.jquery.com/jquery-2.0.2.min.js"></script>
@@ -42,7 +42,7 @@
                     var token = header.getResponseHeader('authorization');
                     $.ajax({
                         type: 'GET',
-                        url: 'get_cookie',
+                        url: '/get_cookie',
                         headers: {'authorization': token},
                         //data: {}, PLAYER NAME PLACE HERE
                         success: function (data, status, header) {

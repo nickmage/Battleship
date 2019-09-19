@@ -4,7 +4,10 @@ import com.auth.filters.JwtAuthenticationFilter;
 import com.auth.filters.JwtAuthorizationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -21,6 +24,8 @@ import javax.sql.DataSource;
 
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true)
+/*@EntityScan("com.auth.entities")
+@EnableJpaRepositories("com.auth.repo")*/
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     /*private UserRepo userRepo;
     private AuthProvider authProvider;*/

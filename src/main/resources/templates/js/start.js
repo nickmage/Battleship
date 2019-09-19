@@ -1084,7 +1084,6 @@ function getToLobby(uuid){
 
 function putShipToRequest(x, y, position, deckType){
     request.push({x:x, y:y, position:position, deckType:deckType});
-    console.log(request);
 }
 
 function removeShipFromRequest(x, y){
