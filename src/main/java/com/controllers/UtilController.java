@@ -35,7 +35,7 @@ public class UtilController {
     @RequestMapping(value="/start", method = RequestMethod.POST, produces="application/json", consumes = "application/json")
     @ResponseBody
     //@PostMapping("/start")
-    public ResponseEntity registration(@RequestBody() Ship[] ships) {
+    public ResponseEntity getShips(@RequestBody() Ship[] ships) {
         //System.out.println(ships);
 
         return new ResponseEntity(HttpStatus.OK);

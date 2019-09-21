@@ -5,9 +5,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 
-
 @Controller
 public class TemplateController {
+
+    @GetMapping("/angular")
+    public String angular(){
+        return "angular";
+    }
 
     @GetMapping("/login")
     public String login(){
@@ -34,7 +38,7 @@ public class TemplateController {
     public String index(@RequestHeader(value = "cookie", required = false) String cookie/*MultiValueMap<String, String> headers*/) {
         System.out.println(cookie + " from index");
         //headers.forEach((key, value) -> System.out.println(String.format("Header '%s' = %s", key, String.join("|", value))));
-        return "index";
+        return "redirect:/index.html";
     }
 
     @GetMapping("/start")

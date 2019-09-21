@@ -24,9 +24,9 @@ import javax.sql.DataSource;
 
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true)
-/*@EntityScan("com.auth.entities")
-@EnableJpaRepositories("com.auth.repo")*/
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+    @Autowired
+    private DataSource dataSource;
     /*private UserRepo userRepo;
     private AuthProvider authProvider;*/
 
@@ -35,12 +35,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.cors().and()
                 .csrf().disable()
                 .authorizeRequests()
-                    .antMatchers("/login", "/", "/registration", "/scoreboard", "/style/**", "/js/**", "/img/**")
+                    .antMatchers("/index.html#/login", "/", "/index.html#/registration",
+                            "/index.html#/scoreboard", "/style/**", "/js/**", "/img/**")
                     .permitAll()
-                    .anyRequest().authenticated()//authenticated()
+                    .anyRequest().permitAll()//authenticated()
                 .and()
                     .formLogin()
-                    .loginPage("/login")
+                    .loginPage("/index.html#/login")
                     .permitAll()
                 .and()
                     .logout()
@@ -49,8 +50,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .deleteCookies("JSESSIONID")
                     .permitAll()
                 .and()
-                    .addFilter(new JwtAuthorizationFilter(authenticationManager()))
-                    .addFilter(new JwtAuthenticationFilter(authenticationManager()))
+                    //.addFilter(new JwtAuthorizationFilter(authenticationManager()))
+                    //.addFilter(new JwtAuthenticationFilter(authenticationManager()))
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
     }
@@ -65,6 +66,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .withUser("lol")
                 .password(passwordEncoder().encode("kekeke"))
                 .authorities("ROLE_USER");
+        /*auth.jdbcAuthentication()
+                .dataSource(dataSource)
+                .usersByUsernameQuery("select username, password, id from account where username=?")
+                .authoritiesByUsernameQuery("select u.username, ur.role from account u inner join user_role ur on u.id = ur.user_id where u.username=?");*/
     }
 
     @Bean
