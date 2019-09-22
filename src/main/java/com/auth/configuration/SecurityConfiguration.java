@@ -35,13 +35,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.cors().and()
                 .csrf().disable()
                 .authorizeRequests()
-                    .antMatchers("/index.html#/login", "/", "/index.html#/registration",
-                            "/index.html#/scoreboard", "/style/**", "/js/**", "/img/**")
+                    .antMatchers("/#/", "/",
+
+                            //"/auth",
+                            "/index.html", "/scoreboard.html", "/enter.html", "/login.html", "/registration.html",
+                            "/style/**", "/js/**", "/img/**")
                     .permitAll()
-                    .anyRequest().permitAll()//authenticated()
-                .and()
+                    .anyRequest().authenticated()//authenticated()
+                .and() //ДЕЛАЕТ РЕДИРЕКТ, СКРИПТЫ ОСТАЮТСЯ И ВЫДАЮТ ОШИБКИ
                     .formLogin()
-                    .loginPage("/index.html#/login")
+                    .loginPage("/login")
                     .permitAll()
                 .and()
                     .logout()
@@ -50,10 +53,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .deleteCookies("JSESSIONID")
                     .permitAll()
                 .and()
-                    //.addFilter(new JwtAuthorizationFilter(authenticationManager()))
-                    //.addFilter(new JwtAuthenticationFilter(authenticationManager()))
+                    .addFilter(new JwtAuthorizationFilter(authenticationManager()))
+                    .addFilter(new JwtAuthenticationFilter(authenticationManager()))
                 .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 
     @Override

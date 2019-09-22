@@ -1,6 +1,5 @@
 package com.controllers;
 
-
 import com.entity.Ship;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,12 +8,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class UtilController {
-
-    @GetMapping("/get_cookie")
-    public String get_cookie(@RequestHeader("cookie") String cookie) {
-        System.out.println(cookie + " from get_cookie");
-        return "/menu";
-    }
 
     /*@PostMapping("/registration")
     public String registration(User user, Model model) {

@@ -1,7 +1,17 @@
 var app = angular.module('myApp', ['ngRoute']);
 
 
-app.config(function($routeProvider) {
+app.config(function($routeProvider, $httpProvider) {
+    $httpProvider.interceptors.push(function($q) {
+        return {
+        'request': function(config) {
+            var token = localStorage.getItem('token');
+            config.headers['Authorization'] = token;
+            return config;
+        }
+        };
+    });
+
     $routeProvider
 
     .when('/', {
@@ -48,46 +58,46 @@ app.config(function($routeProvider) {
 
 });
 
-app.controller('EnterController', function($scope) {
+app.controller('EnterController', function($scope, $http) {
 
 });
 
-app.controller('StartController', function($scope) {
+app.controller('StartController', function($scope, $http) {
     var script = document.createElement('script');
     script.type = 'text/javascript';
     script.src = "js/start.js";
     document.body.appendChild(script);
 });
 
-app.controller('LoginController', function($scope) {
+app.controller('LoginController', function($scope, $http) {
     var script = document.createElement('script');
     script.type = 'text/javascript';
     script.src = "js/login.js";
     document.body.appendChild(script);
 });
 
-app.controller('RegistrationController', function($scope) {
+app.controller('RegistrationController', function($scope, $http) {
     var script = document.createElement('script');
     script.type = 'text/javascript';
     script.src = "js/registration.js";
     document.body.appendChild(script);
 });
 
-app.controller('ScoreboardController', function($scope) {
+app.controller('ScoreboardController', function($scope, $http) {
     //$scope.message = 'Hello from RegistrationController';
 });
 
-app.controller('MenuController', function($scope) {
+app.controller('MenuController', function($scope, $http) {
     //$scope.message = 'Hello from RegistrationController';
 });
 
-app.controller('LobbyController', function($scope) {
+app.controller('LobbyController', function($scope, $http) {
     var script = document.createElement('script');
     script.type = 'text/javascript';
     script.src = "js/lobby.js";
     document.body.appendChild(script);
 });
-app.controller('GameController', function($scope) {
+app.controller('GameController', function($scope, $http) {
     var script = document.createElement('script');
     script.type = 'text/javascript';
     script.src = "js/game.js";

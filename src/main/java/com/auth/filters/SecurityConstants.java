@@ -2,7 +2,6 @@ package com.auth.filters;
 
 public final class SecurityConstants {
 
-    //DO NOT touch this
     public static final String AUTH_LOGIN_URL = "/auth";
 
     // Signing key for HS512 algorithm

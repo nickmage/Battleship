@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="utf-8">
     <title>Battleship Game</title>
@@ -10,13 +10,14 @@
 <body>
 <header><h1>The Battleship Game</h1></header>
 <form action="/auth" method="POST">
+    <span id="message" th:text="${message}"></span><br>
     <label>Username:<br>
         <input id ="username" name="username" type="text" maxlength="20"></label><br>
     <label>Password:<br>
         <input id ="password" name="password" type="password" maxlength="20"></label><br>
     <input type="button" name="signIn" value="Sign in" id="signIn" onclick="validation(this)"><br>
         <label>Or create new account<br>
-            <input type="button" name="signUp" value="Sign up" id="signUp" onclick="location.href='index.html#/registration'">
+            <input type="button" name="signUp" value="Sign up" id="signUp" onclick="location.href='#/registration'">
         </label>
 </form>
 <footer>The game was created by Nickolay Moiseyenko in 2019.</footer>
