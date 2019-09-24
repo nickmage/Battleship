@@ -23,10 +23,8 @@ function validation() {
             success: function (data, status, header) {
                 var token = header.getResponseHeader('authorization');
                 if (token !== null){
-                    alert(token);
                     localStorage.setItem('token', token);
-                    console.log(parseJwt(token));
-                    window.location.href = '#/menu';
+                    window.location.href = '../#/menu';
                     location.reload();
                 } else {
                     alert("User not found");

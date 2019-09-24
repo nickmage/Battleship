@@ -3,11 +3,7 @@ package com.auth.configuration;
 import com.auth.filters.JwtAuthenticationFilter;
 import com.auth.filters.JwtAuthorizationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -37,8 +33,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                     .antMatchers("/#/", "/",
 
-                            //"/auth",
-                            "/index.html", "/scoreboard.html", "/enter.html", "/login.html", "/registration.html",
+                            "/auth", "/registration", "/success.html", "/login.html",
+                            "/index.html", "/scoreboard.html", "/enter.html", "/redirectedLogin.html", "/registration.html",
                             "/style/**", "/js/**", "/img/**")
                     .permitAll()
                     .anyRequest().authenticated()//authenticated()
@@ -46,12 +42,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .formLogin()
                     .loginPage("/login")
                     .permitAll()
-                .and()
+                /*.and()
                     .logout()
                     .logoutUrl("/logout")
                     .invalidateHttpSession(true)
                     .deleteCookies("JSESSIONID")
-                    .permitAll()
+                    .permitAll()*/
                 .and()
                     .addFilter(new JwtAuthorizationFilter(authenticationManager()))
                     .addFilter(new JwtAuthenticationFilter(authenticationManager()))
@@ -69,10 +65,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .withUser("lol")
                 .password(passwordEncoder().encode("kekeke"))
                 .authorities("ROLE_USER");
-        /*auth.jdbcAuthentication()
+        auth.jdbcAuthentication()
                 .dataSource(dataSource)
                 .usersByUsernameQuery("select username, password, id from account where username=?")
-                .authoritiesByUsernameQuery("select u.username, ur.role from account u inner join user_role ur on u.id = ur.user_id where u.username=?");*/
+                .authoritiesByUsernameQuery("select username, role from account where username=?");
+                /*.authoritiesByUsernameQuery("select u.username, ur.role from account u inner join user_role ur on u.id = ur.user_id where u.username=?");*/
     }
 
     @Bean

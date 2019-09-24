@@ -1,5 +1,6 @@
 package com.controllers;
 
+import com.auth.entities.Role;
 import com.auth.entities.User;
 import com.auth.repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,18 +24,19 @@ public class DataAccessController {
     @PostMapping("/registration")
     public ResponseEntity addNewUser(@RequestParam String username, @RequestParam String password,
                                      @RequestParam String confirmPassword) {
-        System.out.println(username + password + confirmPassword);
+        System.out.println(username + " " + password + " " + confirmPassword);
         User userFromDB = userRepo.findByUsername(username);
         if (userFromDB != null){
             return new ResponseEntity(HttpStatus.NOT_ACCEPTABLE);
-        } else
-
-        if (password.equals(confirmPassword) && username.length() >= 3 && password.length() >= 3) {
+        }
+        else if (username != null && password != null && confirmPassword != null &&
+                username.length() >= 3 && password.length() >= 5 && username.length() <= 20 && password.length() <= 20 &&
+                password.equals(confirmPassword)) {
             User user = new User();
             user.setUsername(username);
             user.setPassword(passwordEncoder.encode(password));
             user.setUuid(UUID.randomUUID());
-
+            user.setRole(Role.ROLE_USER.toString());
             userRepo.save(user);
             return new ResponseEntity(HttpStatus.OK);
         } else

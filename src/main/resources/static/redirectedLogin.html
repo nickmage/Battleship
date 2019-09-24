@@ -6,22 +6,23 @@
     <link rel="stylesheet" type="text/css" href="style/index.css">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
     <link rel="icon" href="img/icon.png" type="image/icon type">
+    <script src="http://code.jquery.com/jquery-2.0.2.min.js"></script>
+    <script src="js/redirectLogin.js"></script>
 </head>
 <body>
 <header><h1>The Battleship Game</h1></header>
 <form id="form">
     <label>Username:<br>
         <span id="usernameError" hidden></span>
-        <input id="username" name="username" type="text" maxlength="20"></label><br>
+        <input id ="username" name="username" type="text" maxlength="20"></label><br>
     <label>Password:<br>
         <span id="passwordError" hidden></span>
-        <input id="password" name="password" type="password" maxlength="20"></label><br>
+        <input id ="password" name="password" type="password" maxlength="20"></label><br>
     <label>Or create new account<br>
-        <button onclick="location.href='#/registration'">Sign up</button>
+        <button onclick="location.href='../#/registration'">Sign up</button>
     </label>
 </form>
-<button id="signIn" onclick="validation()">Sign in</button>
-<br>
+<button id="signIn" onclick="validation()">Sign in</button><br>
 <footer>The game was created by Nickolay Moiseyenko in 2019.</footer>
 </body>
 </html>

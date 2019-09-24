@@ -12,6 +12,8 @@ app.config(function($routeProvider, $httpProvider) {
         };
     });
 
+    //$httpProvider.interceptors.push('httpInterceptor');
+
     $routeProvider
 
     .when('/', {
@@ -54,12 +56,20 @@ app.config(function($routeProvider, $httpProvider) {
     controller : 'GameController'
     })
 
+    .when('/success', {
+    templateUrl : 'success.html',
+    controller : 'SuccessController'
+    })
+
     .otherwise({redirectTo: '/'});
 
 });
 
 app.controller('EnterController', function($scope, $http) {
-
+    var script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = "js/enter.js";
+    document.body.appendChild(script);
 });
 
 app.controller('StartController', function($scope, $http) {
@@ -67,6 +77,10 @@ app.controller('StartController', function($scope, $http) {
     script.type = 'text/javascript';
     script.src = "js/start.js";
     document.body.appendChild(script);
+    var login = document.createElement('script');
+    login.type = 'text/javascript';
+    login.src = "js/login.js";
+    document.body.appendChild(login);
 });
 
 app.controller('LoginController', function($scope, $http) {
@@ -88,7 +102,14 @@ app.controller('ScoreboardController', function($scope, $http) {
 });
 
 app.controller('MenuController', function($scope, $http) {
-    //$scope.message = 'Hello from RegistrationController';
+    var script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = "js/menu.js";
+    document.body.appendChild(script);
+    var login = document.createElement('script');
+    login.type = 'text/javascript';
+    login.src = "js/login.js";
+    document.body.appendChild(login);
 });
 
 app.controller('LobbyController', function($scope, $http) {
@@ -96,12 +117,42 @@ app.controller('LobbyController', function($scope, $http) {
     script.type = 'text/javascript';
     script.src = "js/lobby.js";
     document.body.appendChild(script);
+    var login = document.createElement('script');
+    login.type = 'text/javascript';
+    login.src = "js/login.js";
+    document.body.appendChild(login);
 });
 app.controller('GameController', function($scope, $http) {
     var script = document.createElement('script');
     script.type = 'text/javascript';
     script.src = "js/game.js";
     document.body.appendChild(script);
+    var login = document.createElement('script');
+    login.type = 'text/javascript';
+    login.src = "js/login.js";
+    document.body.appendChild(login);
 });
 
+app.controller('SuccessController', function($scope, $http) {
+});
 
+/*app.factory("httpInterceptor", ["$q", "$window", "$log",
+function ($q, $window, $log) {
+alert("intercept");
+    return {
+        response: function(response){
+            console.log(response);
+            alert(response.status);
+        },
+        responseError: function(response) {
+            alert(response.status);
+            switch (response.status) {
+            case 401:
+            case 403:
+                alert("ERRROOORR!");
+                $window.location.href = "https://www.google.com.ua";
+                return;
+            }
+        }
+    }
+}]);*/

@@ -3,7 +3,6 @@ package com.auth.entities;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -16,10 +15,9 @@ public class User {
     private String password;
     @Type(type = "uuid-char")
     private UUID uuid;
-    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
-    private Set<Role> role;
+    private String role;
 
-    public User(Long id, String username, String password, UUID uuid,Set<Role> role) {
+    public User(Long id, String username, String password, UUID uuid, String role) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -62,11 +60,11 @@ public class User {
         this.uuid = uuid;
     }
 
-    public Set<Role> getRole() {
+    public String getRole() {
         return role;
     }
 
-    public void setRole(Set<Role> role) {
+    public void setRole(String role) {
         this.role = role;
     }
 }

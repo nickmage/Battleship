@@ -2,38 +2,55 @@
         var username = document.getElementById("username").value;
         var password = document.getElementById("password").value;
         var confirmPassword = document.getElementById("confirmPassword").value;
+        document.getElementById("usernameError").hidden = true;
+        document.getElementById("passwordError").hidden = true;
+        document.getElementById("confirmPasswordError").hidden = true;
         if (username === ''){
-            input.setCustomValidity('Username is empty');
+            document.getElementById("usernameError").innerHTML = 'Username is empty';
+            document.getElementById("usernameError").hidden = false;
         } else if (username.length < 3){
-            input.setCustomValidity('Password is too short');
+            document.getElementById("usernameError").innerHTML = 'Username is too short';
+            document.getElementById("usernameError").hidden = false;
         } else if (password === ''){
-            input.setCustomValidity('Password is empty');
-        } else if (password.length < 5 || confirmPassword.length < 5){
-            input.setCustomValidity('Password is too short');
+            document.getElementById("passwordError").innerHTML = 'Password is empty';
+            document.getElementById("passwordError").hidden = false;
+        } else if (password.length < 5){
+            document.getElementById("passwordError").innerHTML = 'Password is too short';
+            document.getElementById("passwordError").hidden = false;
         } else if (confirmPassword === ''){
-            input.setCustomValidity('Password is empty');
+            document.getElementById("confirmPasswordError").innerHTML = 'Password is empty';
+            document.getElementById("confirmPasswordError").hidden = false;
+        } else if (confirmPassword.length < 5){
+            document.getElementById("confirmPasswordError").innerHTML = 'Password is too short';
+            document.getElementById("confirmPasswordError").hidden = false;
         } else if (confirmPassword !== password){
-            input.setCustomValidity('Password does not match');
+            document.getElementById("confirmPasswordError").innerHTML = 'Password does not match';
+            document.getElementById("confirmPasswordError").hidden = false;
         } else {
-            input.setCustomValidity('');
-            send();
+            send(username, password, confirmPassword);
         }
     }
 
-    function send(){
-            $.ajax({
-                type: 'POST',
-                url: '/registration',
-                data: "username=" + username + "&password=" + password + "&confirmPassword=" + confirmPassword,
-                success: function () {
-                    $("#form").hide();
-                    show();
+    function send(username, password, confirmPassword){
+        $.ajax({
+            type: 'POST',
+            url: '/registration',
+            data: "username=" + username + "&password=" + password + "&confirmPassword=" + confirmPassword,
+            beforeSend: function(){
+                $("#message").hide();
+            },
+            success: function(){
+                window.location.href = '#/success';
+            },
+            statusCode: {
+                400: function(){
+                    document.getElementById("message").innerHTML = "Username or password is invalid.";
+                    $("#message").show();
+                },
+                406: function(){
+                    document.getElementById("message").innerHTML = "The user is already exist.";
+                    $("#message").show();
                 }
-            });
-    }
-
-
-    function show(){
-        document.getElementById("form").hidden=true;
-        document.getElementById("success").hidden=false;
+            }
+        });
     }

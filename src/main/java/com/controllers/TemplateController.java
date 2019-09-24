@@ -11,63 +11,21 @@ public class TemplateController {
 
     @GetMapping("/")
     public String index(@RequestHeader(value = "cookie", required = false) String cookie/*MultiValueMap<String, String> headers*/) {
-        System.out.println(cookie + " from index");
+        //System.out.println(cookie + " from index");
         //headers.forEach((key, value) -> System.out.println(String.format("Header '%s' = %s", key, String.join("|", value))));
         return "forward:/index.html";
     }
 
     @GetMapping("/login")
-    public String login(Model model) {
-        System.out.println("I am from login method");
-        model.addAttribute("message", "You Should be authorized to use this content!");
+    public String login() {
+       //model.addAttribute("message", "You Should be authorized to use this content!");
        //headers.forEach((key, value) -> System.out.println(String.format("Header '%s' = %s", key, String.join("|", value))));
-        return "redirect:/login.html";
+        return "forward:/redirectedLogin.html";
     }
 
-
-    /*@GetMapping("/start")
-    public String start(@RequestHeader("cookie") String cookie) {
-        System.out.println(cookie + " from start");
-        return "start";
+    @GetMapping("/logout")
+    public String logout() {
+        return "forward:/index.html";
     }
-
-    @GetMapping("/lobby")
-    public String lobby(@RequestHeader("cookie") String cookie) {
-        System.out.println(cookie + " from lobby");
-        return "lobby";
-    }
-
-    @GetMapping("/game")
-    public String game(@RequestHeader("cookie") String cookie) {
-        System.out.println(cookie + " from game");
-        return "game";
-    }*/
-
-    /*@GetMapping("/angular")
-    public String angular(){
-        return "angular";
-    }
-
-    @GetMapping("/login")
-    public String login(){
-        return "login";
-    }
-
-    @GetMapping("/registration")
-    public String registration(){
-        return "registration";
-    }
-
-    @GetMapping("/scoreboard")
-    public String scoreboard(){
-        return "scoreboard";
-    }
-
-    @GetMapping("/menu")
-    public String any(@RequestHeader("cookie") String cookie) {
-        System.out.println(cookie + " from menu");
-        return "menu";
-    }*/
-
 
 }
