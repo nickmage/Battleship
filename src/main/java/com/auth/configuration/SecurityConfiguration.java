@@ -38,7 +38,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                             "/style/**", "/js/**", "/img/**")
                     .permitAll()
                     .anyRequest().authenticated()//authenticated()
-                .and() //ДЕЛАЕТ РЕДИРЕКТ, СКРИПТЫ ОСТАЮТСЯ И ВЫДАЮТ ОШИБКИ
+                .and()
                     .formLogin()
                     .loginPage("/login")
                     .permitAll()

@@ -1,4 +1,4 @@
-package com.entity;
+package com.app.entity;
 
 public class Ship {
     private int x;

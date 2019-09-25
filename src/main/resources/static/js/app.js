@@ -65,11 +65,10 @@ app.config(function($routeProvider, $httpProvider) {
 
 });
 
-app.controller('EnterController', function($scope, $http) {
-    var script = document.createElement('script');
-    script.type = 'text/javascript';
-    script.src = "js/enter.js";
-    document.body.appendChild(script);
+app.controller('EnterController', function($scope, $http, $window) {
+    if (localStorage.getItem('token') !== null){
+        $window.location.href = '#/menu';
+    }
 });
 
 app.controller('StartController', function($scope, $http) {

@@ -1,9 +1,7 @@
-package com.controllers;
+package com.app.controllers;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 @Controller
@@ -18,9 +16,7 @@ public class TemplateController {
 
     @GetMapping("/login")
     public String login() {
-       //model.addAttribute("message", "You Should be authorized to use this content!");
-       //headers.forEach((key, value) -> System.out.println(String.format("Header '%s' = %s", key, String.join("|", value))));
-        return "forward:/redirectedLogin.html";
+       return "forward:/redirectedLogin.html";
     }
 
     @GetMapping("/logout")

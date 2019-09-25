@@ -1,3 +1,5 @@
+var token = localStorage.getItem('token');
+var userFromToken = getUsername();
 var user = document.getElementById("user").innerText;
 var shipOrientation = ['-', 'v', 'v', 'v'];
 var selectedShip = [false, false, false, false];
@@ -15,6 +17,19 @@ var board = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],    // 0 represents free cells
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 ];
 var request = [];
+
+function getUsername(){
+    document.getElementById("user").innerText = parseJwt(token).sub;
+};
+
+function parseJwt (token) {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    return JSON.parse(jsonPayload);
+};
 
 function setStyleForSelectedShip(id, index) {
     for (var i = 0; i < ids.length; i++) {
@@ -1043,7 +1058,7 @@ function boardValidation() {
     if (quantityCheck()) {
         sendBoard();
     } else {
-        alert('Error!');
+        alert('Board is invalid, please reload the page and try again.');
     }
 }
 
@@ -1063,24 +1078,34 @@ function sendBoard() {
     $.ajax({
         type: 'POST',
         url: '/start',
+        headers: {
+            'Authorization':token,
+            'Username':user
+        },
         contentType: 'application/json',
         data: JSON.stringify(request),
         statusCode: {
-            200: function(uuid) {
-                //console.log(data);
-                getToLobby(uuid);
-                },
-            //error
-            400: function() {
-                alert("An error has occurred (the board is invalid or room is full)! Please try again later or send a valid board.");
-                }
+            200: function (data) {
+                setId(data.responseText);
+                //getToLobby(uuid);
+            },
+            400: function (data) {
+                alert(data.responseText);
+                alert("An error has occurred (the board is invalid)! Please try again and send a valid board.");
             }
+        }
     });
 }
 
-function getToLobby(uuid){
-    window.location.href = "/lobby?token="+ uuid + "&username=" + user;
+function setId(id){
+    localStorage.setItem('id', id);
+    console.log(localStorage.getItem('id'));
 }
+
+function getToLobby(uuid){
+    //window.location.href = "/lobby?token="+ uuid + "&username=" + user;
+}
+
 
 function putShipToRequest(x, y, position, deckType){
     request.push({x:x, y:y, position:position, deckType:deckType});

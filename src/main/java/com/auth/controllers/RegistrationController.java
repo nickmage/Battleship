@@ -1,4 +1,4 @@
-package com.controllers;
+package com.auth.controllers;
 
 import com.auth.entities.Role;
 import com.auth.entities.User;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.UUID;
 
 @RestController
-public class DataAccessController {
+public class RegistrationController {
     @Autowired
     private UserRepo userRepo;
     @Autowired

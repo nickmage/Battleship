@@ -1,0 +1,15 @@
+1. File: app.js -> lines 69-70.
+Authorised users must be redirected from "/" or "/#/" to ""#/menu" (http://localhost:8080/#/menu).
+Users from http://localhost:8080/#/ are redirected correctly, but redirection from http://localhost:8080/
+causes infinite loop, that angular interrupts, so it has no influence on service flow.
+Possible solution: set redirect in another place.
+
+
+
+
+
+
+
+
+
+
