@@ -1075,6 +1075,7 @@ function quantityCheck() {
 }
 
 function sendBoard() {
+console.log(request);
     $.ajax({
         type: 'POST',
         url: '/start',
@@ -1107,8 +1108,8 @@ function getToLobby(uuid){
 }
 
 
-function putShipToRequest(x, y, position, deckType){
-    request.push({x:x, y:y, position:position, deckType:deckType});
+function putShipToRequest(x, y, orientation, deckType){
+    request.push({x:x, y:y, orientation:orientation, deckType:deckType});
 }
 
 function removeShipFromRequest(x, y){

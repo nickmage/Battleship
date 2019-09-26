@@ -3,7 +3,7 @@ package com.app.entity;
 public class Ship {
     private int x;
     private int y;
-    private char position;
+    private char orientation;
     private int deckType;
 
     public int getX() {
@@ -22,12 +22,12 @@ public class Ship {
         this.y = y;
     }
 
-    public char getPosition() {
-        return position;
+    public char getOrientation() {
+        return orientation;
     }
 
-    public void setPosition(char position) {
-        this.position = position;
+    public void setOrientation(char orientation) {
+        this.orientation = orientation;
     }
 
     public int getDeckType() {
