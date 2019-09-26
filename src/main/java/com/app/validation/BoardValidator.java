@@ -1,11 +1,10 @@
 package com.app.validation;
 
-import com.app.entity.Ship;
+import com.app.entities.Ship;
 
 public class BoardValidator {
 
     private Ship[] ships;
-    //private int[][] board = new int[10][10];
     private final char HORIZONTAL = 'h';
     private final char VERTICAL = 'v';
     private final char NONE = '-';
@@ -15,7 +14,6 @@ public class BoardValidator {
     }
 
     public boolean isValidBoard() {
-        //print();
         return notNull() && isCorrectShipsQuantity() && isCorrectShipsPlacing()
                 && isCorrectShipOrientation() && isCorrectShipsRelativePositioning();
     }
@@ -129,10 +127,4 @@ public class BoardValidator {
         return false;
     }
 
-
 }
-
-
-
-
-

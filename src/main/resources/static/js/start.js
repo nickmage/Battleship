@@ -1074,8 +1074,21 @@ function quantityCheck() {
     return totalSelected === 20;
 }
 
+function putShipToRequest(x, y, orientation, deckType){
+    request.push({x:x, y:y, orientation:orientation, deckType:deckType});
+}
+
+function removeShipFromRequest(x, y){
+    let length = request.length;
+    for(i = 0; i < length; i++){
+        if (request[i].x == x && request[i].y == y){
+            request.splice(i, 1);
+            break;
+        }
+    }
+}
+
 function sendBoard() {
-console.log(request);
     $.ajax({
         type: 'POST',
         url: '/start',
@@ -1088,6 +1101,7 @@ console.log(request);
         statusCode: {
             200: function (data) {
                 setId(data.responseText);
+                postToMatchmaking(data.responseText);
                 //getToLobby(uuid);
             },
             400: function (data) {
@@ -1103,21 +1117,29 @@ function setId(id){
     console.log(localStorage.getItem('id'));
 }
 
-function getToLobby(uuid){
-    //window.location.href = "/lobby?token="+ uuid + "&username=" + user;
+function postToMatchmaking(id){
+   $.ajax({
+           type: 'POST',
+           url: '/start/matchmaking',
+           headers: {
+               'Authorization':token,
+               'Username':user
+           },
+           data: "playerId=" + localStorage.getItem('id'),
+           statusCode: {
+               200: function (data) {
+               console.log(data);
+                   alert(data.responseText);
+               },
+               400: function (data) {
+                   alert(data);
+               }
+           }
+       });
+}
+
+function getToLobby(){
+    window.location.href = "#/lobby";
 }
 
 
-function putShipToRequest(x, y, orientation, deckType){
-    request.push({x:x, y:y, orientation:orientation, deckType:deckType});
-}
-
-function removeShipFromRequest(x, y){
-    let length = request.length;
-    for(i = 0; i < length; i++){
-        if (request[i].x == x && request[i].y == y){
-            request.splice(i, 1);
-            break;
-        }
-    }
-}
