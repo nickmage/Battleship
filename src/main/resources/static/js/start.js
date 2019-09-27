@@ -378,7 +378,7 @@ function removeTwoDeckShipFromBoard(element) {
         ships[1]++;
         shipsCounter("ship2Quantity", ships[1]);
         setAreaForTwoDeckShip(i, j - 1, i, j, 1, 'h');
-        removeShipFromRequest(i, j);
+        removeShipFromRequest(i, j - 1);
     }
 }
 
@@ -1089,7 +1089,7 @@ function removeShipFromRequest(x, y){
         }
     }
 }
-                                                        /*!!!*/
+
 function sendBoard() {
     $.ajax({
         type: 'POST',

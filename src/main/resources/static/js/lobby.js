@@ -1,32 +1,41 @@
-    var roomId = localStorage.getItem('roomId');
+var token = localStorage.getItem('token');
     var intervalID;
+    var init = init();
 
-    window.onload = function(){
+
+    function init(){
         console.log(localStorage.getItem('username'));
         document.getElementById("username").innerText = localStorage.getItem('username');
         intervalID = setInterval(function() {
+            var roomId = localStorage.getItem('roomId');
+            console.log('before_send');
             $.ajax({
-                type: 'POST',
+                type: 'GET',
                 url: '/lobby',
                 headers: {
                     'Authorization':token,
                 },
                 data: "roomId=" + roomId,
-                statusCode: {
-                    102: function (data) {
-                        console.log(data);
-                    },
-                    200: function (data) {
-                        console.log(data);
+                success: function (data) {
+                    if (data === "yes"){
                         goToGame();
                     }
                 }
+                /*statusCode: {
+                    102: function (data) {
+                        console.log(data);
+                    },
+                    202: function (data) {
+                        console.log(data);
+                        goToGame();
+                    }
+                }*/
             });
         }, 2000);
     };
 
     function goToGame(){
         clearInterval(intervalID);
-        window.location.href = "#/game";//"/game?token="+ token;
+        window.location.replace("#/game");//"/game?token="+ token;
     }
 

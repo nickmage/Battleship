@@ -56,6 +56,7 @@ public class GameController {
                     existingRoom.setPlayer2Id(playerId);
                     existingRoom.setPlayer2BoardJSON(new ObjectMapper().writeValueAsString(ships));
                     matchmakingRepo.save(existingRoom);
+                    /**CREATE ALL BOARDS IN DB**/
                     //System.out.println("Player 2 found!");
                     return new ResponseEntity<>(new StartResponseWrapper(existingRoom.getPlayer2Id().toString(),
                             existingRoom.getRoomId().toString()),HttpStatus.OK);
@@ -66,14 +67,15 @@ public class GameController {
             return new ResponseEntity<>("An error has occurred (the board is invalid)! Please try again and send a valid board.", HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping("/lobby")
+    @GetMapping("/lobby")
     @ResponseBody
-    public ResponseEntity lobby(@RequestParam(name = "roomId") String roomId){
+    public String lobby(@RequestParam(name = "roomId") String roomId){
+        System.out.println("GOT request");
         Matchmaking room = matchmakingRepo.findByRoomId(UUID.fromString(roomId));
         if (room.getPlayer2Name() == null){
-            return new ResponseEntity(HttpStatus.PROCESSING);
+            return null;
         } else {
-            return new ResponseEntity(HttpStatus.OK);
+            return "yes";
         }
     }
 
