@@ -1,20 +1,32 @@
-    var token = document.getElementById("token").innerText;
-    var username = document.getElementById("user").innerText;
+    var roomId = localStorage.getItem('roomId');
+    var intervalID;
 
-    window.onload = function(){ setInterval(function() {
-        $.ajax({
-            type: 'POST',
-            url: '/lobby',
-            data: "token=" +token +"&username="+username,
-            success: function (data) {
-                if (data === "yes"){
-                    goToGame();
-                    clearInterval();
+    window.onload = function(){
+        console.log(localStorage.getItem('username'));
+        document.getElementById("username").innerText = localStorage.getItem('username');
+        intervalID = setInterval(function() {
+            $.ajax({
+                type: 'POST',
+                url: '/lobby',
+                headers: {
+                    'Authorization':token,
+                },
+                data: "roomId=" + roomId,
+                statusCode: {
+                    102: function (data) {
+                        console.log(data);
+                    },
+                    200: function (data) {
+                        console.log(data);
+                        goToGame();
+                    }
                 }
-            }
-        });
-    }, 2000)};
+            });
+        }, 2000);
+    };
 
     function goToGame(){
-        window.location.href = "/game?token="+ token;
+        clearInterval(intervalID);
+        window.location.href = "#/game";//"/game?token="+ token;
     }
+

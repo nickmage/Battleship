@@ -19,7 +19,9 @@ var board = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],    // 0 represents free cells
 var request = [];
 
 function getUsername(){
-    document.getElementById("user").innerText = parseJwt(token).sub;
+    let username = parseJwt(token).sub;
+    document.getElementById("user").innerText = username;
+    localStorage.setItem('username', username);
 };
 
 function parseJwt (token) {
@@ -1087,7 +1089,7 @@ function removeShipFromRequest(x, y){
         }
     }
 }
-
+                                                        /*!!!*/
 function sendBoard() {
     $.ajax({
         type: 'POST',
@@ -1100,42 +1102,16 @@ function sendBoard() {
         data: JSON.stringify(request),
         statusCode: {
             200: function (data) {
-                setId(data.responseText);
-                postToMatchmaking(data.responseText);
-                //getToLobby(uuid);
+                console.log(data);
+                localStorage.setItem('playerId', data.playerId);
+                localStorage.setItem('roomId', data.roomId);
+                window.location.replace("#/lobby");
             },
             400: function (data) {
-                alert(data.responseText);
-                alert("An error has occurred (the board is invalid)! Please try again and send a valid board.");
+                console.log(data);
             }
         }
     });
-}
-
-function setId(id){
-    localStorage.setItem('id', id);
-    console.log(localStorage.getItem('id'));
-}
-
-function postToMatchmaking(id){
-   $.ajax({
-           type: 'POST',
-           url: '/start/matchmaking',
-           headers: {
-               'Authorization':token,
-               'Username':user
-           },
-           data: "playerId=" + localStorage.getItem('id'),
-           statusCode: {
-               200: function (data) {
-               console.log(data);
-                   alert(data.responseText);
-               },
-               400: function (data) {
-                   alert(data);
-               }
-           }
-       });
 }
 
 function getToLobby(){
@@ -1143,3 +1119,48 @@ function getToLobby(){
 }
 
 
+
+/*function sendBoard1() {
+      $.ajax({
+          type: 'POST',
+          url: '/start',
+          headers: {
+              'Authorization':token,
+              'Username':user
+          },
+          contentType: 'application/json',
+          data: JSON.stringify(request),
+          statusCode: {
+              200: function (data) {
+                  setId(data.responseText);
+                  postToMatchmaking(data.responseText);
+                  //getToLobby(uuid);
+              },
+              400: function (data) {
+                  alert(data.responseText);
+                  alert("An error has occurred (the board is invalid)! Please try again and send a valid board.");
+              }
+          }
+      });
+  }
+
+  function postToMatchmaking(id){
+     $.ajax({
+         type: 'POST',
+         url: '/start/matchmaking',
+         headers: {
+             'Authorization':token,
+             'Username':user
+         },
+         data: "playerId=" + localStorage.getItem('id'),
+         statusCode: {
+             200: function (data) {
+             console.log(data);
+                 alert(data.responseText);
+             },
+             400: function (data) {
+                 alert(data);
+             }
+         }
+     });
+  }*/

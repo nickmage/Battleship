@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <title>Battleship Game</title>
@@ -8,11 +8,10 @@
     <link rel="icon" href="img/icon.png" type="image/icon type">
 </head>
 <body>
-<p><span id="user" th:text="${username}"></span>, please wait for another player</p>
+<p><span id="username"></span>, please wait for another player</p>
 <svg width="400px" height="400px" viewBox="-4 -1 38 28">
     <polygon fill="transparent" stroke="#000" stroke-width="2" points="15,0 30,30 0,30"></polygon>
-</svg>
+</svg><br>
 <img src="img/icon.png" width="150">
-<p hidden id="token" th:text="${token}"></p>
 </body>
 </html>

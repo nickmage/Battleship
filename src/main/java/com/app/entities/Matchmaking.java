@@ -22,8 +22,10 @@ public class Matchmaking {
     private UUID roomId;
     @Temporal(TemporalType.DATE)
     private Date date;
+    private String player1BoardJSON;
+    private String player2BoardJSON;
 
-    public Matchmaking(Long id, String player1Name, UUID player1Id, String player2Name, UUID player2Id, UUID roomId, Date date) {
+    public Matchmaking(Long id, String player1Name, UUID player1Id, String player2Name, UUID player2Id, UUID roomId, Date date, String player1BoardJSON, String player2BoardJSON) {
         this.id = id;
         this.player1Name = player1Name;
         this.player1Id = player1Id;
@@ -31,6 +33,8 @@ public class Matchmaking {
         this.player2Id = player2Id;
         this.roomId = roomId;
         this.date = date;
+        this.player1BoardJSON = player1BoardJSON;
+        this.player2BoardJSON = player2BoardJSON;
     }
 
     public Matchmaking() {
@@ -91,4 +95,21 @@ public class Matchmaking {
     public void setDate(Date date) {
         this.date = date;
     }
+
+    public String getPlayer1BoardJSON() {
+        return player1BoardJSON;
+    }
+
+    public void setPlayer1BoardJSON(String player1BoardJSON) {
+        this.player1BoardJSON = player1BoardJSON;
+    }
+
+    public String getPlayer2BoardJSON() {
+        return player2BoardJSON;
+    }
+
+    public void setPlayer2BoardJSON(String player2BoardJSON) {
+        this.player2BoardJSON = player2BoardJSON;
+    }
+
 }

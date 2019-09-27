@@ -3,5 +3,8 @@ function logout(){
     if (localStorage.getItem('id') !== null){
         localStorage.removeItem('id');
     }
+    if (localStorage.getItem('username') !== null){
+        localStorage.removeItem('username');
+    }
     location.href='../';
 }
