@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html lang="en">
 <head>
     <title>Battleship Game</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -10,7 +10,6 @@
 </head>
 <body>
 <header><h1>The Battleship Game</h1></header>
-<p hidden id="token" th:text="${token}"></p>
 <div class="overlay_popup"></div>
 <div class="popup" id="popup1">
     <div class="object">
@@ -20,8 +19,8 @@
     </div>
 </div>
 <div id="gameBoard" style=" overflow: hidden;">
-  <div style="width: 500px; float: left;"><!--   -->
-        <p id="playerName">Your ships, <span th:text="${player}"></span></p>
+  <div style="width: 500px; float: left;">
+        <p id="playerInfo" hidden></p>
         <table id="playerShips">
             <tr>
                 <td class="playerShipIndicator"><img src="img/1d.png" id="playerShip1" width="25"></td>
@@ -359,8 +358,8 @@
             </tr>
         </table>
     </div>
-    <div style="margin-left: 500px;"><!---->
-        <p id="enemyName"><span th:text="${enemy}"></span>'s enemy ships</p>
+    <div style="margin-left: 500px;">
+        <p id="enemyInfo" hidden></p>
         <table id="enemyShips">
             <tr>
                 <td class="enemyShipIndicator"><img src="img/1d.png" id="enemyShip1" width="25"></td>
@@ -699,7 +698,6 @@
         </table>
     </div>
 </div>
-<script src="http://code.jquery.com/jquery-2.0.2.min.js"></script>
 <footer>The game was created by Nickolay Moiseyenko in 2019.</footer>
 </body>
 </html>

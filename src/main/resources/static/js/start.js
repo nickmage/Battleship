@@ -1104,7 +1104,7 @@ function sendBoard() {
             200: function (data) {
                 console.log(data);
                 localStorage.setItem('playerId', data.playerId);
-                localStorage.setItem('roomId', data.roomId);
+                sessionStorage.setItem('roomId', data.roomId);
                 window.location.replace("#/lobby");
             },
             400: function (data) {

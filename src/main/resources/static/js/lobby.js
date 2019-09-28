@@ -1,14 +1,11 @@
-var token = localStorage.getItem('token');
-var roomId = localStorage.getItem('roomId');
-    var intervalID;
+    var token = localStorage.getItem('token');
+    var roomId = sessionStorage.getItem('roomId');
+    var interval;
     var init = init();
 
-
     function init(){
-        console.log(localStorage.getItem('username'));
         document.getElementById("username").innerText = localStorage.getItem('username');
-        intervalID = setInterval(function() {
-            console.log('before_send');
+        interval = setInterval(function() {
             $.ajax({
                 type: 'GET',
                 url: '/lobby',
@@ -21,21 +18,12 @@ var roomId = localStorage.getItem('roomId');
                         goToGame();
                     }
                 }
-                /*statusCode: {
-                    102: function (data) {
-                        console.log(data);
-                    },
-                    202: function (data) {
-                        console.log(data);
-                        goToGame();
-                    }
-                }*/
             });
         }, 2000);
     };
 
     function goToGame(){
-        clearInterval(intervalID);
-        window.location.replace("#/game");//"/game?token="+ token;
+        clearInterval(interval);
+        window.location.replace("#/game");
     }
 

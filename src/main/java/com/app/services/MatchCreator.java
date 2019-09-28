@@ -4,12 +4,7 @@ import com.app.entities.Game;
 import com.app.entities.Matchmaking;
 import com.app.entities.RemainingShips;
 import com.app.entities.Ship;
-import com.app.repo.GameRepo;
-import com.app.repo.MatchmakingRepo;
-import com.app.response_wrappers.StartResponseWrapper;
-import com.app.validation.BoardValidator;
 import com.auth.entities.User;
-import com.auth.repo.UserRepo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,49 +17,47 @@ import java.util.UUID;
 
 @Service
 public class MatchCreator {
+    @Autowired
+    private Matchmaking match;
+    @Autowired
+    private Game game;
+    @Autowired
+    private ObjectMapper objectMapper;
+    @Autowired
+    private BoardCreator boardCreator;
 
     public Matchmaking createNewRoom(User user, Ship[] ships) throws JsonProcessingException {
-        Matchmaking match = new Matchmaking();
+        //Matchmaking match = new Matchmaking();
         match.setPlayer1Name(user.getUsername());
         match.setPlayer1Id(user.getUuid());
         match.setRoomId(UUID.randomUUID());
         match.setDate(new Date());
-        match.setPlayer1BoardJSON(new ObjectMapper().writeValueAsString(ships));
+        match.setPlayer1BoardJSON(objectMapper.writeValueAsString(boardCreator.getBoard(ships)));
         return match;
     }
 
-    public Matchmaking joinExistingRoom(Matchmaking match, User user, Ship[] ships) throws JsonProcessingException {        ;
+    public Matchmaking joinExistingRoom(Matchmaking match, User user, Ship[] ships) throws JsonProcessingException {
         match.setPlayer2Name(user.getUsername());
         match.setPlayer2Id(user.getUuid());
-        match.setPlayer2BoardJSON(new ObjectMapper().writeValueAsString(ships));
+        match.setPlayer2BoardJSON(objectMapper.writeValueAsString(boardCreator.getBoard(ships)));
         return match;
     }
 
     public Game createNewGame(Matchmaking match) throws IOException {
-        Game newGame = new Game();
-        ObjectMapper objectMapper = new ObjectMapper();
-        BoardCreator boardCreator = new BoardCreator();
-        newGame.setRoomId(match.getRoomId());
-        newGame.setCurrentPlayer(new Random().nextInt(2) + 1);
-        newGame.setPlayer1Name(match.getPlayer1Name());
-        newGame.setPlayer1Id(match.getPlayer1Id());
-        newGame.setPlayer2Name(match.getPlayer2Name());
-        newGame.setPlayer2Id(match.getPlayer2Id());
-        newGame.setDate(new Date());
-        newGame.setPlayer1BoardJSON(objectMapper.writeValueAsString(boardCreator.getBoard(
-                objectMapper.readValue(match.getPlayer1BoardJSON(), Ship[].class))));
-
-        newGame.setPlayer2BoardJSON(objectMapper.writeValueAsString(boardCreator.getBoard(
-                objectMapper.readValue(match.getPlayer2BoardJSON(), Ship[].class))));
-        newGame.setShipsOfPlayer1JSON(objectMapper.writeValueAsString(new RemainingShips()));
-        newGame.setShipsOfPlayer2JSON(objectMapper.writeValueAsString(new RemainingShips()));
-
-        newGame.setWinner(0);
-        return newGame;
-
-  }
-
-
+        game.setRoomId(match.getRoomId());
+        game.setCurrentPlayer(new Random().nextInt(2) + 1);
+        game.setPlayer1Name(match.getPlayer1Name());
+        game.setPlayer1Id(match.getPlayer1Id());
+        game.setPlayer2Name(match.getPlayer2Name());
+        game.setPlayer2Id(match.getPlayer2Id());
+        game.setDate(new Date());
+        game.setPlayer1BoardJSON(match.getPlayer1BoardJSON());
+        game.setPlayer2BoardJSON(match.getPlayer2BoardJSON());
+        game.setShipsOfPlayer1JSON(objectMapper.writeValueAsString(new RemainingShips()));
+        game.setShipsOfPlayer2JSON(objectMapper.writeValueAsString(new RemainingShips()));
+        game.setWinner(0);
+        return game;
+    }
 
 
 }
@@ -72,7 +65,6 @@ public class MatchCreator {
 /*
 
  */
-
 
 
 //            /**CREATE ALL BOARDS IN DB**/
@@ -91,8 +83,6 @@ public class MatchCreator {
 //                    new ObjectMapper().readValue(existingRoom.getPlayer1BoardJSON(), Ship[].class)
 //            )));
 //            newGame.setEnemyBoardForPlayer1JSON(null);
-
-
 
 
 //            return new ResponseEntity<>(new StartResponseWrapper(match.getPlayer2Id().toString(),

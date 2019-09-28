@@ -1,6 +1,7 @@
 package com.app.entities;
 
 import org.hibernate.annotations.Type;
+import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -8,6 +9,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "game")
+@Component
 public class Game {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

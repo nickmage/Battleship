@@ -1,10 +1,65 @@
+    var token = localStorage.getItem('token');
+    var roomId = sessionStorage.getItem('roomId');
+    var playerId = localStorage.getItem('playerId');
+    var interval;
+    var init = init();
+
+    function init(){
+        getBoards();//readycheck
+        /*ShotRequest();
+
+        document.getElementById("playerName").innerText = 'Your ships, ' + localStorage.getItem('username');
+        
+
+
+
+            interval = setInterval(function() {
+
+            }, 2000);*/
+    }
+
+    function getBoards(){
+        $.ajax({
+            type: 'GET',
+            url: '/game/init',
+            headers: {
+            'Authorization':token,
+            },
+            data: "roomId=" + roomId + "&playerId=" + playerId,
+            success: function (data) {
+                console.log(data);
+                //2 boards & enemyname
+            }
+        });
+    }
+
+    function setPlayerAndEnemyInfoVisible(enemyName){
+        var playerInfo = document.getElementById('playerInfo');
+        var enemyInfo = document.getElementById('enemyInfo');
+        playerName.innerHTML = 'Your ships, ' + localStorage.getItem('username');
+        playerName.hidden = false;
+        enemyName.innerHTML = enemyName + 's enemy ships';
+        enemyName.hidden = false;        
+    }
+
+    /*function goToGame(){
+        clearInterval(interval);
+        window.location.replace("#/game");
+    }*/
+
+
+
+
+
+
+
 // 0 empty cell
     // 1-4 decks
     // -1 my broken ship
     // -2 miss
     // > 0 enemy board ship
     // < 0 enemy board misses
-    var playerBoard;
+   /* var playerBoard;
     var enemyBoard;
     var token = document.getElementById("token").innerText;
     var ableToShot;
@@ -15,7 +70,7 @@
         //gameOver('w');
         $.ajax({
             type: 'GET',
-            url: '/game/util',
+            url: '/game/init',
             data: "token=" + token + "&newGame=" + true,
             success: function (data) {
                 console.log(data);
@@ -141,4 +196,4 @@
 
     function gotoMenu(){
         window.location.replace("/");
-    }
+    }*/

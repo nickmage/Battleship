@@ -37,11 +37,12 @@ public class GameController {
     public ResponseEntity getBoard(@RequestBody Ship[] ships,
                                    @RequestHeader(name = "Username") String username) throws IOException {
         if (new BoardValidator(ships).isValidBoard()) {
+
             User userFromDB = userRepo.findByUsername(username);
             if (userFromDB != null) {
                 UUID playerId = userFromDB.getUuid();
                 List<Matchmaking> freeRooms = matchmakingRepo.findByPlayer2Name(null);
-                //remove rooms to avoid playing with itself
+                //remove rooms to avoid playing with himself
                 freeRooms.removeIf(match -> match.getPlayer1Id().equals(playerId));
                 if (freeRooms.size() == 0) {
                     Matchmaking match = matchCreator.createNewRoom(userFromDB, ships);
@@ -49,7 +50,7 @@ public class GameController {
                     return new ResponseEntity<>(new StartResponseWrapper(match.getPlayer1Id().toString(),
                             match.getRoomId().toString()),HttpStatus.OK);
                 } else {
-                    Matchmaking match = new MatchCreator().joinExistingRoom(freeRooms.get(0), userFromDB, ships);
+                    Matchmaking match = matchCreator.joinExistingRoom(freeRooms.get(0), userFromDB, ships);
                     matchmakingRepo.save(match);
                     gameRepo.save(matchCreator.createNewGame(match));
                     return new ResponseEntity<>(new StartResponseWrapper(match.getPlayer2Id().toString(),
@@ -69,6 +70,8 @@ public class GameController {
             return "yes";
         }
     }
+
+
 
 
 }

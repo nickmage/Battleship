@@ -2,20 +2,15 @@ package com.app.services;
 
 import com.app.entities.BoardCell;
 import com.app.entities.Ship;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 
+@Service
 public final class BoardCreator {
-    private Ship [] ships;
-    private ArrayList<BoardCell> board = new ArrayList<>();
 
     public ArrayList getBoard(Ship[] ships){
-        this.ships = ships;
-        fillBoard();
-        return board;
-    }
-
-    private void fillBoard(){
+        ArrayList<BoardCell> board = new ArrayList<>();
         char horizontal = 'h';
         char none = '-';
         for (Ship ship: ships) {
@@ -27,7 +22,10 @@ public final class BoardCreator {
                 }
             }
         }
+        return board;
     }
+
+
 
 
 
