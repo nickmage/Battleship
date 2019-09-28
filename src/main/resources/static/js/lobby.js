@@ -1,4 +1,5 @@
 var token = localStorage.getItem('token');
+var roomId = localStorage.getItem('roomId');
     var intervalID;
     var init = init();
 
@@ -7,7 +8,6 @@ var token = localStorage.getItem('token');
         console.log(localStorage.getItem('username'));
         document.getElementById("username").innerText = localStorage.getItem('username');
         intervalID = setInterval(function() {
-            var roomId = localStorage.getItem('roomId');
             console.log('before_send');
             $.ajax({
                 type: 'GET',

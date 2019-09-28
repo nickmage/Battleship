@@ -1,4 +1,4 @@
-package com.app;
+package com.app.response_wrappers;
 
 public class StartResponseWrapper {
     private String playerId;

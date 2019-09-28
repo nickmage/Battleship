@@ -20,7 +20,7 @@ public class Matchmaking {
     private UUID player2Id;
     @Type(type = "uuid-char")
     private UUID roomId;
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date date;
     private String player1BoardJSON;
     private String player2BoardJSON;
