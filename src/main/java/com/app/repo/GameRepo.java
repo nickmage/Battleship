@@ -1,6 +1,6 @@
 package com.app.repo;
 
-import com.app.entities.Game;
+import com.app.DTOs.Game;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;

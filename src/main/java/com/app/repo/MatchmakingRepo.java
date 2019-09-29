@@ -1,7 +1,6 @@
 package com.app.repo;
 
-import com.app.entities.Matchmaking;
-import com.auth.entities.User;
+import com.app.DTOs.Matchmaking;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

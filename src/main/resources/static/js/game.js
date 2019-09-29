@@ -2,16 +2,17 @@
     var roomId = sessionStorage.getItem('roomId');
     var playerId = localStorage.getItem('playerId');
     var interval;
+    var playerArray = [];
+    var enemyArray = [];
     var init = init();
 
+
     function init(){
+        fillArrays();
         getBoards();//readycheck
-        /*ShotRequest();
-
-        document.getElementById("playerName").innerText = 'Your ships, ' + localStorage.getItem('username');
-        
-
-
+        console.log(playerArray);
+        console.log(enemyArray);
+        /*shotRequest();
 
             interval = setInterval(function() {
 
@@ -34,6 +35,17 @@
                 showEnemyBoard(data.enemyBoard, data.myTurn);
             }
         });
+    }
+
+    function fillArrays(){
+        for (let i = 0; i < 10; i++){
+            playerArray[i] = [];
+            enemyArray[i] = [];
+            for (let j = 0; j < 10; j++){
+                playerArray[i][j] = 0;
+                enemyArray[i][j] = 0;
+            }
+        }
     }
 
     function setPlayerAndEnemyInfoVisible(enemyName){
@@ -60,17 +72,19 @@
         for (let i = 0; i < playerBoard.length; i++){
             if (playerBoard[i].value > 0) {
                 document.getElementById("p" + playerBoard[i].x + playerBoard[i].y).style.backgroundColor = "rgb(227, 227, 117)";
+                playerArray[playerBoard[i].x][playerBoard[i].y] = playerBoard[i].value;
             }
             if (playerBoard[i].value < 0) {
                 if (playerBoard[i].value >= -4 && playerBoard[i].value <= -1) {
                     document.getElementById("p" + playerBoard[i].x + playerBoard[i].y).style.backgroundColor = "rgb(255,2,0)";
+                    playerArray[playerBoard[i].x][playerBoard[i].y] = playerBoard[i].value;
                 } else {
                     document.getElementById("p" + playerBoard[i].x + playerBoard[i].y).style.backgroundColor = "rgb(106,167,215)";
+                    playerArray[playerBoard[i].x][playerBoard[i].y] = playerBoard[i].value;
                 }
             }
         }
     }
-
 
     function showEnemyBoard(enemyBoard, myTurn){
         if (enemyBoard !== null) {
@@ -90,6 +104,7 @@
                     } else {
                         document.getElementById("e" + enemyBoard[i].x + enemyBoard[i].y).style.backgroundColor = "rgba(255,2,0,0.5)";
                     }
+                    enemyBoard[enemyBoard[i].x][enemyBoard[i].y] = enemyBoard[i].value;
                 }
                 //MISS
                 if (enemyBoard[i].value < 0) {
@@ -98,6 +113,7 @@
                     } else {
                         document.getElementById("e" + enemyBoard[i].x + enemyBoard[i].y).style.backgroundColor = "rgba(106,167,215,0.5)";
                     }
+                    enemyBoard[enemyBoard[i].x][enemyBoard[i].y] = enemyBoard[i].value;
                 }
             }
         } else {
@@ -111,7 +127,62 @@
         }       
     }
 
+    function makeShot(element) {
+        if (myTurn) {
+            var x = parseInt(element.id.charAt(1));
+            var y = parseInt(element.id.charAt(2));
+            if (enemyBoard[x][y] === 0) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/game/shot',
+                    data: "token=" + token + "&x=" + x + "&y=" + y,
+                    success: function (data) {
+                        console.log(data);
+                                 /*playerBoard = data.playerBoard;
+                                 enemyBoard = data.enemyBoard;
+                                 ableToShot = data.myTurn;
+                                 playerShips = data.playerShips;
+                                 enemyShips = data.enemyShips;
+                                 printShips(!ableToShot);
+                                 shipCounter();*/
+                                 //console.log(playerShips);
+                                 //console.log(enemyShips);
+                    },
+                    error: function (data) {
+                        console.log(data);
+                    }
+                });
+            }
+        } else {
+            alert("It's a turn of your opponent, please wait.");
+        }
+    }
 
+    function shotRequest() {
+        setInterval(function () {
+            $.ajax({
+                type: 'GET',
+                url: '/game/permission',
+                headers: {
+                    'Authorization':token,
+                },
+                data: "roomId=" + roomId + "&playerId=" + playerId,
+                success: function (data) {
+                    /*playerBoard = data.playerBoard;
+                    enemyBoard = data.enemyBoard;
+                    ableToShot = data.myTurn;
+                    playerShips = data.playerShips;
+                    enemyShips = data.enemyShips;
+                    shipCounter();
+                    printShips(!ableToShot);
+                    console.log(data.winnerState);
+                    if (data.winnerState === 'w' || data.winnerState === 'l') {
+                        gameOver(data.winnerState);
+                    }*/
+                },
+            });
+        }, 500);
+    }
 
 
 
@@ -157,59 +228,9 @@
         shotRequest();
     };
 
-    function shotRequest() {
-        setInterval(function () {
-            $.ajax({
-                type: 'GET',
-                url: '/game/util',
-                data: "token=" + token + "&ableToShot=" + true,
-                success: function (data) {
-                    playerBoard = data.playerBoard;
-                    enemyBoard = data.enemyBoard;
-                    ableToShot = data.myTurn;
-                    playerShips = data.playerShips;
-                    enemyShips = data.enemyShips;
-                    shipCounter();
-                    printShips(!ableToShot);
-                    console.log(data.winnerState);
-                    if (data.winnerState === 'w' || data.winnerState === 'l') {
-                        gameOver(data.winnerState);
-                    }
-                },
-            });
-        }, 500);
-    }
 
-    function makeShot(element) {
-        if (ableToShot) {
-            var x = parseInt(element.id.charAt(1));
-            var y = parseInt(element.id.charAt(2));
-            if (enemyBoard[x][y] === 0) {
-                $.ajax({
-                    type: 'POST',
-                    url: '/game',
-                    data: "token=" + token + "&x=" + x + "&y=" + y,
-                    success: function (data) {
-                        //console.log(data);
-                        playerBoard = data.playerBoard;
-                        enemyBoard = data.enemyBoard;
-                        ableToShot = data.myTurn;
-                        playerShips = data.playerShips;
-                        enemyShips = data.enemyShips;
-                        printShips(!ableToShot);
-                        shipCounter();
-                        //console.log(playerShips);
-                        //console.log(enemyShips);
-                    },
-                    error: function (data) {
-                        console.log(data);
-                    }
-                });
-            }
-        } else {
-            alert("It's a turn of your opponent, please wait.");
-        }
-    }
+
+
 
     function shipCounter() {
         for (var i = 0; i < playerShips.length; i++) {

@@ -1,7 +1,7 @@
 package com.app.services;
 
-import com.app.entities.Game;
-import com.app.entities.Matchmaking;
+import com.app.DTOs.Game;
+import com.app.DTOs.Matchmaking;
 import com.app.entities.RemainingShips;
 import com.app.entities.Ship;
 import com.auth.entities.User;
