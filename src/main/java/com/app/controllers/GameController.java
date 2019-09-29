@@ -1,9 +1,11 @@
 package com.app.controllers;
 
+import com.app.entities.Game;
 import com.app.entities.Matchmaking;
 import com.app.entities.Ship;
 import com.app.repo.GameRepo;
 import com.app.repo.MatchmakingRepo;
+import com.app.response_wrappers.GameInitResponseWrapper;
 import com.app.response_wrappers.StartResponseWrapper;
 import com.app.services.MatchCreator;
 import com.app.validation.BoardValidator;
@@ -29,8 +31,8 @@ public class GameController {
     private GameRepo gameRepo;
     @Autowired
     private MatchCreator matchCreator;
-    /*@Autowired
-    private BoardCreator boardCreator;*/
+    @Autowired
+    private GameInitResponseWrapper gameInitResponseWrapper;
 
     @PostMapping("/start")
     @ResponseBody
@@ -71,7 +73,31 @@ public class GameController {
         }
     }
 
-
-
+    @GetMapping("/game/init")
+    @ResponseBody
+    public ResponseEntity initGame(@RequestParam(name = "roomId") String roomId, @RequestParam(name = "playerId") String playerId) {
+        if (roomId != null && playerId != null){
+            Game game = gameRepo.findByRoomId(UUID.fromString(roomId));
+            if (game != null){
+                if (UUID.fromString(playerId).equals(game.getPlayer1Id())){
+                    gameInitResponseWrapper.setPlayerBoard(game.getPlayer1BoardJSON());
+                    //gameInitResponseWrapper.setEnemyBoard(null);
+                    gameInitResponseWrapper.setPlayerShips(game.getShipsOfPlayer1JSON());
+                    gameInitResponseWrapper.setEnemyShips(game.getShipsOfPlayer2JSON());
+                    gameInitResponseWrapper.setEnemyName(game.getPlayer2Name());
+                    gameInitResponseWrapper.setMyTurn(game.getCurrentPlayer() == 1);
+                } else {
+                    gameInitResponseWrapper.setPlayerBoard(game.getPlayer2BoardJSON());
+                    //gameInitResponseWrapper.setEnemyBoard(null);
+                    gameInitResponseWrapper.setPlayerShips(game.getShipsOfPlayer2JSON());
+                    gameInitResponseWrapper.setEnemyShips(game.getShipsOfPlayer1JSON());
+                    gameInitResponseWrapper.setEnemyName(game.getPlayer1Name());
+                    gameInitResponseWrapper.setMyTurn(game.getCurrentPlayer() == 2);
+                }
+                return ResponseEntity.ok(gameInitResponseWrapper);
+            }
+        }
+        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+    }
 
 }
