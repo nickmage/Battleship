@@ -28,7 +28,10 @@
             data: "roomId=" + roomId + "&playerId=" + playerId,
             success: function (data) {
                 console.log(data);
-                //2 boards & enemyname
+                setPlayerAndEnemyInfoVisible(data.enemyName);
+                showShips(data.playerShips, data.enemyShips);
+                showPlayerBoard(data.playerBoard);
+                showEnemyBoard(data.enemyBoard, data.myTurn);
             }
         });
     }
@@ -36,11 +39,82 @@
     function setPlayerAndEnemyInfoVisible(enemyName){
         var playerInfo = document.getElementById('playerInfo');
         var enemyInfo = document.getElementById('enemyInfo');
-        playerName.innerHTML = 'Your ships, ' + localStorage.getItem('username');
-        playerName.hidden = false;
-        enemyName.innerHTML = enemyName + 's enemy ships';
-        enemyName.hidden = false;        
+        playerInfo.innerHTML = 'Your ships, ' + localStorage.getItem('username');
+        playerInfo.hidden = false;
+        enemyInfo.innerHTML = enemyName + '\'s enemy ships';
+        enemyInfo.hidden = false;
     }
+
+    function showShips(playerShips, enemyShips){
+        document.getElementById('playerShip1Quantity').innerHTML = 'x' + playerShips.oneDeckShips;
+        document.getElementById('playerShip2Quantity').innerHTML = 'x' + playerShips.twoDeckShips;
+        document.getElementById('playerShip3Quantity').innerHTML = 'x' + playerShips.threeDeckShips;
+        document.getElementById('playerShip4Quantity').innerHTML = 'x' + playerShips.fourDeckShips;
+        document.getElementById('enemyShip1Quantity').innerHTML = 'x' + enemyShips.oneDeckShips;
+        document.getElementById('enemyShip2Quantity').innerHTML = 'x' + enemyShips.twoDeckShips;
+        document.getElementById('enemyShip3Quantity').innerHTML = 'x' + enemyShips.threeDeckShips;
+        document.getElementById('enemyShip4Quantity').innerHTML = 'x' + enemyShips.fourDeckShips;
+    }
+
+    function showPlayerBoard(playerBoard){
+        for (let i = 0; i < playerBoard.length; i++){
+            if (playerBoard[i].value > 0) {
+                document.getElementById("p" + playerBoard[i].x + playerBoard[i].y).style.backgroundColor = "rgb(227, 227, 117)";
+            }
+            if (playerBoard[i].value < 0) {
+                if (playerBoard[i].value >= -4 && playerBoard[i].value <= -1) {
+                    document.getElementById("p" + playerBoard[i].x + playerBoard[i].y).style.backgroundColor = "rgb(255,2,0)";
+                } else {
+                    document.getElementById("p" + playerBoard[i].x + playerBoard[i].y).style.backgroundColor = "rgb(106,167,215)";
+                }
+            }
+        }
+    }
+
+
+    function showEnemyBoard(enemyBoard, myTurn){
+        if (enemyBoard !== null) {
+            for (let i = 0; i < enemyBoard.length; i++){
+                //UNUSED
+                if (enemyBoard[i].value === 0) {
+                    if (myTurn) {
+                        document.getElementById("e" + enemyBoard[i].x + enemyBoard[i].y).style.backgroundColor = "rgba(36, 79, 154, 0.9)";                    
+                    } else {
+                        document.getElementById("e" + enemyBoard[i].x + enemyBoard[i].y).style.backgroundColor = "rgba(36, 79, 154, 0.5)";
+                    }
+                }
+                //HIT
+                if (enemyBoard[i].value > 0) {
+                    if (myTurn) {
+                        document.getElementById("e" + enemyBoard[i].x + enemyBoard[i].y).style.backgroundColor = "rgb(255,2,0)";                        
+                    } else {
+                        document.getElementById("e" + enemyBoard[i].x + enemyBoard[i].y).style.backgroundColor = "rgba(255,2,0,0.5)";
+                    }
+                }
+                //MISS
+                if (enemyBoard[i].value < 0) {
+                    if (myTurn) {
+                        document.getElementById("e" + enemyBoard[i].x + enemyBoard[i].y).style.backgroundColor = "rgb(106,167,215)";                        
+                    } else {
+                        document.getElementById("e" + enemyBoard[i].x + enemyBoard[i].y).style.backgroundColor = "rgba(106,167,215,0.5)";
+                    }
+                }
+            }
+        } else {
+            if (!myTurn) {
+                for (let i = 0; i < 10; i++) {
+                    for (let j = 0; j < 10; j++) {
+                        document.getElementById("e" + i + j).style.backgroundColor = "rgba(36, 79, 154, 0.5)";
+                    }
+                }                                  
+            }
+        }       
+    }
+
+
+
+
+
 
     /*function goToGame(){
         clearInterval(interval);

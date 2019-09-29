@@ -15,7 +15,7 @@ public final class BoardCreator {
         char none = '-';
         for (Ship ship: ships) {
             for (int i = 0; i < ship.getDeckType(); i++) {
-                if (ship.getDeckType() == horizontal || ship.getDeckType() == none){
+                if (ship.getOrientation() == horizontal || ship.getDeckType() == none){
                     board.add(new BoardCell(ship.getX(), ship.getY() + i, ship.getDeckType()));
                 } else {
                     board.add(new BoardCell(ship.getX() + i, ship.getY(), ship.getDeckType()));

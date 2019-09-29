@@ -27,7 +27,6 @@ public class MatchCreator {
     private BoardCreator boardCreator;
 
     public Matchmaking createNewRoom(User user, Ship[] ships) throws JsonProcessingException {
-        //Matchmaking match = new Matchmaking();
         match.setPlayer1Name(user.getUsername());
         match.setPlayer1Id(user.getUuid());
         match.setRoomId(UUID.randomUUID());

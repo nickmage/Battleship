@@ -81,14 +81,12 @@ public class GameController {
             if (game != null){
                 if (UUID.fromString(playerId).equals(game.getPlayer1Id())){
                     gameInitResponseWrapper.setPlayerBoard(game.getPlayer1BoardJSON());
-                    //gameInitResponseWrapper.setEnemyBoard(null);
                     gameInitResponseWrapper.setPlayerShips(game.getShipsOfPlayer1JSON());
                     gameInitResponseWrapper.setEnemyShips(game.getShipsOfPlayer2JSON());
                     gameInitResponseWrapper.setEnemyName(game.getPlayer2Name());
                     gameInitResponseWrapper.setMyTurn(game.getCurrentPlayer() == 1);
                 } else {
                     gameInitResponseWrapper.setPlayerBoard(game.getPlayer2BoardJSON());
-                    //gameInitResponseWrapper.setEnemyBoard(null);
                     gameInitResponseWrapper.setPlayerShips(game.getShipsOfPlayer2JSON());
                     gameInitResponseWrapper.setEnemyShips(game.getShipsOfPlayer1JSON());
                     gameInitResponseWrapper.setEnemyName(game.getPlayer1Name());

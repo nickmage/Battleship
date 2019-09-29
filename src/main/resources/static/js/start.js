@@ -1102,7 +1102,6 @@ function sendBoard() {
         data: JSON.stringify(request),
         statusCode: {
             200: function (data) {
-                console.log(data);
                 localStorage.setItem('playerId', data.playerId);
                 sessionStorage.setItem('roomId', data.roomId);
                 window.location.replace("#/lobby");
