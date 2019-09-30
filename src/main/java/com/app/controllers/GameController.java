@@ -22,6 +22,7 @@ public class GameController {
     @ResponseBody
     public ResponseEntity initGame(@RequestParam(name = "roomId") String roomId, @RequestParam(name = "playerId") String playerId) {
         if (roomId != null && playerId != null){
+            System.out.println(roomId.length());
             Game game = gameRepo.findByRoomId(UUID.fromString(roomId));
             if (game != null){
                 if (UUID.fromString(playerId).equals(game.getPlayer1Id())){

@@ -26,8 +26,12 @@ public class Matchmaking {
     private Date date;
     private String player1BoardJSON;
     private String player2BoardJSON;
+    private String shipsOfPlayer1JSON;
+    private String shipsOfPlayer2JSON;
 
-    public Matchmaking(Long id, String player1Name, UUID player1Id, String player2Name, UUID player2Id, UUID roomId, Date date, String player1BoardJSON, String player2BoardJSON) {
+    public Matchmaking(Long id, String player1Name, UUID player1Id, String player2Name, UUID player2Id,
+                       UUID roomId, Date date, String player1BoardJSON, String player2BoardJSON,
+                       String shipsOfPlayer1JSON, String shipsOfPlayer2JSON) {
         this.id = id;
         this.player1Name = player1Name;
         this.player1Id = player1Id;
@@ -37,6 +41,8 @@ public class Matchmaking {
         this.date = date;
         this.player1BoardJSON = player1BoardJSON;
         this.player2BoardJSON = player2BoardJSON;
+        this.shipsOfPlayer1JSON = shipsOfPlayer1JSON;
+        this.shipsOfPlayer2JSON = shipsOfPlayer2JSON;
     }
 
     public Matchmaking() {
@@ -114,4 +120,19 @@ public class Matchmaking {
         this.player2BoardJSON = player2BoardJSON;
     }
 
+    public String getShipsOfPlayer1JSON() {
+        return shipsOfPlayer1JSON;
+    }
+
+    public void setShipsOfPlayer1JSON(String shipsOfPlayer1JSON) {
+        this.shipsOfPlayer1JSON = shipsOfPlayer1JSON;
+    }
+
+    public String getShipsOfPlayer2JSON() {
+        return shipsOfPlayer2JSON;
+    }
+
+    public void setShipsOfPlayer2JSON(String shipsOfPlayer2JSON) {
+        this.shipsOfPlayer2JSON = shipsOfPlayer2JSON;
+    }
 }

@@ -5,11 +5,12 @@ import com.app.entities.Ship;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 @Service
 public final class BoardCreator {
 
-    public ArrayList getBoard(Ship[] ships){
+    public ArrayList getShipsList(Ship[] ships){
         ArrayList<ArrayList> board = new ArrayList<>();
         char horizontal = 'h';
         char none = '-';
@@ -26,7 +27,21 @@ public final class BoardCreator {
         }
         return board;
     }
-
+    public HashSet getBoard(Ship[] ships){
+        HashSet<BoardCell> board = new HashSet<>();
+        char horizontal = 'h';
+        char none = '-';
+        for (Ship ship: ships) {
+            for (int i = 0; i < ship.getDeckType(); i++) {
+                if (ship.getOrientation() == horizontal || ship.getDeckType() == none){
+                    board.add(new BoardCell(ship.getX(), ship.getY() + i, ship.getDeckType()));
+                } else {
+                    board.add(new BoardCell(ship.getX() + i, ship.getY(), ship.getDeckType()));
+                }
+            }
+        }
+        return board;
+    }
 
 
 

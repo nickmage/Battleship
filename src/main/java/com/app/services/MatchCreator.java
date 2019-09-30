@@ -32,6 +32,7 @@ public class MatchCreator {
         match.setRoomId(UUID.randomUUID());
         match.setDate(new Date());
         match.setPlayer1BoardJSON(objectMapper.writeValueAsString(boardCreator.getBoard(ships)));
+        match.setShipsOfPlayer1JSON(objectMapper.writeValueAsString(boardCreator.getShipsList(ships)));
         return match;
     }
 
@@ -39,6 +40,7 @@ public class MatchCreator {
         match.setPlayer2Name(user.getUsername());
         match.setPlayer2Id(user.getUuid());
         match.setPlayer2BoardJSON(objectMapper.writeValueAsString(boardCreator.getBoard(ships)));
+        match.setShipsOfPlayer2JSON(objectMapper.writeValueAsString(boardCreator.getShipsList(ships)));
         return match;
     }
 
@@ -52,8 +54,8 @@ public class MatchCreator {
         game.setDate(new Date());
         game.setPlayer1BoardJSON(match.getPlayer1BoardJSON());
         game.setPlayer2BoardJSON(match.getPlayer2BoardJSON());
-        game.setShipsOfPlayer1JSON(match.getPlayer1BoardJSON());
-        game.setShipsOfPlayer2JSON(match.getPlayer2BoardJSON());
+        game.setShipsOfPlayer1JSON(match.getShipsOfPlayer1JSON());
+        game.setShipsOfPlayer2JSON(match.getShipsOfPlayer2JSON());
         game.setRemainingShipsOfPlayer1JSON(objectMapper.writeValueAsString(new RemainingShips()));
         game.setRemainingShipsOfPlayer2JSON(objectMapper.writeValueAsString(new RemainingShips()));
         game.setWinner(0);
@@ -62,46 +64,3 @@ public class MatchCreator {
 
 
 }
-
-/*
-
- */
-
-
-//            /**CREATE ALL BOARDS IN DB**/
-
-
-//            Game newGame = new Game();
-//            newGame.setRoomId(existingRoom.getRoomId());
-//            newGame.setCurrentPlayer(new Random().nextInt(2) + 1);
-//            newGame.setPlayer1Name(existingRoom.getPlayer1Name());
-//            newGame.setPlayer1Id(existingRoom.getPlayer1Id());
-//            newGame.setPlayer2Name(existingRoom.getPlayer2Name());
-//            newGame.setPlayer2Id(existingRoom.getPlayer2Id());
-//            newGame.setDate(new Date());
-//            newGame.setPlayer1BoardJSON(new ObjectMapper().writeValueAsString(boardCreator.getBoard(
-//
-//                    new ObjectMapper().readValue(existingRoom.getPlayer1BoardJSON(), Ship[].class)
-//            )));
-//            newGame.setEnemyBoardForPlayer1JSON(null);
-
-
-//            return new ResponseEntity<>(new StartResponseWrapper(match.getPlayer2Id().toString(),
-//                    match.getRoomId().toString()),HttpStatus.OK);
-//        }
-//    }
-
-/*        if (new BoardValidator(ships).isValidBoard()) {
-            User userFromDB = userRepo.findByUsername(username);
-            if (userFromDB != null) {
-                Matchmaking match = matchCreator.create(userFromDB, ships);
-                matchmakingRepo.save(match);
-
-                    //System.out.println("Player 2 found!");
-
-
-            } else
-                return new ResponseEntity<>("Cannot find your account! Please reenter the game and try again!", HttpStatus.BAD_REQUEST);
-        } else
-            return new ResponseEntity<>("An error has occurred (the board is invalid)! Please try again and send a valid board.", HttpStatus.BAD_REQUEST);
-    }*/
