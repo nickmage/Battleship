@@ -133,10 +133,13 @@
         if (myTurn) {
             var x = parseInt(element.id.charAt(1));
             var y = parseInt(element.id.charAt(2));
-            if (enemyBoard[x][y] === 0) {
+            if (enemyArray[x][y] === 0) {
                 $.ajax({
                     type: 'POST',
                     url: '/game/shot',
+                    headers: {
+                        'Authorization':token,
+                    },
                     data: "roomId=" + roomId + "&playerId=" + playerId + "&x=" + x + "&y=" + y,
                     success: function (data) {
                         console.log(data);

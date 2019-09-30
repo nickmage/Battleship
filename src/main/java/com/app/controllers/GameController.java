@@ -3,11 +3,14 @@ package com.app.controllers;
 import com.app.DTOs.Game;
 import com.app.repo.GameRepo;
 import com.app.response_wrappers.GameInitResponseWrapper;
+import com.app.services.TurnMaker;
+import com.app.validation.TurnValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.UUID;
 
 
@@ -17,6 +20,10 @@ public class GameController {
     private GameRepo gameRepo;
     @Autowired
     private GameInitResponseWrapper gameInitResponseWrapper;
+    @Autowired
+    private TurnMaker turnMaker;
+    @Autowired
+    private TurnValidator turnValidator;
 
     @GetMapping("/game/init")
     @ResponseBody
@@ -49,13 +56,19 @@ public class GameController {
     public ResponseEntity makeShot(@RequestParam(name = "roomId") String roomId,
                                    @RequestParam(name = "playerId") String playerId,
                                    @RequestParam(name = "x") int x,
-                                   @RequestParam(name = "y") int y) {
-        if (roomId != null && playerId != null){
+                                   @RequestParam(name = "y") int y) throws IOException {
+        if (roomId != null && playerId != null && !roomId.equals("null")){
             Game game = gameRepo.findFirstByRoomIdOrderByIdDesc(UUID.fromString(roomId));
             //refresh null board & edit enemy own one & edit ship (invert value) in matchmaking
             //return result -> hit or miss
-            //
-            return ResponseEntity.ok(game);
+
+            if (turnValidator.isValidTurn(game, x, y, playerId)){
+                return ResponseEntity.ok(turnValidator.isValidTurn(game, x, y, playerId));
+                //return ResponseEntity.ok(turnMaker.makeShot(game));
+            } else {
+                return ResponseEntity.ok(turnValidator.isValidTurn(game, x, y, playerId));
+                //return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            }
         }
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }

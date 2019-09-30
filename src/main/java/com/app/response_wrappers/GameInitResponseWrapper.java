@@ -14,7 +14,6 @@ public class GameInitResponseWrapper {
     private RemainingShips playerShips;
     private RemainingShips enemyShips;
     private String enemyName;
-
     private boolean myTurn;
 
     public ArrayList getPlayerBoard() {

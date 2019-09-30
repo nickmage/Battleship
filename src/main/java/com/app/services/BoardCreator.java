@@ -27,7 +27,7 @@ public final class BoardCreator {
         }
         return board;
     }
-    public HashSet getBoard(Ship[] ships){
+    public HashSet<BoardCell> getBoard(Ship[] ships){
         HashSet<BoardCell> board = new HashSet<>();
         char horizontal = 'h';
         char none = '-';
