@@ -10,17 +10,19 @@ import java.util.ArrayList;
 public final class BoardCreator {
 
     public ArrayList getBoard(Ship[] ships){
-        ArrayList<BoardCell> board = new ArrayList<>();
+        ArrayList<ArrayList> board = new ArrayList<>();
         char horizontal = 'h';
         char none = '-';
         for (Ship ship: ships) {
+            ArrayList<BoardCell> shipCells = new ArrayList<>();
             for (int i = 0; i < ship.getDeckType(); i++) {
                 if (ship.getOrientation() == horizontal || ship.getDeckType() == none){
-                    board.add(new BoardCell(ship.getX(), ship.getY() + i, ship.getDeckType()));
+                    shipCells.add(new BoardCell(ship.getX(), ship.getY() + i, ship.getDeckType()));
                 } else {
-                    board.add(new BoardCell(ship.getX() + i, ship.getY(), ship.getDeckType()));
+                    shipCells.add(new BoardCell(ship.getX() + i, ship.getY(), ship.getDeckType()));
                 }
             }
+            board.add(shipCells);
         }
         return board;
     }

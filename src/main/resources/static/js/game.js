@@ -5,6 +5,7 @@
     var playerArray = [];
     var enemyArray = [];
     var init = init();
+    var myTurn = false;
 
 
     function init(){
@@ -28,11 +29,12 @@
             },
             data: "roomId=" + roomId + "&playerId=" + playerId,
             success: function (data) {
+                myTurn = data.myTurn
                 console.log(data);
                 setPlayerAndEnemyInfoVisible(data.enemyName);
                 showShips(data.playerShips, data.enemyShips);
                 showPlayerBoard(data.playerBoard);
-                showEnemyBoard(data.enemyBoard, data.myTurn);
+                showEnemyBoard(data.enemyBoard);
             }
         });
     }
@@ -86,7 +88,7 @@
         }
     }
 
-    function showEnemyBoard(enemyBoard, myTurn){
+    function showEnemyBoard(enemyBoard){
         if (enemyBoard !== null) {
             for (let i = 0; i < enemyBoard.length; i++){
                 //UNUSED
@@ -135,7 +137,7 @@
                 $.ajax({
                     type: 'POST',
                     url: '/game/shot',
-                    data: "token=" + token + "&x=" + x + "&y=" + y,
+                    data: "roomId=" + roomId + "&playerId=" + playerId + "&x=" + x + "&y=" + y,
                     success: function (data) {
                         console.log(data);
                                  /*playerBoard = data.playerBoard;

@@ -9,4 +9,6 @@ public interface GameRepo extends JpaRepository<Game, Long> {
 
     Game findByRoomId(UUID roomId);
 
+    Game findFirstByRoomIdOrderByIdDesc(UUID roomId);
+
 }

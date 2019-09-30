@@ -1,42 +1,43 @@
 package com.app.response_wrappers;
 
-import com.app.entities.BoardCell;
 import com.app.entities.RemainingShips;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 @Service
 public class GameInitResponseWrapper {
-    private BoardCell[] playerBoard;
-    private BoardCell[] enemyBoard;
+    private ArrayList playerBoard;
+    private ArrayList enemyBoard;
     private RemainingShips playerShips;
     private RemainingShips enemyShips;
     private String enemyName;
+
     private boolean myTurn;
 
-    public BoardCell[] getPlayerBoard() {
+    public ArrayList getPlayerBoard() {
         return playerBoard;
     }
 
     public void setPlayerBoard(String playerBoard) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            this.playerBoard = objectMapper.readValue(playerBoard, BoardCell[].class);
+            this.playerBoard = objectMapper.readValue(playerBoard, ArrayList.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public BoardCell[] getEnemyBoard() {
+    public ArrayList getEnemyBoard() {
         return enemyBoard;
     }
 
     public void setEnemyBoard(String enemyBoard) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            this.enemyBoard = objectMapper.readValue(enemyBoard, BoardCell[].class);
+            this.enemyBoard = objectMapper.readValue(enemyBoard, ArrayList.class);
         } catch (IOException e) {
             e.printStackTrace();
         }

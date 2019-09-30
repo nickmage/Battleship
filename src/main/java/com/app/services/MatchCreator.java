@@ -52,8 +52,10 @@ public class MatchCreator {
         game.setDate(new Date());
         game.setPlayer1BoardJSON(match.getPlayer1BoardJSON());
         game.setPlayer2BoardJSON(match.getPlayer2BoardJSON());
-        game.setShipsOfPlayer1JSON(objectMapper.writeValueAsString(new RemainingShips()));
-        game.setShipsOfPlayer2JSON(objectMapper.writeValueAsString(new RemainingShips()));
+        game.setShipsOfPlayer1JSON(match.getPlayer1BoardJSON());
+        game.setShipsOfPlayer2JSON(match.getPlayer2BoardJSON());
+        game.setRemainingShipsOfPlayer1JSON(objectMapper.writeValueAsString(new RemainingShips()));
+        game.setRemainingShipsOfPlayer2JSON(objectMapper.writeValueAsString(new RemainingShips()));
         game.setWinner(0);
         return game;
     }

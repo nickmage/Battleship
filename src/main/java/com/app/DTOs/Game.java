@@ -37,13 +37,16 @@ public class Game {
     private String enemyBoardForPlayer2JSON;
     private String shipsOfPlayer1JSON;
     private String shipsOfPlayer2JSON;
+    private String remainingShipsOfPlayer1JSON;
+    private String remainingShipsOfPlayer2JSON;
     private Integer winner;
 
     public Game(Long id, UUID roomId, Integer currentPlayer, String player1Name,
                 UUID player1Id, String player2Name, UUID player2Id, Date date,
                 String player1BoardJSON, String enemyBoardForPlayer1JSON,
                 String player2BoardJSON, String enemyBoardForPlayer2JSON,
-                String shipsOfPlayer1JSON, String shipsOfPlayer2JSON, Integer winner) {
+                String shipsOfPlayer1JSON, String shipsOfPlayer2JSON, Integer winner,
+                String remainingShipsOfPlayer1JSON, String remainingShipsOfPlayer2JSON) {
         this.id = id;
         this.roomId = roomId;
         this.currentPlayer = currentPlayer;
@@ -59,6 +62,8 @@ public class Game {
         this.shipsOfPlayer1JSON = shipsOfPlayer1JSON;
         this.shipsOfPlayer2JSON = shipsOfPlayer2JSON;
         this.winner = winner;
+        this.remainingShipsOfPlayer1JSON = remainingShipsOfPlayer1JSON;
+        this.remainingShipsOfPlayer2JSON = remainingShipsOfPlayer2JSON;
     }
 
     public Game() {
@@ -184,4 +189,19 @@ public class Game {
         this.winner = winner;
     }
 
+    public String getRemainingShipsOfPlayer1JSON() {
+        return remainingShipsOfPlayer1JSON;
+    }
+
+    public void setRemainingShipsOfPlayer1JSON(String remainingShipsOfPlayer1JSON) {
+        this.remainingShipsOfPlayer1JSON = remainingShipsOfPlayer1JSON;
+    }
+
+    public String getRemainingShipsOfPlayer2JSON() {
+        return remainingShipsOfPlayer2JSON;
+    }
+
+    public void setRemainingShipsOfPlayer2JSON(String remainingShipsOfPlayer2JSON) {
+        this.remainingShipsOfPlayer2JSON = remainingShipsOfPlayer2JSON;
+    }
 }
