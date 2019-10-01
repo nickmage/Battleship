@@ -63,11 +63,11 @@ public class GameController {
             //return result -> hit or miss
 
             if (turnValidator.isValidTurn(game, x, y, playerId)){
-                return ResponseEntity.ok(turnValidator.isValidTurn(game, x, y, playerId));
-                //return ResponseEntity.ok(turnMaker.makeShot(game));
+                //return ResponseEntity.ok(turnValidator.isValidTurn(game, x, y, playerId));
+                return ResponseEntity.ok(turnMaker.makeShot(game, x, y));
             } else {
-                return ResponseEntity.ok(turnValidator.isValidTurn(game, x, y, playerId));
-                //return new ResponseEntity(HttpStatus.BAD_REQUEST);
+                //return ResponseEntity.ok(turnValidator.isValidTurn(game, x, y, playerId));
+                return new ResponseEntity(HttpStatus.BAD_REQUEST);
             }
         }
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
