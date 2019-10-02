@@ -2,12 +2,10 @@ package com.app.response_wrappers;
 
 import com.app.entities.RemainingShips;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
-@Service
 public class GameInitResponseWrapper {
     private ArrayList playerBoard;
     private ArrayList enemyBoard;
@@ -15,6 +13,7 @@ public class GameInitResponseWrapper {
     private RemainingShips enemyShips;
     private String enemyName;
     private boolean myTurn;
+    private int winner;
 
     public ArrayList getPlayerBoard() {
         return playerBoard;
@@ -82,5 +81,13 @@ public class GameInitResponseWrapper {
 
     public void setEnemyName(String enemyName) {
         this.enemyName = enemyName;
+    }
+
+    public int getWinner() {
+        return winner;
+    }
+
+    public void setWinner(int winner) {
+        this.winner = winner;
     }
 }

@@ -21,13 +21,13 @@ public class TurnMaker {
     private GameRepo gameRepo;
     @Autowired
     private ObjectMapper objectMapper;
-    private ShotResponseWrapper response = new ShotResponseWrapper();
 
     public ShotResponseWrapper makeShot(Game game, int x, int y) throws IOException {
+        ShotResponseWrapper response = new ShotResponseWrapper();
         execute(game, x, y);
         if (game.getCurrentPlayer() == 1) {
             response.setEnemyBoard(objectMapper.readValue(game.getEnemyBoardForPlayer1JSON(), BoardCell[].class));
-            response.setEnemyShips(objectMapper.readValue(game.getShipsOfPlayer2JSON(), RemainingShips.class));
+            response.setEnemyShips(objectMapper.readValue(game.getRemainingShipsOfPlayer1JSON(), RemainingShips.class));
             response.setMyTurn(game.getCurrentPlayer() == 1);
             response.setWinner(game.getWinner());
         } else {
@@ -36,9 +36,10 @@ public class TurnMaker {
             response.setMyTurn(game.getCurrentPlayer() == 2);
             response.setWinner(game.getWinner());
         }
-        //isWinner();
+        game.setCurrentPlayer((game.getCurrentPlayer() == 1) ? 2 : 1);
+        /**isWinner();*/
         game.setDate(new Date());
-        //game.setId(game.getId() + 1);
+        /**game.setId(game.getId() + 1);*/
         gameRepo.save(game);
 
         return response;
@@ -58,8 +59,26 @@ public class TurnMaker {
             setEnemyBoard(game, x, y, status);
         } else {
             System.out.println("Miss");
-            //game.setCurrentPlayer((game.getCurrentPlayer() == 1) ? 2 : 1);
-            setEnemyBoard(game, x, y, -1);
+            setShipMiss(game, x, y);
+            setEnemyBoard(game, x, y, 0);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void setShipMiss(Game game, int x, int y) throws IOException {
+        List<BoardCell> boardList;
+        BoardCell cell = new BoardCell();
+        cell.setX(x);
+        cell.setY(y);
+        cell.setValue(0);
+        if (game.getCurrentPlayer() == 1) {
+            boardList = objectMapper.readValue(game.getPlayer2BoardJSON(), List.class);
+            boardList.add(cell);
+            game.setPlayer2BoardJSON(objectMapper.writeValueAsString(boardList));
+        } else {
+            boardList = objectMapper.readValue(game.getPlayer1BoardJSON(), List.class);
+            boardList.add(cell);
+            game.setPlayer1BoardJSON(objectMapper.writeValueAsString(boardList));
         }
     }
 
@@ -71,7 +90,7 @@ public class TurnMaker {
                     cell.setValue(-cell.getValue());
                     if (isShipSunken(ship)) {
                         System.out.println("Sunken");
-                        //setEnemyBoard(game, x, y);
+                        /**setEnemyBoard(game, x, y);*/
                     }
                     return cell.getValue();
                 }
@@ -94,15 +113,23 @@ public class TurnMaker {
         BoardCell[] playerBoard;
         if (game.getCurrentPlayer() == 1) {
             playerBoard = objectMapper.readValue(game.getPlayer2BoardJSON(), BoardCell[].class);
+            for (BoardCell cell: playerBoard) {
+                if (cell.getX() == x && cell.getY() == y) {
+                    cell.setValue(-cell.getValue());
+                    break;
+                }
+            }
+            game.setPlayer2BoardJSON(objectMapper.writeValueAsString(playerBoard));
         } else {
             playerBoard = objectMapper.readValue(game.getPlayer1BoardJSON(), BoardCell[].class);
-        }
-        for (BoardCell cell: playerBoard) {
-            if (cell.getX() == x && cell.getY() == y) {
-                cell.setValue(-cell.getValue());
+            for (BoardCell cell: playerBoard) {
+                if (cell.getX() == x && cell.getY() == y) {
+                    cell.setValue(-cell.getValue());
+                    break;
+                }
             }
+            game.setPlayer1BoardJSON(objectMapper.writeValueAsString(playerBoard));
         }
-        game.setPlayer1BoardJSON(objectMapper.writeValueAsString(playerBoard));
     }
 
     @SuppressWarnings("unchecked")
@@ -112,19 +139,28 @@ public class TurnMaker {
         cell.setX(x);
         cell.setY(y);
         cell.setValue(value);
-        if (game.getEnemyBoardForPlayer2JSON() == null){
-            board = new BoardCell[1];
-            board[0] = cell;
-            game.setEnemyBoardForPlayer2JSON(objectMapper.writeValueAsString(board));
-        } else {
-            List<BoardCell> boardList;
-            if (game.getCurrentPlayer() == 1) {
-                boardList= objectMapper.readValue(game.getEnemyBoardForPlayer1JSON(), List.class);
+        if (game.getCurrentPlayer() == 1) {
+            if (game.getEnemyBoardForPlayer1JSON() == null){
+                board = new BoardCell[1];
+                board[0] = cell;
+                game.setEnemyBoardForPlayer1JSON(objectMapper.writeValueAsString(board));
             } else {
-                boardList = objectMapper.readValue(game.getEnemyBoardForPlayer2JSON(), List.class);
+                List<BoardCell> boardList;
+                boardList = objectMapper.readValue(game.getEnemyBoardForPlayer1JSON(), List.class);
+                boardList.add(cell);
+                game.setEnemyBoardForPlayer1JSON(objectMapper.writeValueAsString(boardList));
             }
-            boardList.add(cell);
-            game.setEnemyBoardForPlayer2JSON(objectMapper.writeValueAsString(boardList));
+        } else {
+            if (game.getEnemyBoardForPlayer2JSON() == null){
+                board = new BoardCell[1];
+                board[0] = cell;
+                game.setEnemyBoardForPlayer2JSON(objectMapper.writeValueAsString(board));
+            } else {
+                List<BoardCell> boardList;
+                boardList = objectMapper.readValue(game.getEnemyBoardForPlayer2JSON(), List.class);
+                boardList.add(cell);
+                game.setEnemyBoardForPlayer2JSON(objectMapper.writeValueAsString(boardList));
+            }
         }
     }
 
