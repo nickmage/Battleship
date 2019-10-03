@@ -13,10 +13,10 @@
                     'Authorization':token,
                 },
                 data: "roomId=" + roomId,
-                success: function (data) {
-                    if (data === "yes"){
-                        goToGame();
-                    }
+                success: function () {
+                    goToGame();
+                },
+                error: function (){
                 }
             });
         }, 2000);

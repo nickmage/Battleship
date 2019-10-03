@@ -1,6 +1,6 @@
 package com.app.controllers;
 
-import com.app.DTOs.Match;
+import com.app.DTOs.MatchDTO;
 import com.app.entities.Ship;
 import com.app.repo.GameRepo;
 import com.app.repo.MatchRepo;
@@ -35,7 +35,6 @@ public class PreparationController {
         this.gameCreator = gameCreator;
     }
 
-
     @PostMapping("/start")
     public ResponseEntity getBoard(@RequestBody Ship[] ships,
                                    @RequestHeader(name = "Username") String username) throws IOException {
@@ -43,34 +42,32 @@ public class PreparationController {
             User userFromDB = userRepo.findByUsername(username);
             if (userFromDB != null) {
                 UUID playerId = userFromDB.getUuid();
-                List<Match> freeRooms = matchRepo.findByPlayer2Name(null);
+                List<MatchDTO> freeRooms = matchRepo.findByPlayer2Name(null);
                 //remove rooms to avoid playing with himself
-                freeRooms.removeIf(match -> match.getPlayer1Id().equals(playerId));
+                freeRooms.removeIf(matchDTO -> matchDTO.getPlayer1Id().equals(playerId));
                 if (freeRooms.size() == 0) {
-                    Match match = matchCreator.createNewRoom(userFromDB, ships);
-                    matchRepo.save(match);
-                    return new ResponseEntity<>(new StartResponseWrapper(match.getPlayer1Id().toString(),
-                            match.getRoomId().toString()), HttpStatus.OK);
+                    MatchDTO matchDTO = matchCreator.createNewRoom(userFromDB, ships);
+                    matchRepo.save(matchDTO);
+                    return new ResponseEntity<>(new StartResponseWrapper(matchDTO.getPlayer1Id().toString(),
+                            matchDTO.getRoomId().toString()), HttpStatus.OK);
                 } else {
-                    Match match = matchCreator.joinExistingRoom(freeRooms.get(0), userFromDB, ships);
-                    matchRepo.save(match);
-
-                    gameRepo.save(gameCreator.createNewGame(match));
-
-                    return new ResponseEntity<>(new StartResponseWrapper(match.getPlayer2Id().toString(),
-                            match.getRoomId().toString()),HttpStatus.OK);
+                    MatchDTO matchDTO = matchCreator.joinExistingRoom(freeRooms.get(0), userFromDB, ships);
+                    matchRepo.save(matchDTO);
+                    gameRepo.save(gameCreator.createNewGame(matchDTO));
+                    return new ResponseEntity<>(new StartResponseWrapper(matchDTO.getPlayer2Id().toString(),
+                            matchDTO.getRoomId().toString()),HttpStatus.OK);
                 }
             } else return new ResponseEntity<>("Cannot find your account! Please reenter the game and try again!", HttpStatus.BAD_REQUEST);
         } else return new ResponseEntity<>("An error has occurred (the board is invalid)! Please try again and send a valid board.", HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("/lobby")
-    public String lobby(@RequestParam(name = "roomId") String roomId) {
-        Match match = matchRepo.findByRoomId(UUID.fromString(roomId));
-        if (match == null || match.getPlayer2Name() == null) {
-            return null;
+    public ResponseEntity lobby(@RequestParam(name = "roomId") String roomId) {
+        MatchDTO matchDTO = matchRepo.findByRoomId(UUID.fromString(roomId));
+        if (matchDTO == null || matchDTO.getPlayer2Name() == null) {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
         } else {
-            return "yes";
+            return new ResponseEntity(HttpStatus.OK);
         }
     }
 }

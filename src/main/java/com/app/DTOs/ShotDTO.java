@@ -9,7 +9,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "shot")
 @Component
-public class Shot {
+public class ShotDTO {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -22,7 +22,7 @@ public class Shot {
     private UUID player2Id;
     private String shot;
 
-    public Shot(Long id, UUID roomId, UUID player1Id, UUID player2Id, String shot) {
+    public ShotDTO(Long id, UUID roomId, UUID player1Id, UUID player2Id, String shot) {
         this.id = id;
         this.roomId = roomId;
         this.player1Id = player1Id;
@@ -30,7 +30,7 @@ public class Shot {
         this.shot = shot;
     }
 
-    public Shot() {
+    public ShotDTO() {
     }
 
     public Long getId() {

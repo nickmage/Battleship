@@ -1,6 +1,6 @@
 package com.app.validation;
 
-import com.app.DTOs.Game;
+import com.app.DTOs.GameDT;
 import com.app.entities.BoardCell;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,22 +13,22 @@ public class TurnValidator {
     @Autowired
     private ObjectMapper objectMapper;
 
-    public boolean isValidTurn(Game game, int x, int y, String playerId) throws IOException {
+    public boolean isValidTurn(GameDT gameDTO, int x, int y, String playerId) throws IOException {
         return (x >= 0 && x < 10) && (y >= 0 && y < 10)
-                && isPlayerAbleToTurn(game, playerId) && !isCellWasShotBefore(game, x, y);
+                && isPlayerAbleToTurn(gameDTO, playerId) && !isCellWasShotBefore(gameDTO, x, y);
     }
 
-    private boolean isPlayerAbleToTurn(Game game, String playerId) {
-        return (game.getCurrentPlayer() == 1 && playerId.equals(game.getPlayer1Id().toString()))
-                || (game.getCurrentPlayer() == 2 && playerId.equals(game.getPlayer2Id().toString()));
+    private boolean isPlayerAbleToTurn(GameDT gameDTO, String playerId) {
+        return (gameDTO.getCurrentPlayer() == 1 && playerId.equals(gameDTO.getPlayer1Id().toString()))
+                || (gameDTO.getCurrentPlayer() == 2 && playerId.equals(gameDTO.getPlayer2Id().toString()));
     }
 
-    private boolean isCellWasShotBefore(Game game, int x, int y) throws IOException {
+    private boolean isCellWasShotBefore(GameDT gameDTO, int x, int y) throws IOException {
         BoardCell[] enemyBoard;
-        if (game.getCurrentPlayer() == 1) {
-            enemyBoard = objectMapper.readValue(game.getPlayer2Board(), BoardCell[].class);
+        if (gameDTO.getCurrentPlayer() == 1) {
+            enemyBoard = objectMapper.readValue(gameDTO.getPlayer2Board(), BoardCell[].class);
         } else {
-            enemyBoard = objectMapper.readValue(game.getPlayer1Board(), BoardCell[].class);
+            enemyBoard = objectMapper.readValue(gameDTO.getPlayer1Board(), BoardCell[].class);
         }
         return checkCells(enemyBoard, x,y);
     }

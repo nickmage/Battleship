@@ -10,7 +10,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "matchmaking")
 @Component
-public class Match {
+public class MatchDTO {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -29,8 +29,8 @@ public class Match {
     @Type(type = "text")
     private String player2Ships;
 
-    public Match(Long id, String player1Name, UUID player1Id, String player2Name, UUID player2Id,
-                 UUID roomId, Date date, String player1Board, String player2Board) {
+    public MatchDTO(Long id, String player1Name, UUID player1Id, String player2Name, UUID player2Id,
+                    UUID roomId, Date date, String player1Board, String player2Board) {
         this.id = id;
         this.player1Name = player1Name;
         this.player1Id = player1Id;
@@ -42,7 +42,7 @@ public class Match {
         this.player2Ships = player2Board;
     }
 
-    public Match() {
+    public MatchDTO() {
     }
 
     public Long getId() {

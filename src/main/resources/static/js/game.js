@@ -29,7 +29,7 @@
     }
 
     function getBoards(){
-        interval = setInterval(function() {
+        //interval = setInterval(function() {
              $.ajax({
                  type: 'GET',
                  url: '/game/init',
@@ -54,7 +54,7 @@
                      }
                  }
              });
-        }, 1000);
+        //}, 1000);
     }
 
 
