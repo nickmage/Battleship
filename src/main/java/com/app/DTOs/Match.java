@@ -10,7 +10,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "matchmaking")
 @Component
-public class Matchmaking {
+public class Match {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -24,14 +24,13 @@ public class Matchmaking {
     private UUID roomId;
     @Temporal(TemporalType.TIMESTAMP)
     private Date date;
-    private String player1BoardJSON;
-    private String player2BoardJSON;
-    private String shipsOfPlayer1JSON;
-    private String shipsOfPlayer2JSON;
+    @Type(type = "text")
+    private String player1Ships;
+    @Type(type = "text")
+    private String player2Ships;
 
-    public Matchmaking(Long id, String player1Name, UUID player1Id, String player2Name, UUID player2Id,
-                       UUID roomId, Date date, String player1BoardJSON, String player2BoardJSON,
-                       String shipsOfPlayer1JSON, String shipsOfPlayer2JSON) {
+    public Match(Long id, String player1Name, UUID player1Id, String player2Name, UUID player2Id,
+                 UUID roomId, Date date, String player1Board, String player2Board) {
         this.id = id;
         this.player1Name = player1Name;
         this.player1Id = player1Id;
@@ -39,13 +38,11 @@ public class Matchmaking {
         this.player2Id = player2Id;
         this.roomId = roomId;
         this.date = date;
-        this.player1BoardJSON = player1BoardJSON;
-        this.player2BoardJSON = player2BoardJSON;
-        this.shipsOfPlayer1JSON = shipsOfPlayer1JSON;
-        this.shipsOfPlayer2JSON = shipsOfPlayer2JSON;
+        this.player1Ships = player1Board;
+        this.player2Ships = player2Board;
     }
 
-    public Matchmaking() {
+    public Match() {
     }
 
     public Long getId() {
@@ -104,35 +101,19 @@ public class Matchmaking {
         this.date = date;
     }
 
-    public String getPlayer1BoardJSON() {
-        return player1BoardJSON;
+    public String getPlayer1Ships() {
+        return player1Ships;
     }
 
-    public void setPlayer1BoardJSON(String player1BoardJSON) {
-        this.player1BoardJSON = player1BoardJSON;
+    public void setPlayer1Ships(String player1Ships) {
+        this.player1Ships = player1Ships;
     }
 
-    public String getPlayer2BoardJSON() {
-        return player2BoardJSON;
+    public String getPlayer2Ships() {
+        return player2Ships;
     }
 
-    public void setPlayer2BoardJSON(String player2BoardJSON) {
-        this.player2BoardJSON = player2BoardJSON;
-    }
-
-    public String getShipsOfPlayer1JSON() {
-        return shipsOfPlayer1JSON;
-    }
-
-    public void setShipsOfPlayer1JSON(String shipsOfPlayer1JSON) {
-        this.shipsOfPlayer1JSON = shipsOfPlayer1JSON;
-    }
-
-    public String getShipsOfPlayer2JSON() {
-        return shipsOfPlayer2JSON;
-    }
-
-    public void setShipsOfPlayer2JSON(String shipsOfPlayer2JSON) {
-        this.shipsOfPlayer2JSON = shipsOfPlayer2JSON;
+    public void setPlayer2Ships(String player2Board) {
+        this.player2Ships = player2Board;
     }
 }

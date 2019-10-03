@@ -26,9 +26,9 @@ public class TurnValidator {
     private boolean isCellWasShotBefore(Game game, int x, int y) throws IOException {
         BoardCell[] enemyBoard;
         if (game.getCurrentPlayer() == 1) {
-            enemyBoard = objectMapper.readValue(game.getPlayer2BoardJSON(), BoardCell[].class);
+            enemyBoard = objectMapper.readValue(game.getPlayer2Board(), BoardCell[].class);
         } else {
-            enemyBoard = objectMapper.readValue(game.getPlayer1BoardJSON(), BoardCell[].class);
+            enemyBoard = objectMapper.readValue(game.getPlayer1Board(), BoardCell[].class);
         }
         return checkCells(enemyBoard, x,y);
     }

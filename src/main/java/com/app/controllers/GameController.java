@@ -15,6 +15,7 @@ import java.util.UUID;
 
 
 @RestController
+@RequestMapping("/game")
 public class GameController {
     @Autowired
     private GameRepo gameRepo;
@@ -23,29 +24,29 @@ public class GameController {
     @Autowired
     private TurnValidator turnValidator;
 
-    @GetMapping("/game/init")
-    @ResponseBody
+    /*remove @ResponseBody*/
+    @GetMapping("/init")
     public ResponseEntity initGame(@RequestParam(name = "roomId") String roomId, @RequestParam(name = "playerId") String playerId) {
         if (roomId != null && playerId != null){
             Game game = gameRepo.findByRoomId(UUID.fromString(roomId));
             if (game != null){
                 GameInitResponseWrapper gameInitResponseWrapper = new GameInitResponseWrapper();
                 if (playerId.equals(game.getPlayer1Id().toString())){
-                    gameInitResponseWrapper.setPlayerBoard(game.getPlayer1BoardJSON());
-                    gameInitResponseWrapper.setPlayerShips(game.getRemainingShipsOfPlayer1JSON());
+                    gameInitResponseWrapper.setPlayerBoard(game.getPlayer1Board());
+                   /* gameInitResponseWrapper.setPlayerShips(game.getRemainingShipsOfPlayer1JSON());
                     gameInitResponseWrapper.setEnemyShips(game.getRemainingShipsOfPlayer2JSON());
                     if (game.getEnemyBoardForPlayer1JSON() != null){
                         gameInitResponseWrapper.setEnemyBoard(game.getEnemyBoardForPlayer1JSON());
-                    }
+                    }*/
                     gameInitResponseWrapper.setEnemyName(game.getPlayer2Name());
                     gameInitResponseWrapper.setMyTurn(game.getCurrentPlayer() == 1);
                 } else {
-                    gameInitResponseWrapper.setPlayerBoard(game.getPlayer2BoardJSON());
-                    gameInitResponseWrapper.setPlayerShips(game.getRemainingShipsOfPlayer2JSON());
+                    gameInitResponseWrapper.setPlayerBoard(game.getPlayer2Board());
+                   /* gameInitResponseWrapper.setPlayerShips(game.getRemainingShipsOfPlayer2JSON());
                     gameInitResponseWrapper.setEnemyShips(game.getRemainingShipsOfPlayer1JSON());
                     if (game.getEnemyBoardForPlayer2JSON() != null){
                         gameInitResponseWrapper.setEnemyBoard(game.getEnemyBoardForPlayer2JSON());
-                    }
+                    }*/
                     gameInitResponseWrapper.setEnemyName(game.getPlayer1Name());
                     gameInitResponseWrapper.setMyTurn(game.getCurrentPlayer() == 2);
                 }
@@ -56,7 +57,7 @@ public class GameController {
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping("/game/shot")
+    @PostMapping("/shot")
     @ResponseBody
     public ResponseEntity makeShot(@RequestParam(name = "roomId") String roomId,
                                    @RequestParam(name = "playerId") String playerId,

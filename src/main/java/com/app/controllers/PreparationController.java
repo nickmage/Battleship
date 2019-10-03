@@ -1,15 +1,15 @@
 package com.app.controllers;
 
-import com.app.DTOs.Matchmaking;
+import com.app.DTOs.Match;
 import com.app.entities.Ship;
 import com.app.repo.GameRepo;
-import com.app.repo.MatchmakingRepo;
+import com.app.repo.MatchRepo;
 import com.app.response_wrappers.StartResponseWrapper;
+import com.app.services.GameCreator;
 import com.app.services.MatchCreator;
 import com.app.validation.BoardValidator;
 import com.auth.entities.User;
 import com.auth.repo.UserRepo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,35 +20,43 @@ import java.util.UUID;
 
 @RestController
 public class PreparationController {
-    @Autowired
-    private UserRepo userRepo;
-    @Autowired
-    private MatchmakingRepo matchmakingRepo;
-    @Autowired
-    private MatchCreator matchCreator;
-    @Autowired
-    private GameRepo gameRepo;
+
+    private final UserRepo userRepo;
+    private final MatchRepo matchRepo;
+    private final MatchCreator matchCreator;
+    private final GameRepo gameRepo;
+    private final GameCreator gameCreator;
+
+    public PreparationController(UserRepo userRepo, MatchRepo matchRepo, MatchCreator matchCreator, GameRepo gameRepo, GameCreator gameCreator) {
+        this.userRepo = userRepo;
+        this.matchRepo = matchRepo;
+        this.matchCreator = matchCreator;
+        this.gameRepo = gameRepo;
+        this.gameCreator = gameCreator;
+    }
+
 
     @PostMapping("/start")
-    @ResponseBody
     public ResponseEntity getBoard(@RequestBody Ship[] ships,
                                    @RequestHeader(name = "Username") String username) throws IOException {
         if (new BoardValidator(ships).isValidBoard()) {
             User userFromDB = userRepo.findByUsername(username);
             if (userFromDB != null) {
                 UUID playerId = userFromDB.getUuid();
-                List<Matchmaking> freeRooms = matchmakingRepo.findByPlayer2Name(null);
+                List<Match> freeRooms = matchRepo.findByPlayer2Name(null);
                 //remove rooms to avoid playing with himself
                 freeRooms.removeIf(match -> match.getPlayer1Id().equals(playerId));
                 if (freeRooms.size() == 0) {
-                    Matchmaking match = matchCreator.createNewRoom(userFromDB, ships);
-                    matchmakingRepo.save(match);
+                    Match match = matchCreator.createNewRoom(userFromDB, ships);
+                    matchRepo.save(match);
                     return new ResponseEntity<>(new StartResponseWrapper(match.getPlayer1Id().toString(),
                             match.getRoomId().toString()), HttpStatus.OK);
                 } else {
-                    Matchmaking match = matchCreator.joinExistingRoom(freeRooms.get(0), userFromDB, ships);
-                    matchmakingRepo.save(match);
-                    gameRepo.save(matchCreator.createNewGame(match));
+                    Match match = matchCreator.joinExistingRoom(freeRooms.get(0), userFromDB, ships);
+                    matchRepo.save(match);
+
+                    gameRepo.save(gameCreator.createNewGame(match));
+
                     return new ResponseEntity<>(new StartResponseWrapper(match.getPlayer2Id().toString(),
                             match.getRoomId().toString()),HttpStatus.OK);
                 }
@@ -57,9 +65,8 @@ public class PreparationController {
     }
 
     @GetMapping("/lobby")
-    @ResponseBody
     public String lobby(@RequestParam(name = "roomId") String roomId) {
-        Matchmaking match = matchmakingRepo.findByRoomId(UUID.fromString(roomId));
+        Match match = matchRepo.findByRoomId(UUID.fromString(roomId));
         if (match == null || match.getPlayer2Name() == null) {
             return null;
         } else {

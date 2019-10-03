@@ -5,13 +5,12 @@ import com.app.entities.Ship;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 
 @Service
 public final class BoardCreator {
 
-    public ArrayList getShipsList(Ship[] ships){
-        ArrayList<ArrayList> board = new ArrayList<>();
+    public ArrayList<ArrayList<BoardCell>> getShips(Ship[] ships){
+        ArrayList<ArrayList<BoardCell>> board = new ArrayList<>();
         char horizontal = 'h';
         char none = '-';
         for (Ship ship: ships) {
@@ -27,8 +26,9 @@ public final class BoardCreator {
         }
         return board;
     }
-    public HashSet<BoardCell> getBoard(Ship[] ships){
-        HashSet<BoardCell> board = new HashSet<>();
+
+    /*public ArrayList<BoardCell> getBoard(Ship[] ships){
+        ArrayList<BoardCell> board = new ArrayList<>();
         char horizontal = 'h';
         char none = '-';
         for (Ship ship: ships) {
@@ -41,9 +41,6 @@ public final class BoardCreator {
             }
         }
         return board;
-    }
-
-
-
+    }*/
 
 }

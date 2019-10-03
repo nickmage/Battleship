@@ -1,73 +1,33 @@
-package com.app.DTOs;
+package com.app.entities;
 
-import org.hibernate.annotations.Type;
-import org.springframework.stereotype.Component;
-
-import javax.persistence.*;
 import java.util.Date;
 import java.util.UUID;
 
-@Entity
-@Table(name = "game")
-@Component
-public class Game {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-
-    @Type(type = "uuid-char")
+public class Room {
     private UUID roomId;
+
     private Integer currentPlayer;
-    private Integer winner;
 
     private String player1Name;
-    @Type(type = "uuid-char")
     private UUID player1Id;
 
     private String player2Name;
-    @Type(type = "uuid-char")
     private UUID player2Id;
+    /*use objects instead of string
+     * Dont do snapshots*/
 
-    @Temporal(TemporalType.TIMESTAMP)
+    private String player1BoardJSON;
+    private String enemyBoardForPlayer1JSON;
+    private String player2BoardJSON;
+    private String enemyBoardForPlayer2JSON;
+    private String shipsOfPlayer1JSON;
+    private String shipsOfPlayer2JSON;
+    private String remainingShipsOfPlayer1JSON;
+    private String remainingShipsOfPlayer2JSON;
+
     private Date date;
 
-    @Type(type="text")
-    private String player1Board;
-    @Type(type="text")
-    private String player2Board;
-
-    public Game(Long id, UUID roomId, Integer currentPlayer, String player1Name,
-                UUID player1Id, String player2Name, UUID player2Id, Date date,
-                String player1Board, Integer winner) {
-        this.id = id;
-        this.roomId = roomId;
-        this.currentPlayer = currentPlayer;
-        this.player1Name = player1Name;
-        this.player1Id = player1Id;
-        this.player2Name = player2Name;
-        this.player2Id = player2Id;
-        this.date = date;
-        this.player1Board = player1Board;
-        //this.enemyBoardForPlayer1JSON = enemyBoardForPlayer1JSON;
-        this.player2Board = player2Board;
-        //this.enemyBoardForPlayer2JSON = enemyBoardForPlayer2JSON;
-        //this.shipsOfPlayer1JSON = shipsOfPlayer1JSON;
-        //this.shipsOfPlayer2JSON = shipsOfPlayer2JSON;
-        this.winner = winner;
-        //this.remainingShipsOfPlayer1JSON = remainingShipsOfPlayer1JSON;
-        //this.remainingShipsOfPlayer2JSON = remainingShipsOfPlayer2JSON;
-    }
-
-    public Game() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+    private Integer winner;
 
     public UUID getRoomId() {
         return roomId;
@@ -117,39 +77,31 @@ public class Game {
         this.player2Id = player2Id;
     }
 
-    public Date getDate() {
-        return date;
+    public String getPlayer1BoardJSON() {
+        return player1BoardJSON;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setPlayer1BoardJSON(String player1BoardJSON) {
+        this.player1BoardJSON = player1BoardJSON;
     }
 
-    public String getPlayer1Board() {
-        return player1Board;
-    }
-
-    public void setPlayer1Board(String player1Board) {
-        this.player1Board = player1Board;
-    }
-
-    /*public String getEnemyBoardForPlayer1JSON() {
+    public String getEnemyBoardForPlayer1JSON() {
         return enemyBoardForPlayer1JSON;
     }
 
     public void setEnemyBoardForPlayer1JSON(String enemyBoardForPlayer1JSON) {
         this.enemyBoardForPlayer1JSON = enemyBoardForPlayer1JSON;
-    }*/
-
-    public String getPlayer2Board() {
-        return player2Board;
     }
 
-    public void setPlayer2Board(String player2Board) {
-        this.player2Board = player2Board;
+    public String getPlayer2BoardJSON() {
+        return player2BoardJSON;
     }
 
-    /*public String getEnemyBoardForPlayer2JSON() {
+    public void setPlayer2BoardJSON(String player2BoardJSON) {
+        this.player2BoardJSON = player2BoardJSON;
+    }
+
+    public String getEnemyBoardForPlayer2JSON() {
         return enemyBoardForPlayer2JSON;
     }
 
@@ -171,17 +123,9 @@ public class Game {
 
     public void setShipsOfPlayer2JSON(String shipsOfPlayer2JSON) {
         this.shipsOfPlayer2JSON = shipsOfPlayer2JSON;
-    }*/
-
-    public Integer getWinner() {
-        return winner;
     }
 
-    public void setWinner(Integer winner) {
-        this.winner = winner;
-    }
-
-    /*public String getRemainingShipsOfPlayer1JSON() {
+    public String getRemainingShipsOfPlayer1JSON() {
         return remainingShipsOfPlayer1JSON;
     }
 
@@ -195,5 +139,21 @@ public class Game {
 
     public void setRemainingShipsOfPlayer2JSON(String remainingShipsOfPlayer2JSON) {
         this.remainingShipsOfPlayer2JSON = remainingShipsOfPlayer2JSON;
-    }*/
+    }
+
+    public Integer getWinner() {
+        return winner;
+    }
+
+    public void setWinner(Integer winner) {
+        this.winner = winner;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
 }
