@@ -101,7 +101,7 @@
     }
 
     function showEnemyBoard(enemyBoard){
-        if (enemyBoard !== null) {
+        if (enemyBoard.length !== 0) {
             for (let i = 0; i < enemyBoard.length; i++){
                 //UNUSED
                 /*if (enemyBoard[i].value === 0) {
@@ -140,7 +140,6 @@
             }
         }       
     }
-
     function makeShot(element) {
         if (myTurn) {
             var x = parseInt(element.id.charAt(1));

@@ -28,8 +28,8 @@ public class BoardCreator {
         return board;
     }
 
-    public HashSet<BoardCell> getBoard(Ship[] ships){
-        HashSet<BoardCell> board = new HashSet<>();
+    public ArrayList<BoardCell> getBoard(Ship[] ships){
+        ArrayList<BoardCell> board = new  ArrayList<>();
         char horizontal = 'h';
         char none = '-';
         for (Ship ship: ships) {

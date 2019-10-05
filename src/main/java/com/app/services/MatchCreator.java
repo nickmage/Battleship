@@ -51,7 +51,7 @@ public class MatchCreator {
         room.setPlayer1Name(matchDTO.getPlayer1Name());
         room.setPlayer1Id(matchDTO.getPlayer1Id());
         room.setPlayer1Board(boardCreator.getBoard(shipStartCells));
-        room.setShipsOfPlayer1(ships);
+        room.setPlayer1Ships(ships);
         RoomCache.rooms.put(matchDTO.getRoomId().toString(), room);
     }
 
@@ -60,7 +60,7 @@ public class MatchCreator {
         room.setPlayer2Name(matchDTO.getPlayer2Name());
         room.setPlayer2Id(matchDTO.getPlayer2Id());
         room.setPlayer2Board(boardCreator.getBoard(shipStartCells));
-        room.setShipsOfPlayer2(ships);
+        room.setPlayer2Ships(ships);
     }
 
 }

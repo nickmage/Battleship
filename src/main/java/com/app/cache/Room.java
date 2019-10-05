@@ -1,10 +1,8 @@
 package com.app.cache;
 
 import com.app.entities.BoardCell;
-import com.app.entities.RemainingShips;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.UUID;
 
 public class Room {
@@ -17,16 +15,13 @@ public class Room {
     private String player2Name;
     private UUID player2Id;
 
-    private HashSet<BoardCell> player1Board;
-    private HashSet<BoardCell> enemyBoardForPlayer1 = new HashSet<>();
-    private HashSet<BoardCell> player2Board;
-    private HashSet<BoardCell> enemyBoardForPlayer2 = new HashSet<>();;
+    private ArrayList<BoardCell> player1Board;//player1Ships modified + shots of player2
+    private ArrayList<BoardCell> enemyBoardForPlayer1 = new ArrayList<>();//shots of player1
+    private ArrayList<BoardCell> player2Board;//player2Ships modified + shots of player1
+    private ArrayList<BoardCell> enemyBoardForPlayer2 = new ArrayList<>();//shots of player2
 
-    private ArrayList<ArrayList<BoardCell>> shipsOfPlayer1;
-    private ArrayList<ArrayList<BoardCell>> shipsOfPlayer2;
-
-    private RemainingShips remainingShipsOfPlayer1 = new RemainingShips();
-    private RemainingShips remainingShipsOfPlayer2 = new RemainingShips();
+    private ArrayList<ArrayList<BoardCell>> player1Ships;
+    private ArrayList<ArrayList<BoardCell>> player2Ships;
 
     private Integer winner = 0;
 
@@ -70,68 +65,52 @@ public class Room {
         this.player2Id = player2Id;
     }
 
-    public HashSet<BoardCell> getPlayer1Board() {
+    public ArrayList<BoardCell> getPlayer1Board() {
         return player1Board;
     }
 
-    public void setPlayer1Board(HashSet<BoardCell> player1Board) {
+    public void setPlayer1Board(ArrayList<BoardCell> player1Board) {
         this.player1Board = player1Board;
     }
 
-    public HashSet<BoardCell> getEnemyBoardForPlayer1() {
+    public ArrayList<BoardCell> getEnemyBoardForPlayer1() {
         return enemyBoardForPlayer1;
     }
 
-    public void setEnemyBoardForPlayer1(HashSet<BoardCell> enemyBoardForPlayer1) {
+    public void setEnemyBoardForPlayer1(ArrayList<BoardCell> enemyBoardForPlayer1) {
         this.enemyBoardForPlayer1 = enemyBoardForPlayer1;
     }
 
-    public HashSet<BoardCell> getPlayer2Board() {
+    public ArrayList<BoardCell> getPlayer2Board() {
         return player2Board;
     }
 
-    public void setPlayer2Board(HashSet<BoardCell> player2Board) {
+    public void setPlayer2Board(ArrayList<BoardCell> player2Board) {
         this.player2Board = player2Board;
     }
 
-    public HashSet<BoardCell> getEnemyBoardForPlayer2() {
+    public ArrayList<BoardCell> getEnemyBoardForPlayer2() {
         return enemyBoardForPlayer2;
     }
 
-    public void setEnemyBoardForPlayer2(HashSet<BoardCell> enemyBoardForPlayer2) {
+    public void setEnemyBoardForPlayer2(ArrayList<BoardCell> enemyBoardForPlayer2) {
         this.enemyBoardForPlayer2 = enemyBoardForPlayer2;
     }
 
-    public ArrayList<ArrayList<BoardCell>> getShipsOfPlayer1() {
-        return shipsOfPlayer1;
+    public ArrayList<ArrayList<BoardCell>> getPlayer1Ships() {
+        return player1Ships;
     }
 
-    public void setShipsOfPlayer1(ArrayList<ArrayList<BoardCell>> shipsOfPlayer1) {
-        this.shipsOfPlayer1 = shipsOfPlayer1;
+    public void setPlayer1Ships(ArrayList<ArrayList<BoardCell>> player1Ships) {
+        this.player1Ships = player1Ships;
     }
 
-    public ArrayList<ArrayList<BoardCell>> getShipsOfPlayer2() {
-        return shipsOfPlayer2;
+    public ArrayList<ArrayList<BoardCell>> getPlayer2Ships() {
+        return player2Ships;
     }
 
-    public void setShipsOfPlayer2(ArrayList<ArrayList<BoardCell>> shipsOfPlayer2) {
-        this.shipsOfPlayer2 = shipsOfPlayer2;
-    }
-
-    public RemainingShips getRemainingShipsOfPlayer1() {
-        return remainingShipsOfPlayer1;
-    }
-
-    public void setRemainingShipsOfPlayer1(RemainingShips remainingShipsOfPlayer1) {
-        this.remainingShipsOfPlayer1 = remainingShipsOfPlayer1;
-    }
-
-    public RemainingShips getRemainingShipsOfPlayer2() {
-        return remainingShipsOfPlayer2;
-    }
-
-    public void setRemainingShipsOfPlayer2(RemainingShips remainingShipsOfPlayer2) {
-        this.remainingShipsOfPlayer2 = remainingShipsOfPlayer2;
+    public void setPlayer2Ships(ArrayList<ArrayList<BoardCell>> player2Ships) {
+        this.player2Ships = player2Ships;
     }
 
     public Integer getWinner() {
@@ -154,10 +133,8 @@ public class Room {
                 ", enemyBoardForPlayer1=" + enemyBoardForPlayer1 +
                 ", player2Board=" + player2Board +
                 ", enemyBoardForPlayer2=" + enemyBoardForPlayer2 +
-                ", shipsOfPlayer1=" + shipsOfPlayer1 +
-                ", shipsOfPlayer2=" + shipsOfPlayer2 +
-                ", remainingShipsOfPlayer1=" + remainingShipsOfPlayer1 +
-                ", remainingShipsOfPlayer2=" + remainingShipsOfPlayer2 +
+                ", shipsOfPlayer1=" + player1Ships +
+                ", shipsOfPlayer2=" + player2Ships +
                 ", winner=" + winner +
                 '}';
     }

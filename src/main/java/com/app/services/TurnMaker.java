@@ -1,6 +1,6 @@
 package com.app.services;
 
-import com.app.DTOs.GameDT;
+import com.app.DTOs.GameDTO;
 import com.app.entities.BoardCell;
 import com.app.repo.GameRepo;
 import com.app.response_wrappers.ShotResponseWrapper;
@@ -21,7 +21,7 @@ public class TurnMaker {
     @Autowired
     private ObjectMapper objectMapper;
 
-    public ShotResponseWrapper makeShot(GameDT gameDTO, int x, int y) throws IOException {
+    public ShotResponseWrapper makeShot(GameDTO gameDTO, int x, int y) throws IOException {
         ShotResponseWrapper response = new ShotResponseWrapper();
        // execute(game, x, y);
         if (gameDTO.getCurrentPlayer() == 1) {
@@ -64,20 +64,20 @@ public class TurnMaker {
     }*/
 
     @SuppressWarnings("unchecked")
-    private void setShipMiss(GameDT gameDTO, int x, int y) throws IOException {
+    private void setShipMiss(GameDTO gameDTO, int x, int y) throws IOException {
         List<BoardCell> boardList;
         BoardCell cell = new BoardCell();
         cell.setX(x);
         cell.setY(y);
         cell.setValue(0);
         if (gameDTO.getCurrentPlayer() == 1) {
-            boardList = objectMapper.readValue(gameDTO.getPlayer2Board(), List.class);
+            boardList = objectMapper.readValue(gameDTO.getPlayer2Ships(), List.class);
             boardList.add(cell);
-            gameDTO.setPlayer2Board(objectMapper.writeValueAsString(boardList));
+            gameDTO.setPlayer2Ships(objectMapper.writeValueAsString(boardList));
         } else {
-            boardList = objectMapper.readValue(gameDTO.getPlayer1Board(), List.class);
+            boardList = objectMapper.readValue(gameDTO.getPlayer1Ships(), List.class);
             boardList.add(cell);
-            gameDTO.setPlayer1Board(objectMapper.writeValueAsString(boardList));
+            gameDTO.setPlayer1Ships(objectMapper.writeValueAsString(boardList));
         }
     }
 
@@ -108,26 +108,26 @@ public class TurnMaker {
         return count == ship.length;
     }
 
-    private void setShipHit(GameDT gameDTO, int x, int y) throws IOException {
+    private void setShipHit(GameDTO gameDTO, int x, int y) throws IOException {
         BoardCell[] playerBoard;
         if (gameDTO.getCurrentPlayer() == 1) {
-            playerBoard = objectMapper.readValue(gameDTO.getPlayer2Board(), BoardCell[].class);
+            playerBoard = objectMapper.readValue(gameDTO.getPlayer2Ships(), BoardCell[].class);
             for (BoardCell cell: playerBoard) {
                 if (cell.getX() == x && cell.getY() == y) {
                     cell.setValue(-cell.getValue());
                     break;
                 }
             }
-            gameDTO.setPlayer2Board(objectMapper.writeValueAsString(playerBoard));
+            gameDTO.setPlayer2Ships(objectMapper.writeValueAsString(playerBoard));
         } else {
-            playerBoard = objectMapper.readValue(gameDTO.getPlayer1Board(), BoardCell[].class);
+            playerBoard = objectMapper.readValue(gameDTO.getPlayer1Ships(), BoardCell[].class);
             for (BoardCell cell: playerBoard) {
                 if (cell.getX() == x && cell.getY() == y) {
                     cell.setValue(-cell.getValue());
                     break;
                 }
             }
-            gameDTO.setPlayer1Board(objectMapper.writeValueAsString(playerBoard));
+            gameDTO.setPlayer1Ships(objectMapper.writeValueAsString(playerBoard));
         }
     }
 

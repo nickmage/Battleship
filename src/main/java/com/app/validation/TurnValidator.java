@@ -1,6 +1,6 @@
 package com.app.validation;
 
-import com.app.DTOs.GameDT;
+import com.app.DTOs.GameDTO;
 import com.app.entities.BoardCell;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,22 +13,22 @@ public class TurnValidator {
     @Autowired
     private ObjectMapper objectMapper;
 
-    public boolean isValidTurn(GameDT gameDTO, int x, int y, String playerId) throws IOException {
+    public boolean isValidTurn(GameDTO gameDTO, int x, int y, String playerId) throws IOException {
         return (x >= 0 && x < 10) && (y >= 0 && y < 10)
                 && isPlayerAbleToTurn(gameDTO, playerId) && !isCellWasShotBefore(gameDTO, x, y);
     }
 
-    private boolean isPlayerAbleToTurn(GameDT gameDTO, String playerId) {
+    private boolean isPlayerAbleToTurn(GameDTO gameDTO, String playerId) {
         return (gameDTO.getCurrentPlayer() == 1 && playerId.equals(gameDTO.getPlayer1Id().toString()))
                 || (gameDTO.getCurrentPlayer() == 2 && playerId.equals(gameDTO.getPlayer2Id().toString()));
     }
 
-    private boolean isCellWasShotBefore(GameDT gameDTO, int x, int y) throws IOException {
+    private boolean isCellWasShotBefore(GameDTO gameDTO, int x, int y) throws IOException {
         BoardCell[] enemyBoard;
         if (gameDTO.getCurrentPlayer() == 1) {
-            enemyBoard = objectMapper.readValue(gameDTO.getPlayer2Board(), BoardCell[].class);
+            enemyBoard = objectMapper.readValue(gameDTO.getPlayer2Ships(), BoardCell[].class);
         } else {
-            enemyBoard = objectMapper.readValue(gameDTO.getPlayer1Board(), BoardCell[].class);
+            enemyBoard = objectMapper.readValue(gameDTO.getPlayer1Ships(), BoardCell[].class);
         }
         return checkCells(enemyBoard, x,y);
     }

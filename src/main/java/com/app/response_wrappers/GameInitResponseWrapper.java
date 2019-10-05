@@ -2,30 +2,31 @@ package com.app.response_wrappers;
 
 import com.app.entities.BoardCell;
 import com.app.entities.RemainingShips;
-import java.util.HashSet;
+
+import java.util.ArrayList;
 
 public class GameInitResponseWrapper {
-    private HashSet<BoardCell> playerBoard;
-    private HashSet<BoardCell> enemyBoard;
+    private ArrayList<BoardCell> playerBoard;
+    private ArrayList<BoardCell> enemyBoard;
     private RemainingShips playerShips;
     private RemainingShips enemyShips;
     private String enemyName;
     private boolean myTurn;
     private int winner;
 
-    public HashSet<BoardCell> getPlayerBoard() {
+    public ArrayList<BoardCell> getPlayerBoard() {
         return playerBoard;
     }
 
-    public void setPlayerBoard(HashSet<BoardCell> playerBoard) {
+    public void setPlayerBoard(ArrayList<BoardCell> playerBoard) {
         this.playerBoard = playerBoard;
     }
 
-    public HashSet<BoardCell> getEnemyBoard() {
+    public ArrayList<BoardCell> getEnemyBoard() {
         return enemyBoard;
     }
 
-    public void setEnemyBoard(HashSet<BoardCell> enemyBoard) {
+    public void setEnemyBoard(ArrayList<BoardCell> enemyBoard) {
         this.enemyBoard = enemyBoard;
     }
 

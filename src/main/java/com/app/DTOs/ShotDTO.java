@@ -20,14 +20,18 @@ public class ShotDTO {
     private UUID player1Id;
     @Type(type = "uuid-char")
     private UUID player2Id;
-    private String shot;
+    private Character x;
+    private Character y;
+    private Integer value;
 
-    public ShotDTO(Long id, UUID roomId, UUID player1Id, UUID player2Id, String shot) {
+    public ShotDTO(Long id, UUID roomId, UUID player1Id, UUID player2Id, Character x, Character y, Integer value) {
         this.id = id;
         this.roomId = roomId;
         this.player1Id = player1Id;
         this.player2Id = player2Id;
-        this.shot = shot;
+        this.x = x;
+        this.y = y;
+        this.value = value;
     }
 
     public ShotDTO() {
@@ -65,11 +69,27 @@ public class ShotDTO {
         this.player2Id = player2Id;
     }
 
-    public String getShot() {
-        return shot;
+    public Character getX() {
+        return x;
     }
 
-    public void setShot(String shot) {
-        this.shot = shot;
+    public void setX(Character x) {
+        this.x = x;
+    }
+
+    public Character getY() {
+        return y;
+    }
+
+    public void setY(Character y) {
+        this.y = y;
+    }
+
+    public Integer getValue() {
+        return value;
+    }
+
+    public void setValue(Integer value) {
+        this.value = value;
     }
 }
