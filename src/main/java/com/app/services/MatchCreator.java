@@ -33,7 +33,7 @@ public class MatchCreator {
         matchDTO.setDate(new Date());
         ArrayList<ArrayList<BoardCell>> ships = boardCreator.getShips(shipStartCells);
         matchDTO.setPlayer1Ships(objectMapper.writeValueAsString(ships));
-        cacheNewRoom(ships, shipStartCells);
+        cacheNewRoom(ships, shipStartCells, matchDTO.getRoomId());
         return matchDTO;
     }
 
@@ -46,8 +46,9 @@ public class MatchCreator {
         return matchDTO;
     }
 
-    private void cacheNewRoom(ArrayList<ArrayList<BoardCell>> ships, Ship[] shipStartCells) {
+    private void cacheNewRoom(ArrayList<ArrayList<BoardCell>> ships, Ship[] shipStartCells, UUID roomId) {
         Room room = new Room();
+        room.setRoomId(roomId);
         room.setPlayer1Name(matchDTO.getPlayer1Name());
         room.setPlayer1Id(matchDTO.getPlayer1Id());
         room.setPlayer1Board(boardCreator.getBoard(shipStartCells));

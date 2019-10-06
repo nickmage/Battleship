@@ -26,6 +26,7 @@ public class GameRestorer {
 
     public Room restore(GameDTO game) throws IOException {
         Room room = new Room();
+        room.setRoomId(game.getRoomId());
         room.setCurrentPlayer(game.getCurrentPlayer());
 
         room.setPlayer1Name(game.getPlayer1Name());
@@ -62,7 +63,7 @@ public class GameRestorer {
         return ships;
     }
 
-    private ArrayList<BoardCell> getPlayerBoard(ArrayList<ArrayList<BoardCell>> ships, UUID roomId, UUID enemyId, int number){
+    private ArrayList<BoardCell> getPlayerBoard(ArrayList<ArrayList<BoardCell>> ships, UUID roomId, UUID enemyId, int number) {
         ArrayList<BoardCell> playerBoard = new ArrayList<>();
         for (ArrayList<BoardCell> ship : ships) {
             playerBoard.addAll(ship);
@@ -72,16 +73,16 @@ public class GameRestorer {
         return playerBoard;
     }
 
-    private ArrayList<BoardCell> getEnemyBoard( UUID roomId, UUID enemyId, int number){
+    private ArrayList<BoardCell> getEnemyBoard(UUID roomId, UUID enemyId, int number) {
         ArrayList<BoardCell> enemyBoard = new ArrayList<>();
         List<ShotDTO> shots = getShotList(roomId, enemyId, number);
         fillBoardWithShots(enemyBoard, shots);
         return enemyBoard;
     }
 
-    private void fillBoardWithShots(ArrayList<BoardCell> board, List<ShotDTO> shots){
+    private void fillBoardWithShots(ArrayList<BoardCell> board, List<ShotDTO> shots) {
         if (shots != null && shots.size() != 0) {
-            for (ShotDTO shot:shots) {
+            for (ShotDTO shot : shots) {
                 BoardCell shotCell = new BoardCell();
                 shotCell.setX(shot.getX());
                 shotCell.setY(shot.getY());
@@ -91,12 +92,8 @@ public class GameRestorer {
         }
     }
 
-    private List<ShotDTO> getShotList(UUID roomId, UUID playerId, int number){
-        if (number == 1){
-            return shotRepo.findByRoomIdAndPlayer1IdAndValueEquals(roomId, playerId, 0);
-        } else {
-            return shotRepo.findByRoomIdAndPlayer2IdAndValueEquals(roomId, playerId, 0);
-        }
+    private List<ShotDTO> getShotList(UUID roomId, UUID playerId, int number) {
+        return shotRepo.findByRoomIdAndPlayerIdAndValueEquals(roomId, playerId, 0);
     }
 
 

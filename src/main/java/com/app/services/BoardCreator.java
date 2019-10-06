@@ -5,7 +5,6 @@ import com.app.entities.Ship;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 
 @Service
 public class BoardCreator {

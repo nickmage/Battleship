@@ -7,6 +7,8 @@ import java.util.UUID;
 
 public class Room {
 
+    private UUID roomId;
+
     private Integer currentPlayer;
 
     private String player1Name;
@@ -121,10 +123,19 @@ public class Room {
         this.winner = winner;
     }
 
+    public UUID getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(UUID roomId) {
+        this.roomId = roomId;
+    }
+
     @Override
     public String toString() {
         return "Room{" +
-                "currentPlayer=" + currentPlayer +
+                "roomId=" + roomId +
+                ", currentPlayer=" + currentPlayer +
                 ", player1Name='" + player1Name + '\'' +
                 ", player1Id=" + player1Id +
                 ", player2Name='" + player2Name + '\'' +

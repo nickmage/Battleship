@@ -17,18 +17,15 @@ public class ShotDTO {
     @Type(type = "uuid-char")
     private UUID roomId;
     @Type(type = "uuid-char")
-    private UUID player1Id;
-    @Type(type = "uuid-char")
-    private UUID player2Id;
-    private Character x;
-    private Character y;
+    private UUID playerId;
+    private Integer x;
+    private Integer y;
     private Integer value;
 
-    public ShotDTO(Long id, UUID roomId, UUID player1Id, UUID player2Id, Character x, Character y, Integer value) {
+    public ShotDTO(Long id, UUID roomId, UUID playerId, Integer x, Integer y, Integer value) {
         this.id = id;
         this.roomId = roomId;
-        this.player1Id = player1Id;
-        this.player2Id = player2Id;
+        this.playerId = playerId;
         this.x = x;
         this.y = y;
         this.value = value;
@@ -53,35 +50,27 @@ public class ShotDTO {
         this.roomId = roomId;
     }
 
-    public UUID getPlayer1Id() {
-        return player1Id;
+    public UUID getPlayerId() {
+        return playerId;
     }
 
-    public void setPlayer1Id(UUID player1Id) {
-        this.player1Id = player1Id;
+    public void setPlayerId(UUID playerId) {
+        this.playerId = playerId;
     }
 
-    public UUID getPlayer2Id() {
-        return player2Id;
-    }
-
-    public void setPlayer2Id(UUID player2Id) {
-        this.player2Id = player2Id;
-    }
-
-    public Character getX() {
+    public Integer getX() {
         return x;
     }
 
-    public void setX(Character x) {
+    public void setX(Integer x) {
         this.x = x;
     }
 
-    public Character getY() {
+    public Integer getY() {
         return y;
     }
 
-    public void setY(Character y) {
+    public void setY(Integer y) {
         this.y = y;
     }
 

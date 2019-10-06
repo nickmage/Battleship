@@ -1,39 +1,37 @@
 package com.app.validation;
 
-import com.app.DTOs.GameDTO;
+import com.app.cache.Room;
 import com.app.entities.BoardCell;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
+import java.util.ArrayList;
 
 @Service
 public class TurnValidator {
     @Autowired
     private ObjectMapper objectMapper;
 
-    public boolean isValidTurn(GameDTO gameDTO, int x, int y, String playerId) throws IOException {
+    public boolean isValidTurn(Room room, int x, int y, String playerId) {
         return (x >= 0 && x < 10) && (y >= 0 && y < 10)
-                && isPlayerAbleToTurn(gameDTO, playerId) && !isCellWasShotBefore(gameDTO, x, y);
+                && isPlayerAbleToTurn(room, playerId) && !isCellWasShotBefore(room, x, y);
     }
 
-    private boolean isPlayerAbleToTurn(GameDTO gameDTO, String playerId) {
-        return (gameDTO.getCurrentPlayer() == 1 && playerId.equals(gameDTO.getPlayer1Id().toString()))
-                || (gameDTO.getCurrentPlayer() == 2 && playerId.equals(gameDTO.getPlayer2Id().toString()));
+    private boolean isPlayerAbleToTurn(Room room, String playerId) {
+        return (room.getCurrentPlayer() == 1 && playerId.equals(room.getPlayer1Id().toString()))
+                || (room.getCurrentPlayer() == 2 && playerId.equals(room.getPlayer2Id().toString()));
     }
 
-    private boolean isCellWasShotBefore(GameDTO gameDTO, int x, int y) throws IOException {
-        BoardCell[] enemyBoard;
-        if (gameDTO.getCurrentPlayer() == 1) {
-            enemyBoard = objectMapper.readValue(gameDTO.getPlayer2Ships(), BoardCell[].class);
+    private boolean isCellWasShotBefore(Room room, int x, int y) {
+        if (room.getCurrentPlayer() == 1) {
+            return checkCells(room.getEnemyBoardForPlayer1(), x, y);
         } else {
-            enemyBoard = objectMapper.readValue(gameDTO.getPlayer1Ships(), BoardCell[].class);
+            return checkCells(room.getEnemyBoardForPlayer1(), x, y);
         }
-        return checkCells(enemyBoard, x,y);
     }
 
-    private boolean checkCells(BoardCell[] enemyBoard, int x, int y) {
+    private boolean checkCells(ArrayList<BoardCell> enemyBoard, int x, int y) {
         for (BoardCell cell : enemyBoard) {
             if (x == cell.getX() && y == cell.getY()) {
                 return cell.getValue() <= 0;

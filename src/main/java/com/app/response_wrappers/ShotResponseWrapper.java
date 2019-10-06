@@ -3,26 +3,28 @@ package com.app.response_wrappers;
 import com.app.entities.BoardCell;
 import com.app.entities.RemainingShips;
 
+import java.util.ArrayList;
+
 public class ShotResponseWrapper {
-    private BoardCell[] enemyBoard;
-    private RemainingShips enemyShips;
+    private ArrayList<BoardCell> interactedCells;
+    private RemainingShips remainingEnemyShips;
     private boolean myTurn;
     private int winner;
 
-    public BoardCell[] getEnemyBoard() {
-        return enemyBoard;
+    public ArrayList<BoardCell> getInteractedCells() {
+        return interactedCells;
     }
 
-    public void setEnemyBoard(BoardCell[] enemyBoard) {
-        this.enemyBoard = enemyBoard;
+    public void setInteractedCells(ArrayList<BoardCell> interactedCells) {
+        this.interactedCells = interactedCells;
     }
 
-    public RemainingShips getEnemyShips() {
-        return enemyShips;
+    public RemainingShips getRemainingEnemyShips() {
+        return remainingEnemyShips;
     }
 
-    public void setEnemyShips(RemainingShips enemyShips) {
-        this.enemyShips = enemyShips;
+    public void setRemainingEnemyShips(RemainingShips remainingEnemyShips) {
+        this.remainingEnemyShips = remainingEnemyShips;
     }
 
     public boolean isMyTurn() {

@@ -140,6 +140,7 @@
             }
         }       
     }
+
     function makeShot(element) {
         if (myTurn) {
             var x = parseInt(element.id.charAt(1));
@@ -155,8 +156,8 @@
                     success: function (data) {
                         //winner();
                         console.log(data);
-                        showEnemyShips(data.enemyShips);
-                        showEnemyBoard(data.enemyBoard);
+                        showEnemyShips(data.remainingEnemyShips);
+                        showEnemyBoard(data.interactedCells);
                         myTurn = data.myTurn;
                         if (!myTurn){
                             getBoards();

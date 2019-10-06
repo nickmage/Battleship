@@ -67,7 +67,7 @@ public class GameInitResponseCreator {
 
     //return 0 if ship is sunken or ship's deck type
     private int isShipInOrder(ArrayList<BoardCell> ship) {
-        int deckType = ship.get(0).getValue();
+        int deckType = Math.abs(ship.get(0).getValue());
         int count = 0;
         for (BoardCell cell : ship) {
             if (cell.getValue() > 0) {

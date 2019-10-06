@@ -1,48 +1,277 @@
 package com.app.services;
 
 import com.app.DTOs.GameDTO;
+import com.app.DTOs.ShotDTO;
+import com.app.cache.Room;
 import com.app.entities.BoardCell;
+import com.app.entities.RemainingShips;
 import com.app.repo.GameRepo;
+import com.app.repo.ShotRepo;
 import com.app.response_wrappers.ShotResponseWrapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 @Service
 public class TurnMaker {
-    /*@Autowired
-    private ShotResponseWrapper shotResponseWrapper;*/
-    @Autowired
-    private GameRepo gameRepo;
-    @Autowired
-    private ObjectMapper objectMapper;
 
-    public ShotResponseWrapper makeShot(GameDTO gameDTO, int x, int y) throws IOException {
+    private final int MISS = 0;
+    private final int HIT = -1;
+    private final int SINK = 1;
+    private final GameRepo gameRepo;
+    private final ShotRepo shotRepo;
+    private final ObjectMapper objectMapper;
+
+    public TurnMaker(GameRepo gameRepo, ShotRepo shotRepo, ObjectMapper objectMapper) {
+        this.gameRepo = gameRepo;
+        this.shotRepo = shotRepo;
+        this.objectMapper = objectMapper;
+    }
+
+    /*
+    P1
+    Room ->
+    * check player2Ships if hit/miss
+    * change player2Ships respectively
+    * add new cells / change existing to player2Board(if miss/hit resp.)
+    * add new cells to enemyBoardForPlayer1
+
+    Response ->
+    *send interactedCells
+    calculate remainingEnemyShips
+    find out if myTurn;
+    set winner if it is present
+
+    DB ->
+    *add new record to Shots
+    *modify player2 ships in Game table
+
+    */
+
+    public ShotResponseWrapper makeShot(Room room, int x, int y) throws JsonProcessingException {
         ShotResponseWrapper response = new ShotResponseWrapper();
-       // execute(game, x, y);
-        if (gameDTO.getCurrentPlayer() == 1) {
-           // response.setEnemyBoard(objectMapper.readValue(game.getEnemyBoardForPlayer1JSON(), BoardCell[].class));
-            //response.setEnemyShips(objectMapper.readValue(game.getRemainingShipsOfPlayer1JSON(), RemainingShips.class));
-            response.setMyTurn(gameDTO.getCurrentPlayer() == 1);
-            response.setWinner(gameDTO.getWinner());
-        } else {
-         //   response.setEnemyBoard(objectMapper.readValue(game.getEnemyBoardForPlayer2JSON(), BoardCell[].class));
-           // response.setEnemyShips(objectMapper.readValue(game.getRemainingShipsOfPlayer1JSON(), RemainingShips.class));
-            response.setMyTurn(gameDTO.getCurrentPlayer() == 2);
-            response.setWinner(gameDTO.getWinner());
-        }
-        gameDTO.setCurrentPlayer((gameDTO.getCurrentPlayer() == 1) ? 2 : 1);
-        /**isWinner();*/
-        gameDTO.setDate(new Date());
-        /**game.setId(game.getId() + 1);*/
-        gameRepo.save(gameDTO);
-
+        int status = checkShotStatus(room, x, y, response);
+        response.setRemainingEnemyShips(getRemainingShips(room.getCurrentPlayer() == 1 ? room.getPlayer2Ships(): room.getPlayer1Ships()));
+        response.setMyTurn(status != MISS);
+        response.setWinner(0);
         return response;
     }
+
+    private int checkShotStatus(Room room, int x, int y, ShotResponseWrapper response) throws JsonProcessingException {
+        ArrayList<BoardCell> interactedCells = new ArrayList<>();
+        int currentPlayer = room.getCurrentPlayer();
+        ArrayList<ArrayList<BoardCell>> enemyShips = (currentPlayer == 1) ? room.getPlayer2Ships() : room.getPlayer1Ships();
+        for (ArrayList<BoardCell> ship : enemyShips) {
+            if (isShipHit(ship, x, y)) {
+                if (isShipSunken(ship)) {
+                    System.out.println("Sunken");
+                    /**setEnemyBoard(game, x, y);*/
+                    interactedCells.add(getCell(x, y, HIT));
+                    response.setInteractedCells(interactedCells);
+                    return SINK;
+                }
+                saveHit(room, x, y, currentPlayer);
+                interactedCells.add(getCell(x, y, HIT));
+                response.setInteractedCells(interactedCells);
+                return HIT;
+            }
+        }
+        saveMiss(room, x, y, currentPlayer);
+        interactedCells.add(getCell(x, y, MISS));
+        response.setInteractedCells(interactedCells);
+        return MISS;
+    }
+
+    private BoardCell getCell(int x, int y, int value) {
+        BoardCell cell = new BoardCell();
+        cell.setX(x);
+        cell.setY(y);
+        cell.setValue(value);
+        return cell;
+    }
+
+    private boolean isShipHit(ArrayList<BoardCell> ship, int x, int y) {
+        for (BoardCell cell : ship) {
+            if (cell.getX() == x && cell.getY() == y) {
+                cell.setValue(-cell.getValue());
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void saveHit(Room room, int x, int y, int currentPlayer) throws JsonProcessingException {
+        BoardCell cell = getCell(x, y, HIT);
+        if (currentPlayer == 1) {
+            ArrayList<BoardCell> player2Board = room.getPlayer2Board();
+            int value = setShipHit(player2Board, x, y);
+            room.getEnemyBoardForPlayer1().add(cell);
+            GameDTO game = gameRepo.findByRoomId(room.getRoomId());
+            game.setPlayer2Ships(objectMapper.writeValueAsString(room.getPlayer2Ships()));
+            gameRepo.save(game);
+            ShotDTO shot = new ShotDTO();
+            shot.setRoomId(room.getRoomId());
+            shot.setPlayerId(room.getPlayer1Id());
+            shot.setX(x);
+            shot.setY(y);
+            shot.setValue(value);
+            shotRepo.save(shot);
+        } else {
+            ArrayList<BoardCell> player1Board = room.getPlayer1Board();
+            int value = setShipHit(player1Board, x, y);
+            room.getEnemyBoardForPlayer2().add(cell);
+            GameDTO game = gameRepo.findByRoomId(room.getRoomId());
+            game.setPlayer2Ships(objectMapper.writeValueAsString(room.getPlayer2Ships()));
+            gameRepo.save(game);
+            ShotDTO shot = new ShotDTO();
+            shot.setRoomId(room.getRoomId());
+            shot.setPlayerId(room.getPlayer2Id());
+            shot.setX(x);
+            shot.setY(y);
+            shot.setValue(value);
+            shotRepo.save(shot);
+        }
+    }
+
+    private int setShipHit(ArrayList<BoardCell> ship, int x, int y) {
+        for (BoardCell cell : ship) {
+            if (cell.getX() == x && cell.getY() == y) {
+                cell.setValue(-cell.getValue());
+                return cell.getValue();
+            }
+        }
+        return 0;
+    }
+
+    private boolean isShipSunken(ArrayList<BoardCell> ship) {
+        int count = 0;
+        for (BoardCell boardCell : ship) {
+            if (boardCell.getValue() < 0) {
+                count++;
+            }
+        }
+        return count == ship.size();
+    }
+
+    private void saveMiss(Room room, int x, int y, int currentPlayer) throws JsonProcessingException {
+        BoardCell cell = getCell(x, y, MISS);
+        if (currentPlayer == 1) {
+            ArrayList<BoardCell> player2Board = room.getPlayer2Board();
+            player2Board.add(cell);
+            room.getEnemyBoardForPlayer1().add(cell);
+            GameDTO game = gameRepo.findByRoomId(room.getRoomId());
+            game.setPlayer2Ships(objectMapper.writeValueAsString(room.getPlayer2Ships()));
+            gameRepo.save(game);
+            ShotDTO shot = new ShotDTO();
+            shot.setRoomId(room.getRoomId());
+            shot.setPlayerId(room.getPlayer1Id());
+            shot.setX(x);
+            shot.setY(y);
+            shot.setValue(MISS);
+            shotRepo.save(shot);
+        } else {
+            ArrayList<BoardCell> player1Board = room.getPlayer1Board();
+            player1Board.add(cell);
+            room.getEnemyBoardForPlayer2().add(cell);
+            GameDTO game = gameRepo.findByRoomId(room.getRoomId());
+            game.setPlayer2Ships(objectMapper.writeValueAsString(room.getPlayer2Ships()));
+            gameRepo.save(game);
+            ShotDTO shot = new ShotDTO();
+            shot.setRoomId(room.getRoomId());
+            shot.setPlayerId(room.getPlayer2Id());
+            shot.setX(x);
+            shot.setY(y);
+            shot.setValue(MISS);
+            shotRepo.save(shot);
+        }
+
+    }
+
+    private RemainingShips getRemainingShips(ArrayList<ArrayList<BoardCell>> ships){
+        RemainingShips remainingShips = new RemainingShips();
+        int oneDeck = 0;
+        int twoDeck = 0;
+        int threeDeck = 0;
+        int fourDeck = 0;
+        for (ArrayList<BoardCell> ship : ships) {
+            int status = isShipInOrder(ship);
+            if (status == 1) {
+                oneDeck++;
+            } else if (status == 2) {
+                twoDeck++;
+            } else if (status == 3) {
+                threeDeck++;
+            } else if (status == 4) {
+                fourDeck++;
+            }
+        }
+        remainingShips.setOneDeckShips(oneDeck);
+        remainingShips.setTwoDeckShips(twoDeck);
+        remainingShips.setThreeDeckShips(threeDeck);
+        remainingShips.setFourDeckShips(fourDeck);
+        return remainingShips;
+    }
+
+    //return 0 if ship is sunken or ship's deck type
+    private int isShipInOrder(ArrayList<BoardCell> ship) {
+        int deckType = Math.abs(ship.get(0).getValue());
+        int count = 0;
+        for (BoardCell cell : ship) {
+            if (cell.getValue() > 0) {
+                count++;
+            }
+        }
+        return count == 0 ? 0 : deckType;
+    }
+
+
+
+    /*private ArrayList<BoardCell> calculateInteractedCells(Room room, int x, int y) {
+        ArrayList<BoardCell> interactedCells = new ArrayList<>();
+        ArrayList<ArrayList<BoardCell>> enemyShips;
+        if (room.getCurrentPlayer() == 1) {
+            enemyShips = room.getPlayer2Ships();
+        } else {
+            enemyShips = room.getPlayer1Ships();
+        }
+        int status = isShipHit(enemyShips, x, y, room);
+
+        if (status != MISS) {
+            System.out.println("Hit");
+            METHODER
+            BoardCell cell = new BoardCell();
+            cell.setX(x);
+            cell.setY(y);
+            cell.setValue(status);
+            interactedCells.add(cell);
+            setShipHit(game, x, y);
+            setEnemyBoard(game, x, y, status);
+        } else {
+            System.out.println("Miss");
+           METHODER
+            BoardCell cell = new BoardCell();
+            cell.setX(x);
+            cell.setY(y);
+            cell.setValue(MISS);
+            interactedCells.add(cell);
+            setShipMiss(game, x, y);
+            setEnemyBoard(game, x, y, 0);
+            room.setCurrentPlayer(room.getCurrentPlayer() == 1 ? 2 : 1);
+        }
+        return interactedCells;
+    }
+
+    private void storeShipsToDatabase() {
+
+    }
+
+    private void storeShotToDatabase(ArrayList<BoardCell> interactedCells) {
+
+    }*/
 
    /* private void execute(Game game, int x, int y) throws IOException {
         BoardCell[][] enemyShips;
@@ -63,7 +292,7 @@ public class TurnMaker {
         }
     }*/
 
-    @SuppressWarnings("unchecked")
+    /*@SuppressWarnings("unchecked")
     private void setShipMiss(GameDTO gameDTO, int x, int y) throws IOException {
         List<BoardCell> boardList;
         BoardCell cell = new BoardCell();
@@ -79,36 +308,9 @@ public class TurnMaker {
             boardList.add(cell);
             gameDTO.setPlayer1Ships(objectMapper.writeValueAsString(boardList));
         }
-    }
+    }*/
 
-    //returns 0 if miss or negative value in case of hit
-    private int isShipHit(BoardCell[][] ships, int x, int y) {
-        for (BoardCell[] ship : ships) {
-            for (BoardCell cell : ship) {
-                if (cell.getX() == x && cell.getY() == y) {
-                    cell.setValue(-cell.getValue());
-                    if (isShipSunken(ship)) {
-                        System.out.println("Sunken");
-                        /**setEnemyBoard(game, x, y);*/
-                    }
-                    return cell.getValue();
-                }
-            }
-        }
-        return 0;
-    }
-
-    private boolean isShipSunken(BoardCell[] ship) {
-        int count = 0;
-        for (BoardCell boardCell : ship) {
-            if (boardCell.getValue() < 0) {
-                count++;
-            }
-        }
-        return count == ship.length;
-    }
-
-    private void setShipHit(GameDTO gameDTO, int x, int y) throws IOException {
+    /* private void setShipHit(GameDTO gameDTO, int x, int y) throws IOException {
         BoardCell[] playerBoard;
         if (gameDTO.getCurrentPlayer() == 1) {
             playerBoard = objectMapper.readValue(gameDTO.getPlayer2Ships(), BoardCell[].class);
@@ -129,7 +331,7 @@ public class TurnMaker {
             }
             gameDTO.setPlayer1Ships(objectMapper.writeValueAsString(playerBoard));
         }
-    }
+    }*/
 
     //@SuppressWarnings("unchecked")
     /*private void setEnemyBoard(Game game, int x, int y, int value) throws IOException {

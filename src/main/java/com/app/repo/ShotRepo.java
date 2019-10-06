@@ -10,8 +10,7 @@ public interface ShotRepo extends JpaRepository<ShotDTO, Long> {
 
     List<ShotDTO> findByRoomId(UUID roomId);
 
-    List<ShotDTO> findByRoomIdAndPlayer1IdAndValueEquals(UUID roomId, UUID playerId, Integer value);
+    List<ShotDTO> findByRoomIdAndPlayerIdAndValueEquals(UUID roomId, UUID playerId, Integer value);
 
-    List<ShotDTO> findByRoomIdAndPlayer2IdAndValueEquals(UUID roomId, UUID playerId, Integer value);
 
 }
