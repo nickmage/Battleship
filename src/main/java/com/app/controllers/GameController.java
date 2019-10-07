@@ -56,8 +56,6 @@ public class GameController {
                                    @RequestParam(name = "y") int y) throws JsonProcessingException {
         if (roomId != null && playerId != null && !roomId.equals("null") && !playerId.equals("null")){
             Room room = RoomCache.rooms.get(roomId);
-            System.out.println(roomId);
-            System.out.println(room);
             if (turnValidator.isValidTurn(room, x, y, playerId)){
                 return ResponseEntity.ok(turnMaker.makeShot(room, x, y));
             } else {

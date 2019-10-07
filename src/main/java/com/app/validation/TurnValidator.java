@@ -27,7 +27,7 @@ public class TurnValidator {
         if (room.getCurrentPlayer() == 1) {
             return checkCells(room.getEnemyBoardForPlayer1(), x, y);
         } else {
-            return checkCells(room.getEnemyBoardForPlayer1(), x, y);
+            return checkCells(room.getEnemyBoardForPlayer2(), x, y);
         }
     }
 
