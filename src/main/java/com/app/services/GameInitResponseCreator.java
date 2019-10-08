@@ -59,6 +59,4 @@ public class GameInitResponseCreator {
         response.setWinner(room.getWinner());
         return response;
     }
-
-
 }

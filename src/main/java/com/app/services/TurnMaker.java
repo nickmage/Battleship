@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 @Service
 public class TurnMaker {
@@ -38,26 +39,6 @@ public class TurnMaker {
         this.objectMapper = objectMapper;
         this.remainingShips = remainingShips;
     }
-
-    /*
-    P1
-    Room ->
-    * check player2Ships if hit/miss
-     change player2Ships respectively
-     add new cells / change existing to player2Board(if miss/hit resp.)
-     add new cells to enemyBoardForPlayer1
-
-    Response ->
-    send interactedCells
-    calculate remainingEnemyShips
-    find out if myTurn;
-    set winner if it is present
-
-    DB ->
-    add new record to Shots
-    modify player2 ships in Game table
-
-    */
 
     public ShotResponseWrapper makeShot(Room room, int x, int y) throws JsonProcessingException {
         ShotResponseWrapper response = new ShotResponseWrapper();
@@ -122,30 +103,14 @@ public class TurnMaker {
             ArrayList<BoardCell> player2Board = room.getPlayer2Board();
             int value = setShipHit(player2Board, x, y);
             room.getEnemyBoardForPlayer1().add(cell);
-            GameDTO game = gameRepo.findByRoomId(room.getRoomId());
-            game.setPlayer2Ships(objectMapper.writeValueAsString(room.getPlayer2Ships()));
-            gameRepo.save(game);
-            ShotDTO shot = new ShotDTO();
-            shot.setRoomId(room.getRoomId());
-            shot.setPlayerId(room.getPlayer1Id());
-            shot.setX(x);
-            shot.setY(y);
-            shot.setValue(value);
-            shotRepo.save(shot);
+            storeGameToDB(room.getRoomId(), room.getPlayer2Ships());
+            storeShotToDB(room.getRoomId(), room.getPlayer1Id(), x, y, value);
         } else {
             ArrayList<BoardCell> player1Board = room.getPlayer1Board();
             int value = setShipHit(player1Board, x, y);
             room.getEnemyBoardForPlayer2().add(cell);
-            GameDTO game = gameRepo.findByRoomId(room.getRoomId());
-            game.setPlayer2Ships(objectMapper.writeValueAsString(room.getPlayer2Ships()));
-            gameRepo.save(game);
-            ShotDTO shot = new ShotDTO();
-            shot.setRoomId(room.getRoomId());
-            shot.setPlayerId(room.getPlayer2Id());
-            shot.setX(x);
-            shot.setY(y);
-            shot.setValue(value);
-            shotRepo.save(shot);
+            storeGameToDB(room.getRoomId(), room.getPlayer1Ships());
+            storeShotToDB(room.getRoomId(), room.getPlayer2Id(), x, y, value);
         }
     }
 
@@ -163,33 +128,17 @@ public class TurnMaker {
             ArrayList<BoardCell> player2Board = room.getPlayer2Board();
             player2Board.addAll(sunkenShipSurroundings);
             room.getEnemyBoardForPlayer1().addAll(sunkenShipSurroundings);
-            GameDTO game = gameRepo.findByRoomId(room.getRoomId());
-            game.setPlayer2Ships(objectMapper.writeValueAsString(room.getPlayer2Ships()));
-            gameRepo.save(game);
+            storeGameToDB(room.getRoomId(), room.getPlayer2Ships());
             /*for (BoardCell cell : sunkenShipSurroundings) {
-                ShotDTO shot = new ShotDTO();
-                shot.setRoomId(room.getRoomId());
-                shot.setPlayerId(room.getPlayer1Id());
-                shot.setX(cell.getX());
-                shot.setY(cell.getX());
-                shot.setValue(MISS);
-                shotRepo.save(shot);
+                storeShotToDB(room.getRoomId(), room.getPlayer1Id(), x, y, MISS);
             }*/
         } else {
             ArrayList<BoardCell> player1Board = room.getPlayer1Board();
             player1Board.addAll(sunkenShipSurroundings);
             room.getEnemyBoardForPlayer2().addAll(sunkenShipSurroundings);
-            GameDTO game = gameRepo.findByRoomId(room.getRoomId());
-            game.setPlayer1Ships(objectMapper.writeValueAsString(room.getPlayer1Ships()));
-            gameRepo.save(game);
+            storeGameToDB(room.getRoomId(), room.getPlayer1Ships());
             /*for (BoardCell cell : sunkenShipSurroundings) {
-                ShotDTO shot = new ShotDTO();
-                shot.setRoomId(room.getRoomId());
-                shot.setPlayerId(room.getPlayer1Id());
-                shot.setX(cell.getX());
-                shot.setY(cell.getX());
-                shot.setValue(MISS);
-                shotRepo.save(shot);
+                storeShotToDB(room.getRoomId(), room.getPlayer2Id(), x, y, MISS);
             }*/
         }
         interactedCells.addAll(sunkenShipSurroundings);
@@ -299,32 +248,15 @@ public class TurnMaker {
             ArrayList<BoardCell> player2Board = room.getPlayer2Board();
             player2Board.add(cell);
             room.getEnemyBoardForPlayer1().add(cell);
-            GameDTO game = gameRepo.findByRoomId(room.getRoomId());
-            game.setPlayer2Ships(objectMapper.writeValueAsString(room.getPlayer2Ships()));
-            gameRepo.save(game);
-            ShotDTO shot = new ShotDTO();
-            shot.setRoomId(room.getRoomId());
-            shot.setPlayerId(room.getPlayer1Id());
-            shot.setX(x);
-            shot.setY(y);
-            shot.setValue(MISS);
-            shotRepo.save(shot);
+            storeGameToDB(room.getRoomId(), room.getPlayer2Ships());
+            storeShotToDB(room.getRoomId(), room.getPlayer1Id(), x, y, MISS);
         } else {
             ArrayList<BoardCell> player1Board = room.getPlayer1Board();
             player1Board.add(cell);
             room.getEnemyBoardForPlayer2().add(cell);
-            GameDTO game = gameRepo.findByRoomId(room.getRoomId());
-            game.setPlayer1Ships(objectMapper.writeValueAsString(room.getPlayer1Ships()));
-            gameRepo.save(game);
-            ShotDTO shot = new ShotDTO();
-            shot.setRoomId(room.getRoomId());
-            shot.setPlayerId(room.getPlayer2Id());
-            shot.setX(x);
-            shot.setY(y);
-            shot.setValue(MISS);
-            shotRepo.save(shot);
+            storeGameToDB(room.getRoomId(), room.getPlayer1Ships());
+            storeShotToDB(room.getRoomId(), room.getPlayer2Id(), x, y, MISS);
         }
-
     }
 
     private void setRoomCurrentPlayer(Room room, int status) {
@@ -336,4 +268,19 @@ public class TurnMaker {
         }
     }
 
+    private void storeShotToDB(UUID roomId, UUID playerId, int x, int y, int value){
+        ShotDTO shot = new ShotDTO();
+        shot.setRoomId(roomId);
+        shot.setPlayerId(playerId);
+        shot.setX(x);
+        shot.setY(y);
+        shot.setValue(value);
+        shotRepo.save(shot);
+    }
+
+    private void storeGameToDB(UUID roomId,ArrayList<ArrayList<BoardCell>> ships) throws JsonProcessingException {
+        GameDTO game = gameRepo.findByRoomId(roomId);
+        game.setPlayer1Ships(objectMapper.writeValueAsString(ships));
+        gameRepo.save(game);
+    }
 }
