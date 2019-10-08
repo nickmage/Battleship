@@ -6,6 +6,8 @@
     var init = init();
     var myTurn = false;
     var winner = 0;
+    const PLAYER = 1;
+    const OPPONENT = -1;
 
 
     function init(){

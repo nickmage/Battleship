@@ -4,7 +4,7 @@ import com.app.DTOs.GameDTO;
 import com.app.DTOs.ShotDTO;
 import com.app.cache.Room;
 import com.app.entities.BoardCell;
-import com.app.entities.RemainingShips;
+import com.app.exception.WinnerException;
 import com.app.repo.GameRepo;
 import com.app.repo.ShotRepo;
 import com.app.response_wrappers.ShotResponseWrapper;
@@ -20,6 +20,8 @@ public class TurnMaker {
     private final int MISS = 0;
     private final int HIT = -1;
     private final int SINK = 1;
+    private final int PLAYER = 1;
+    private final int OPPONENT = -1;
     private final int BOARD_SIZE = 10;
     private final char HORIZONTAL = 'h';
     private final char VERTICAL = 'v';
@@ -27,11 +29,14 @@ public class TurnMaker {
     private final GameRepo gameRepo;
     private final ShotRepo shotRepo;
     private final ObjectMapper objectMapper;
+    private final RemainingShipsCreator remainingShips;
 
-    public TurnMaker(GameRepo gameRepo, ShotRepo shotRepo, ObjectMapper objectMapper) {
+    public TurnMaker(GameRepo gameRepo, ShotRepo shotRepo,
+                     ObjectMapper objectMapper, RemainingShipsCreator remainingShips) {
         this.gameRepo = gameRepo;
         this.shotRepo = shotRepo;
         this.objectMapper = objectMapper;
+        this.remainingShips = remainingShips;
     }
 
     /*
@@ -57,9 +62,15 @@ public class TurnMaker {
     public ShotResponseWrapper makeShot(Room room, int x, int y) throws JsonProcessingException {
         ShotResponseWrapper response = new ShotResponseWrapper();
         int status = checkShotStatus(room, x, y, response);
-        response.setRemainingEnemyShips(getRemainingShips(room.getCurrentPlayer() == 1 ? room.getPlayer2Ships() : room.getPlayer1Ships()));
         response.setMyTurn(status != MISS);
         setRoomCurrentPlayer(room, status);
+        try {
+            response.setRemainingEnemyShips(remainingShips.getRemainingShips(room.getCurrentPlayer() == 1 ?
+                    room.getPlayer2Ships() : room.getPlayer1Ships()));
+        } catch (WinnerException e) {
+            response.setWinner(room.getCurrentPlayer() == 1 ? PLAYER : OPPONENT);
+            return response;
+        }
         response.setWinner(0);
         return response;
     }
@@ -71,22 +82,28 @@ public class TurnMaker {
         for (ArrayList<BoardCell> ship : enemyShips) {
             if (isShipHit(ship, x, y)) {
                 if (isShipSunken(ship)) {
-                    saveHit(room, x, y, currentPlayer);
-                    interactedCells.add(new BoardCell(x, y, HIT));
                     saveSunken(room, ship, interactedCells);
-                    response.setInteractedCells(interactedCells);
+                    fillListsWithCells(room, x, y, response, interactedCells, currentPlayer, true);
                     return SINK;
                 }
-                saveHit(room, x, y, currentPlayer);
-                interactedCells.add(new BoardCell(x, y, HIT));
-                response.setInteractedCells(interactedCells);
+                fillListsWithCells(room, x, y, response, interactedCells, currentPlayer, true);
                 return HIT;
             }
         }
-        saveMiss(room, x, y, currentPlayer);
-        interactedCells.add(new BoardCell(x, y, MISS));
-        response.setInteractedCells(interactedCells);
+        fillListsWithCells(room, x, y, response, interactedCells, currentPlayer, false);
         return MISS;
+    }
+
+    private void fillListsWithCells(Room room, int x, int y, ShotResponseWrapper response, ArrayList<BoardCell> interactedCells,
+                                    int currentPlayer, boolean isHit) throws JsonProcessingException {
+        if (isHit) {
+            saveHit(room, x, y, currentPlayer);
+            interactedCells.add(new BoardCell(x, y, HIT));
+        } else {
+            saveMiss(room, x, y, currentPlayer);
+            interactedCells.add(new BoardCell(x, y, MISS));
+        }
+        response.setInteractedCells(interactedCells);
     }
 
     private boolean isShipHit(ArrayList<BoardCell> ship, int x, int y) {
@@ -133,76 +150,14 @@ public class TurnMaker {
     }
 
     private void saveSunken(Room room, ArrayList<BoardCell> ship, ArrayList<BoardCell> interactedCells) throws JsonProcessingException {
-        //BoardCell cell = new BoardCell(x, y, HIT);
         ArrayList<BoardCell> sunkenShipSurroundings = new ArrayList<>();
         char orientation = shipOrientation(ship);
         int y = ship.get(0).getY();
         int x = ship.get(0).getX();
         if (orientation == NONE || orientation == VERTICAL) {
-            if (y - 1 >= 0) {
-                for (int i = 0; i < ship.size(); i++) {
-                    int currentX = ship.get(i).getX();
-                    sunkenShipSurroundings.add(new BoardCell(currentX, y - 1, MISS));
-                }
-            }
-            if (y + 1 < BOARD_SIZE) {
-                for (int i = 0; i < ship.size(); i++) {
-                    int currentX = ship.get(i).getX();
-                    sunkenShipSurroundings.add(new BoardCell(currentX, y + 1, MISS));
-                }
-            }
-            if (x - 1 >= 0) {
-                sunkenShipSurroundings.add(new BoardCell(x - 1, y, MISS));
-                if (y - 1 >= 0) {
-                    sunkenShipSurroundings.add(new BoardCell(x - 1, y - 1, MISS));
-                }
-                if (y + 1 < BOARD_SIZE) {
-                    sunkenShipSurroundings.add(new BoardCell(x - 1, y + 1, MISS));
-                }
-            }
-            x = x + Math.abs(ship.get(0).getValue());
-            if (x < BOARD_SIZE) {
-                sunkenShipSurroundings.add(new BoardCell(x, y, MISS));
-                if (y - 1 >= 0) {
-                    sunkenShipSurroundings.add(new BoardCell(x, y - 1, MISS));
-                }
-                if (y + 1 < BOARD_SIZE) {
-                    sunkenShipSurroundings.add(new BoardCell(x, y + 1, MISS));
-                }
-            }
+            saveSunkenVerticalShip(ship, sunkenShipSurroundings, x, y);
         } else {
-            if (x - 1 >= 0) {
-                for (int i = 0; i < ship.size(); i++) {
-                    int currentY = ship.get(i).getY();
-                    sunkenShipSurroundings.add(new BoardCell(x - 1, currentY, MISS));
-                }
-            }
-            if (x + 1 < BOARD_SIZE) {
-                for (int i = 0; i < ship.size(); i++) {
-                    int currentY = ship.get(i).getY();
-                    sunkenShipSurroundings.add(new BoardCell(x + 1, currentY, MISS));
-                }
-            }
-
-            if (y - 1 >= 0) {
-                sunkenShipSurroundings.add(new BoardCell(x, y - 1, MISS));
-                if (x - 1 >= 0) {
-                    sunkenShipSurroundings.add(new BoardCell(x - 1, y - 1, MISS));
-                }
-                if (x + 1 < BOARD_SIZE) {
-                    sunkenShipSurroundings.add(new BoardCell(x + 1, y - 1, MISS));
-                }
-            }
-            y = y + Math.abs(ship.get(0).getValue());
-            if (y < BOARD_SIZE) {
-                sunkenShipSurroundings.add(new BoardCell(x, y, MISS));
-                if (x - 1 >= 0) {
-                    sunkenShipSurroundings.add(new BoardCell(x - 1, y, MISS));
-                }
-                if (x + 1 < BOARD_SIZE) {
-                    sunkenShipSurroundings.add(new BoardCell(x + 1, y, MISS));
-                }
-            }
+            saveSunkenHorizontalShip(ship, sunkenShipSurroundings, x, y);
         }
         if (room.getCurrentPlayer() == 1) {
             ArrayList<BoardCell> player2Board = room.getPlayer2Board();
@@ -240,6 +195,74 @@ public class TurnMaker {
         interactedCells.addAll(sunkenShipSurroundings);
     }
 
+    private void saveSunkenHorizontalShip(ArrayList<BoardCell> ship, ArrayList<BoardCell> sunkenShipSurroundings, int x, int y){
+        if (x - 1 >= 0) {
+            for (BoardCell cell : ship) {
+                int currentY = cell.getY();
+                sunkenShipSurroundings.add(new BoardCell(x - 1, currentY, MISS));
+            }
+        }
+        if (x + 1 < BOARD_SIZE) {
+            for (BoardCell cell : ship) {
+                int currentY = cell.getY();
+                sunkenShipSurroundings.add(new BoardCell(x + 1, currentY, MISS));
+            }
+        }
+        if (y - 1 >= 0) {
+            sunkenShipSurroundings.add(new BoardCell(x, y - 1, MISS));
+            if (x - 1 >= 0) {
+                sunkenShipSurroundings.add(new BoardCell(x - 1, y - 1, MISS));
+            }
+            if (x + 1 < BOARD_SIZE) {
+                sunkenShipSurroundings.add(new BoardCell(x + 1, y - 1, MISS));
+            }
+        }
+        y = y + Math.abs(ship.get(0).getValue());
+        if (y < BOARD_SIZE) {
+            sunkenShipSurroundings.add(new BoardCell(x, y, MISS));
+            if (x - 1 >= 0) {
+                sunkenShipSurroundings.add(new BoardCell(x - 1, y, MISS));
+            }
+            if (x + 1 < BOARD_SIZE) {
+                sunkenShipSurroundings.add(new BoardCell(x + 1, y, MISS));
+            }
+        }
+    }
+
+    private void saveSunkenVerticalShip(ArrayList<BoardCell> ship, ArrayList<BoardCell> sunkenShipSurroundings, int x, int y){
+        if (y - 1 >= 0) {
+            for (BoardCell cell : ship) {
+                int currentX = cell.getX();
+                sunkenShipSurroundings.add(new BoardCell(currentX, y - 1, MISS));
+            }
+        }
+        if (y + 1 < BOARD_SIZE) {
+            for (BoardCell cell : ship) {
+                int currentX = cell.getX();
+                sunkenShipSurroundings.add(new BoardCell(currentX, y + 1, MISS));
+            }
+        }
+        if (x - 1 >= 0) {
+            sunkenShipSurroundings.add(new BoardCell(x - 1, y, MISS));
+            if (y - 1 >= 0) {
+                sunkenShipSurroundings.add(new BoardCell(x - 1, y - 1, MISS));
+            }
+            if (y + 1 < BOARD_SIZE) {
+                sunkenShipSurroundings.add(new BoardCell(x - 1, y + 1, MISS));
+            }
+        }
+        x = x + Math.abs(ship.get(0).getValue());
+        if (x < BOARD_SIZE) {
+            sunkenShipSurroundings.add(new BoardCell(x, y, MISS));
+            if (y - 1 >= 0) {
+                sunkenShipSurroundings.add(new BoardCell(x, y - 1, MISS));
+            }
+            if (y + 1 < BOARD_SIZE) {
+                sunkenShipSurroundings.add(new BoardCell(x, y + 1, MISS));
+            }
+        }
+    }
+
     private char shipOrientation(ArrayList<BoardCell> ship) {
         if (ship.size() == 1) {
             return NONE;
@@ -249,7 +272,6 @@ public class TurnMaker {
             return VERTICAL;
         }
     }
-
 
     private int setShipHit(ArrayList<BoardCell> ship, int x, int y) {
         for (BoardCell cell : ship) {
@@ -313,180 +335,5 @@ public class TurnMaker {
             room.setCurrentPlayer(1);
         }
     }
-
-    private RemainingShips getRemainingShips(ArrayList<ArrayList<BoardCell>> ships) {
-        RemainingShips remainingShips = new RemainingShips();
-        int oneDeck = 0;
-        int twoDeck = 0;
-        int threeDeck = 0;
-        int fourDeck = 0;
-        for (ArrayList<BoardCell> ship : ships) {
-            int status = isShipInOrder(ship);
-            if (status == 1) {
-                oneDeck++;
-            } else if (status == 2) {
-                twoDeck++;
-            } else if (status == 3) {
-                threeDeck++;
-            } else if (status == 4) {
-                fourDeck++;
-            }
-        }
-        remainingShips.setOneDeckShips(oneDeck);
-        remainingShips.setTwoDeckShips(twoDeck);
-        remainingShips.setThreeDeckShips(threeDeck);
-        remainingShips.setFourDeckShips(fourDeck);
-        return remainingShips;
-    }
-
-    //return 0 if ship is sunken or ship's deck type
-    private int isShipInOrder(ArrayList<BoardCell> ship) {
-        int deckType = Math.abs(ship.get(0).getValue());
-        int count = 0;
-        for (BoardCell cell : ship) {
-            if (cell.getValue() > 0) {
-                count++;
-            }
-        }
-        return count == 0 ? 0 : deckType;
-    }
-
-
-
-
-    /*private ArrayList<BoardCell> calculateInteractedCells(Room room, int x, int y) {
-        ArrayList<BoardCell> interactedCells = new ArrayList<>();
-        ArrayList<ArrayList<BoardCell>> enemyShips;
-        if (room.getCurrentPlayer() == 1) {
-            enemyShips = room.getPlayer2Ships();
-        } else {
-            enemyShips = room.getPlayer1Ships();
-        }
-        int status = isShipHit(enemyShips, x, y, room);
-
-        if (status != MISS) {
-            System.out.println("Hit");
-            METHODER
-            BoardCell cell = new BoardCell();
-            cell.setX(x);
-            cell.setY(y);
-            cell.setValue(status);
-            interactedCells.add(cell);
-            setShipHit(game, x, y);
-            setEnemyBoard(game, x, y, status);
-        } else {
-            System.out.println("Miss");
-           METHODER
-            BoardCell cell = new BoardCell();
-            cell.setX(x);
-            cell.setY(y);
-            cell.setValue(MISS);
-            interactedCells.add(cell);
-            setShipMiss(game, x, y);
-            setEnemyBoard(game, x, y, 0);
-            room.setCurrentPlayer(room.getCurrentPlayer() == 1 ? 2 : 1);
-        }
-        return interactedCells;
-    }
-
-    private void storeShipsToDatabase() {
-
-    }
-
-    private void storeShotToDatabase(ArrayList<BoardCell> interactedCells) {
-
-    }*/
-
-   /* private void execute(Game game, int x, int y) throws IOException {
-        BoardCell[][] enemyShips;
-        if (game.getCurrentPlayer() == 1) {
-            enemyShips = objectMapper.readValue(game.getShipsOfPlayer2JSON(), BoardCell[][].class);
-        } else {
-            enemyShips = objectMapper.readValue(game.getShipsOfPlayer1JSON(), BoardCell[][].class);
-        }
-        int status = isShipHit(enemyShips, x, y);
-        if (status < 0) {
-            System.out.println("Hit");
-            setShipHit(game, x, y);
-            setEnemyBoard(game, x, y, status);
-        } else {
-            System.out.println("Miss");
-            setShipMiss(game, x, y);
-            setEnemyBoard(game, x, y, 0);
-        }
-    }*/
-
-    /*@SuppressWarnings("unchecked")
-    private void setShipMiss(GameDTO gameDTO, int x, int y) throws IOException {
-        List<BoardCell> boardList;
-        BoardCell cell = new BoardCell();
-        cell.setX(x);
-        cell.setY(y);
-        cell.setValue(0);
-        if (gameDTO.getCurrentPlayer() == 1) {
-            boardList = objectMapper.readValue(gameDTO.getPlayer2Ships(), List.class);
-            boardList.add(cell);
-            gameDTO.setPlayer2Ships(objectMapper.writeValueAsString(boardList));
-        } else {
-            boardList = objectMapper.readValue(gameDTO.getPlayer1Ships(), List.class);
-            boardList.add(cell);
-            gameDTO.setPlayer1Ships(objectMapper.writeValueAsString(boardList));
-        }
-    }*/
-
-    /* private void setShipHit(GameDTO gameDTO, int x, int y) throws IOException {
-        BoardCell[] playerBoard;
-        if (gameDTO.getCurrentPlayer() == 1) {
-            playerBoard = objectMapper.readValue(gameDTO.getPlayer2Ships(), BoardCell[].class);
-            for (BoardCell cell: playerBoard) {
-                if (cell.getX() == x && cell.getY() == y) {
-                    cell.setValue(-cell.getValue());
-                    break;
-                }
-            }
-            gameDTO.setPlayer2Ships(objectMapper.writeValueAsString(playerBoard));
-        } else {
-            playerBoard = objectMapper.readValue(gameDTO.getPlayer1Ships(), BoardCell[].class);
-            for (BoardCell cell: playerBoard) {
-                if (cell.getX() == x && cell.getY() == y) {
-                    cell.setValue(-cell.getValue());
-                    break;
-                }
-            }
-            gameDTO.setPlayer1Ships(objectMapper.writeValueAsString(playerBoard));
-        }
-    }*/
-
-    //@SuppressWarnings("unchecked")
-    /*private void setEnemyBoard(Game game, int x, int y, int value) throws IOException {
-        BoardCell[] board;
-        BoardCell cell = new BoardCell();
-        cell.setX(x);
-        cell.setY(y);
-        cell.setValue(value);
-        if (game.getCurrentPlayer() == 1) {
-            if (game.getEnemyBoardForPlayer1JSON() == null){
-                board = new BoardCell[1];
-                board[0] = cell;
-                game.setEnemyBoardForPlayer1JSON(objectMapper.writeValueAsString(board));
-            } else {
-                List<BoardCell> boardList;
-                boardList = objectMapper.readValue(game.getEnemyBoardForPlayer1JSON(), List.class);
-                boardList.add(cell);
-                game.setEnemyBoardForPlayer1JSON(objectMapper.writeValueAsString(boardList));
-            }
-        } else {
-            if (game.getEnemyBoardForPlayer2JSON() == null){
-                board = new BoardCell[1];
-                board[0] = cell;
-                game.setEnemyBoardForPlayer2JSON(objectMapper.writeValueAsString(board));
-            } else {
-                List<BoardCell> boardList;
-                boardList = objectMapper.readValue(game.getEnemyBoardForPlayer2JSON(), List.class);
-                boardList.add(cell);
-                game.setEnemyBoardForPlayer2JSON(objectMapper.writeValueAsString(boardList));
-            }
-        }
-    }*/
 
 }

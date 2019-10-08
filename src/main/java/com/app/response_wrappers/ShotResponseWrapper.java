@@ -35,7 +35,7 @@ public class ShotResponseWrapper {
         this.myTurn = myTurn;
     }
 
-    public int isWinner() {
+    public int getWinner() {
         return winner;
     }
 
