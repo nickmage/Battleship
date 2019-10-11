@@ -2,7 +2,6 @@ package com.auth.configuration;
 
 import com.auth.filters.JwtAuthenticationFilter;
 import com.auth.filters.JwtAuthorizationFilter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -21,16 +20,19 @@ import javax.sql.DataSource;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
-    @Autowired
-    private DataSource dataSource;
+    //@Autowired
+    private final DataSource dataSource;
+
+    public SecurityConfiguration(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and()
                 .csrf().disable()
                 .authorizeRequests()
-                    .antMatchers("/#/", "/",
-
+                    .antMatchers("/#/", "/", "/scoreboard",
                             "/auth", "/registration", "/success.html", "/login.html",
                             "/index.html", "/scoreboard.html", "/enter.html", "/redirectedLogin.html", "/registration.html",
                             "/style/**", "/js/**", "/img/**")

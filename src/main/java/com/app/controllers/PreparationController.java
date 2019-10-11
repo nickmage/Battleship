@@ -1,9 +1,11 @@
 package com.app.controllers;
 
 import com.app.entities.Match;
+import com.app.entities.Scoreboard;
 import com.app.models.Ship;
 import com.app.repo.GameRepo;
 import com.app.repo.MatchRepo;
+import com.app.repo.ScoreboardRepo;
 import com.app.response_wrappers.StartResponseWrapper;
 import com.app.services.GameCreator;
 import com.app.services.MatchCreator;
@@ -26,13 +28,16 @@ public class PreparationController {
     private final MatchCreator matchCreator;
     private final GameRepo gameRepo;
     private final GameCreator gameCreator;
+    private final ScoreboardRepo scoreboardRepo;
 
-    public PreparationController(UserRepo userRepo, MatchRepo matchRepo, MatchCreator matchCreator, GameRepo gameRepo, GameCreator gameCreator) {
+    public PreparationController(UserRepo userRepo, MatchRepo matchRepo, MatchCreator matchCreator,
+                                 GameRepo gameRepo, GameCreator gameCreator, ScoreboardRepo scoreboardRepo) {
         this.userRepo = userRepo;
         this.matchRepo = matchRepo;
         this.matchCreator = matchCreator;
         this.gameRepo = gameRepo;
         this.gameCreator = gameCreator;
+        this.scoreboardRepo = scoreboardRepo;
     }
 
     @PostMapping("/start")
@@ -55,10 +60,12 @@ public class PreparationController {
                     matchRepo.save(match);
                     gameRepo.save(gameCreator.createNewGame(match));
                     return new ResponseEntity<>(new StartResponseWrapper(match.getPlayer2Id().toString(),
-                            match.getRoomId().toString()),HttpStatus.OK);
+                            match.getRoomId().toString()), HttpStatus.OK);
                 }
-            } else return new ResponseEntity<>("Cannot find your account! Please reenter the game and try again!", HttpStatus.BAD_REQUEST);
-        } else return new ResponseEntity<>("An error has occurred (the board is invalid)! Please try again and send a valid board.", HttpStatus.BAD_REQUEST);
+            } else
+                return new ResponseEntity<>("Cannot find your account! Please reenter the game and try again!", HttpStatus.BAD_REQUEST);
+        } else
+            return new ResponseEntity<>("An error has occurred (the board is invalid)! Please try again and send a valid board.", HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("/lobby")
@@ -70,4 +77,11 @@ public class PreparationController {
             return new ResponseEntity(HttpStatus.OK);
         }
     }
+
+    @GetMapping("/scoreboard")
+    public ResponseEntity<List<Scoreboard>> scoreboard() {
+        List<Scoreboard> response = scoreboardRepo.findTop10ByOrderByWinsDesc();
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 }

@@ -97,7 +97,10 @@ app.controller('RegistrationController', function($scope, $http) {
 });
 
 app.controller('ScoreboardController', function($scope, $http) {
-    //$scope.message = 'Hello from RegistrationController';
+        var script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.src = "js/scoreboard.js";
+        document.body.appendChild(script);
 });
 
 app.controller('MenuController', function($scope, $http) {

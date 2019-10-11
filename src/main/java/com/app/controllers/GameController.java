@@ -6,7 +6,6 @@ import com.app.response_wrappers.GameInitResponseWrapper;
 import com.app.response_wrappers.GameStatusResponseWrapper;
 import com.app.services.*;
 import com.app.validation.TurnValidator;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -54,9 +53,9 @@ public class GameController {
     public ResponseEntity makeShot(@RequestParam(name = "roomId") String roomId,
                                    @RequestParam(name = "playerId") String playerId,
                                    @RequestParam(name = "x") int x,
-                                   @RequestParam(name = "y") int y) throws JsonProcessingException {
+                                   @RequestParam(name = "y") int y) throws IOException {
         if (roomId != null && playerId != null && !roomId.equals("null") && !playerId.equals("null")){
-            Room room = RoomCache.rooms.get(roomId);
+            Room room = gameFinder.findGame(roomId);
             if (turnValidator.isValidTurn(room, x, y, playerId)){
                 return ResponseEntity.ok(turnMaker.makeShot(room, x, y));
             } else {
@@ -80,10 +79,21 @@ public class GameController {
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
+
+
+
+
+
     @PostMapping("/win")
     public ResponseEntity games(@RequestParam(name = "winner") String winner,
                                 @RequestParam(name = "loser") String loser) {
         scoreboardSaver.storeScoreboard(winner, loser);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @PostMapping("/delete")
+    public ResponseEntity deleteRoom(@RequestParam(name = "roomId") String roomId) {
+        RoomCache.rooms.remove(roomId);
         return new ResponseEntity(HttpStatus.OK);
     }
 
