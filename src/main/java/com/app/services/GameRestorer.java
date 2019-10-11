@@ -1,9 +1,9 @@
 package com.app.services;
 
-import com.app.DTOs.GameDTO;
-import com.app.DTOs.ShotDTO;
+import com.app.entities.Game;
+import com.app.entities.Shot;
 import com.app.cache.Room;
-import com.app.entities.BoardCell;
+import com.app.models.BoardCell;
 import com.app.repo.ShotRepo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,7 @@ public class GameRestorer {
         this.shotRepo = shotRepo;
     }
 
-    public Room restore(GameDTO game) throws IOException {
+    public Room restore(Game game) throws IOException {
         Room room = new Room();
         room.setRoomId(game.getRoomId());
         room.setCurrentPlayer(game.getCurrentPlayer());
@@ -42,7 +42,7 @@ public class GameRestorer {
         return room;
     }
 
-    private void setBoards(GameDTO game, Room room) throws IOException {
+    private void setBoards(Game game, Room room) throws IOException {
         room.setPlayer1Ships(getShips(game.getPlayer1Ships()));
         room.setPlayer2Ships(getShips(game.getPlayer2Ships()));
 
@@ -68,21 +68,21 @@ public class GameRestorer {
         for (ArrayList<BoardCell> ship : ships) {
             playerBoard.addAll(ship);
         }
-        List<ShotDTO> shots = getShotList(roomId, enemyId, number);
+        List<Shot> shots = getShotList(roomId, enemyId, number);
         fillBoardWithShots(playerBoard, shots);
         return playerBoard;
     }
 
     private ArrayList<BoardCell> getEnemyBoard(UUID roomId, UUID enemyId, int number) {
         ArrayList<BoardCell> enemyBoard = new ArrayList<>();
-        List<ShotDTO> shots = getShotList(roomId, enemyId, number);
+        List<Shot> shots = getShotList(roomId, enemyId, number);
         fillBoardWithShots(enemyBoard, shots);
         return enemyBoard;
     }
 
-    private void fillBoardWithShots(ArrayList<BoardCell> board, List<ShotDTO> shots) {
+    private void fillBoardWithShots(ArrayList<BoardCell> board, List<Shot> shots) {
         if (shots != null && shots.size() != 0) {
-            for (ShotDTO shot : shots) {
+            for (Shot shot : shots) {
                 BoardCell shotCell = new BoardCell();
                 shotCell.setX(shot.getX());
                 shotCell.setY(shot.getY());
@@ -92,7 +92,7 @@ public class GameRestorer {
         }
     }
 
-    private List<ShotDTO> getShotList(UUID roomId, UUID playerId, int number) {
+    private List<Shot> getShotList(UUID roomId, UUID playerId, int number) {
         return shotRepo.findByRoomIdAndPlayerIdAndValueEquals(roomId, playerId, 0);
     }
 

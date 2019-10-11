@@ -1,4 +1,4 @@
-package com.app.DTOs;
+package com.app.entities;
 
 import org.hibernate.annotations.Type;
 import org.springframework.stereotype.Component;
@@ -10,7 +10,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "game")
 @Component
-public class GameDTO {
+public class Game {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -36,9 +36,9 @@ public class GameDTO {
     @Type(type="text")
     private String player2Ships;
 
-    public GameDTO(Long id, UUID roomId, Integer currentPlayer, String player1Name,
-                   UUID player1Id, String player2Name, UUID player2Id, Date date,
-                   String player1Ships,  String player2Ships, Integer winner) {
+    public Game(Long id, UUID roomId, Integer currentPlayer, String player1Name,
+                UUID player1Id, String player2Name, UUID player2Id, Date date,
+                String player1Ships, String player2Ships, Integer winner) {
         this.id = id;
         this.roomId = roomId;
         this.currentPlayer = currentPlayer;
@@ -52,7 +52,7 @@ public class GameDTO {
         this.winner = winner;
     }
 
-    public GameDTO() {
+    public Game() {
     }
 
     public Long getId() {

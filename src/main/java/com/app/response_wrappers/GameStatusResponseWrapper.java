@@ -5,12 +5,10 @@ import com.app.models.RemainingShips;
 
 import java.util.ArrayList;
 
-public class GameInitResponseWrapper {
+public class GameStatusResponseWrapper {
+
     private ArrayList<BoardCell> playerBoard;
-    private ArrayList<BoardCell> enemyBoard;
     private RemainingShips playerShips;
-    private RemainingShips enemyShips;
-    private String enemyName;
     private boolean myTurn;
     private int winner;
 
@@ -22,28 +20,12 @@ public class GameInitResponseWrapper {
         this.playerBoard = playerBoard;
     }
 
-    public ArrayList<BoardCell> getEnemyBoard() {
-        return enemyBoard;
-    }
-
-    public void setEnemyBoard(ArrayList<BoardCell> enemyBoard) {
-        this.enemyBoard = enemyBoard;
-    }
-
     public RemainingShips getPlayerShips() {
         return playerShips;
     }
 
     public void setPlayerShips(RemainingShips playerShips) {
         this.playerShips = playerShips;
-    }
-
-    public RemainingShips getEnemyShips() {
-        return enemyShips;
-    }
-
-    public void setEnemyShips( RemainingShips enemyShips) {
-        this.enemyShips =  enemyShips;
     }
 
     public boolean isMyTurn() {
@@ -54,14 +36,6 @@ public class GameInitResponseWrapper {
         this.myTurn = myTurn;
     }
 
-    public String getEnemyName() {
-        return enemyName;
-    }
-
-    public void setEnemyName(String enemyName) {
-        this.enemyName = enemyName;
-    }
-
     public int getWinner() {
         return winner;
     }
@@ -69,4 +43,5 @@ public class GameInitResponseWrapper {
     public void setWinner(int winner) {
         this.winner = winner;
     }
+
 }

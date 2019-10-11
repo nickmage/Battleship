@@ -1,7 +1,7 @@
 package com.app.response_wrappers;
 
-import com.app.entities.BoardCell;
-import com.app.entities.RemainingShips;
+import com.app.models.BoardCell;
+import com.app.models.RemainingShips;
 
 import java.util.ArrayList;
 

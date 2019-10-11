@@ -1,7 +1,7 @@
 package com.app.services;
 
-import com.app.entities.BoardCell;
-import com.app.entities.RemainingShips;
+import com.app.models.BoardCell;
+import com.app.models.RemainingShips;
 import com.app.exception.WinnerException;
 import org.springframework.stereotype.Service;
 
@@ -28,13 +28,13 @@ public class RemainingShipsCreator {
                 fourDeck++;
             }
         }
+        if (oneDeck == 0 && twoDeck == 0 && threeDeck == 0 && fourDeck == 0) {
+            throw new WinnerException();
+        }
         remainingShips.setOneDeckShips(oneDeck);
         remainingShips.setTwoDeckShips(twoDeck);
         remainingShips.setThreeDeckShips(threeDeck);
         remainingShips.setFourDeckShips(fourDeck);
-        if (oneDeck == 0 && twoDeck == 0 && threeDeck == 0 && fourDeck == 0) {
-            throw new WinnerException();
-        }
         return remainingShips;
     }
 
@@ -48,5 +48,14 @@ public class RemainingShipsCreator {
             }
         }
         return count == 0 ? 0 : deckType;
+    }
+
+    public RemainingShips getDestroyedShips(){
+        RemainingShips remainingShips = new RemainingShips();
+        remainingShips.setOneDeckShips(0);
+        remainingShips.setTwoDeckShips(0);
+        remainingShips.setThreeDeckShips(0);
+        remainingShips.setFourDeckShips(0);
+        return remainingShips;
     }
 }

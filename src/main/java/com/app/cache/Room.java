@@ -1,6 +1,6 @@
 package com.app.cache;
 
-import com.app.entities.BoardCell;
+import com.app.models.BoardCell;
 
 import java.util.ArrayList;
 import java.util.UUID;

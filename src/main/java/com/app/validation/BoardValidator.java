@@ -1,6 +1,6 @@
 package com.app.validation;
 
-import com.app.entities.Ship;
+import com.app.models.Ship;
 
 public class BoardValidator {
 

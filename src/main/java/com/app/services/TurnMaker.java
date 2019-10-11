@@ -1,9 +1,9 @@
 package com.app.services;
 
-import com.app.DTOs.GameDTO;
-import com.app.DTOs.ShotDTO;
+import com.app.entities.Game;
+import com.app.entities.Shot;
 import com.app.cache.Room;
-import com.app.entities.BoardCell;
+import com.app.models.BoardCell;
 import com.app.exception.WinnerException;
 import com.app.repo.GameRepo;
 import com.app.repo.ShotRepo;
@@ -21,7 +21,7 @@ public class TurnMaker {
     private final int MISS = 0;
     private final int HIT = -1;
     private final int SINK = 1;
-    private final int PLAYER = 1;
+    private final int CURRENT_PLAYER = 1;
     private final int OPPONENT = -1;
     private final int BOARD_SIZE = 10;
     private final char HORIZONTAL = 'h';
@@ -31,13 +31,15 @@ public class TurnMaker {
     private final ShotRepo shotRepo;
     private final ObjectMapper objectMapper;
     private final RemainingShipsCreator remainingShips;
+    private final ScoreboardSaver scoreboardSaver;
 
     public TurnMaker(GameRepo gameRepo, ShotRepo shotRepo,
-                     ObjectMapper objectMapper, RemainingShipsCreator remainingShips) {
+                     ObjectMapper objectMapper, RemainingShipsCreator remainingShips, ScoreboardSaver scoreboardSaver) {
         this.gameRepo = gameRepo;
         this.shotRepo = shotRepo;
         this.objectMapper = objectMapper;
         this.remainingShips = remainingShips;
+        this.scoreboardSaver = scoreboardSaver;
     }
 
     public ShotResponseWrapper makeShot(Room room, int x, int y) throws JsonProcessingException {
@@ -47,9 +49,20 @@ public class TurnMaker {
         setRoomCurrentPlayer(room, status);
         try {
             response.setRemainingEnemyShips(remainingShips.getRemainingShips(room.getCurrentPlayer() == 1 ?
-                    room.getPlayer2Ships() : room.getPlayer1Ships()));
+                                            room.getPlayer2Ships() : room.getPlayer1Ships()));
         } catch (WinnerException e) {
-            response.setWinner(room.getCurrentPlayer() == 1 ? PLAYER : OPPONENT);
+            room.setWinner(1);
+            response.setRemainingEnemyShips(remainingShips.getDestroyedShips());
+            Game game = gameRepo.findByRoomId(room.getRoomId());
+            game.setWinner(game.getCurrentPlayer());
+            gameRepo.save(game);
+            int winner = room.getCurrentPlayer();
+            response.setWinner(winner);
+            if (winner == 1){
+                scoreboardSaver.storeScoreboard(room.getPlayer1Name(), room.getPlayer2Name());
+            } else {
+                scoreboardSaver.storeScoreboard(room.getPlayer2Name(), room.getPlayer1Name());
+            }
             return response;
         }
         response.setWinner(0);
@@ -269,7 +282,7 @@ public class TurnMaker {
     }
 
     private void storeShotToDB(UUID roomId, UUID playerId, int x, int y, int value){
-        ShotDTO shot = new ShotDTO();
+        Shot shot = new Shot();
         shot.setRoomId(roomId);
         shot.setPlayerId(playerId);
         shot.setX(x);
@@ -278,8 +291,8 @@ public class TurnMaker {
         shotRepo.save(shot);
     }
 
-    private void storeGameToDB(UUID roomId,ArrayList<ArrayList<BoardCell>> ships) throws JsonProcessingException {
-        GameDTO game = gameRepo.findByRoomId(roomId);
+    private void storeGameToDB(UUID roomId, ArrayList<ArrayList<BoardCell>> ships) throws JsonProcessingException {
+        Game game = gameRepo.findByRoomId(roomId);
         game.setPlayer1Ships(objectMapper.writeValueAsString(ships));
         gameRepo.save(game);
     }

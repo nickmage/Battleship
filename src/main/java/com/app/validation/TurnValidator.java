@@ -1,7 +1,7 @@
 package com.app.validation;
 
 import com.app.cache.Room;
-import com.app.entities.BoardCell;
+import com.app.models.BoardCell;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

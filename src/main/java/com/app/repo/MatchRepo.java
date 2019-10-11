@@ -1,17 +1,17 @@
 package com.app.repo;
 
-import com.app.DTOs.MatchDTO;
+import com.app.entities.Match;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.UUID;
 
-public interface MatchRepo extends JpaRepository<MatchDTO, Long> {
+public interface MatchRepo extends JpaRepository<Match, Long> {
 
-    List<MatchDTO> findByPlayer1Name(String player1Name);
+    List<Match> findByPlayer1Name(String player1Name);
 
-    List<MatchDTO> findByPlayer2Name(String player2Name);
+    List<Match> findByPlayer2Name(String player2Name);
 
-    MatchDTO findByRoomId(UUID roomId);
+    Match findByRoomId(UUID roomId);
 
 }

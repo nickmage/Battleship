@@ -1,13 +1,10 @@
 package com.app.controllers;
 
-import com.app.DTOs.GameDTO;
 import com.app.cache.Room;
 import com.app.cache.RoomCache;
-import com.app.repo.GameRepo;
 import com.app.response_wrappers.GameInitResponseWrapper;
-import com.app.services.GameFinder;
-import com.app.services.GameInitResponseCreator;
-import com.app.services.TurnMaker;
+import com.app.response_wrappers.GameStatusResponseWrapper;
+import com.app.services.*;
 import com.app.validation.TurnValidator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.http.HttpStatus;
@@ -20,19 +17,23 @@ import java.io.IOException;
 @RequestMapping("/game")
 public class GameController {
 
-    private final GameRepo gameRepo;
     private final TurnMaker turnMaker;
     private final TurnValidator turnValidator;
     private final GameFinder gameFinder;
-    private final GameInitResponseCreator responseCreator;
+    private final GameInitResponseCreator initResponseCreator;
+    private final GameStatusResponseCreator statusResponseCreator;
+    private final ScoreboardSaver scoreboardSaver;
 
-    public GameController(GameRepo gameRepo, TurnMaker turnMaker, TurnValidator turnValidator,
-                          GameFinder gameFinder, GameInitResponseCreator responseCreator) {
-        this.gameRepo = gameRepo;
+    public GameController(TurnMaker turnMaker, TurnValidator turnValidator,
+                          GameFinder gameFinder, GameInitResponseCreator initResponseCreator,
+                          GameStatusResponseCreator statusResponseCreator, ScoreboardSaver scoreboardSaver) {
+
         this.turnMaker = turnMaker;
         this.turnValidator = turnValidator;
         this.gameFinder = gameFinder;
-        this.responseCreator = responseCreator;
+        this.initResponseCreator = initResponseCreator;
+        this.statusResponseCreator = statusResponseCreator;
+        this.scoreboardSaver = scoreboardSaver;
     }
 
     @GetMapping("/init")
@@ -42,7 +43,7 @@ public class GameController {
             Room room = gameFinder.findGame(roomId);
             if (room != null){
                 RoomCache.rooms.put(roomId, room);
-                GameInitResponseWrapper response = responseCreator.getResponse(room, playerId);
+                GameInitResponseWrapper response = initResponseCreator.getResponse(room, playerId);
                 return ResponseEntity.ok(response);
             }
         }
@@ -65,5 +66,25 @@ public class GameController {
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
-/*request every 30 sec to find out another player left*/
+    @GetMapping("/status")
+    public ResponseEntity gameStatus(@RequestParam(name = "roomId") String roomId,
+                                   @RequestParam(name = "playerId") String playerId) throws IOException {
+        if (roomId != null && playerId != null && !roomId.equals("null") && !playerId.equals("null")){
+            Room room = gameFinder.findGame(roomId);
+            if (room != null){
+                RoomCache.rooms.put(roomId, room);
+                GameStatusResponseWrapper response = statusResponseCreator.getResponse(room, playerId);
+                return ResponseEntity.ok(response);
+            }
+        }
+        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+    }
+
+    @PostMapping("/win")
+    public ResponseEntity games(@RequestParam(name = "winner") String winner,
+                                     @RequestParam(name = "loser") String loser) throws IOException {
+        scoreboardSaver.storeScoreboard(winner, loser);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
 }

@@ -1,4 +1,4 @@
-package com.app.DTOs;
+package com.app.entities;
 
 import org.hibernate.annotations.Type;
 import org.springframework.stereotype.Component;
@@ -10,7 +10,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "matchmaking")
 @Component
-public class MatchDTO {
+public class Match {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -29,8 +29,8 @@ public class MatchDTO {
     @Type(type = "text")
     private String player2Ships;
 
-    public MatchDTO(Long id, String player1Name, UUID player1Id, String player2Name, UUID player2Id,
-                    UUID roomId, Date date, String player1Board, String player2Board) {
+    public Match(Long id, String player1Name, UUID player1Id, String player2Name, UUID player2Id,
+                 UUID roomId, Date date, String player1Board, String player2Board) {
         this.id = id;
         this.player1Name = player1Name;
         this.player1Id = player1Id;
@@ -42,7 +42,7 @@ public class MatchDTO {
         this.player2Ships = player2Board;
     }
 
-    public MatchDTO() {
+    public Match() {
     }
 
     public Long getId() {

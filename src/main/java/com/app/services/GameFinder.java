@@ -1,6 +1,6 @@
 package com.app.services;
 
-import com.app.DTOs.GameDTO;
+import com.app.entities.Game;
 import com.app.cache.Room;
 import com.app.cache.RoomCache;
 import com.app.repo.GameRepo;
@@ -30,7 +30,7 @@ public class GameFinder {
     }
 
     private Room findGameInDataBase(String roomId) throws IOException {
-        GameDTO game = gameRepo.findByRoomId(UUID.fromString(roomId));
+        Game game = gameRepo.findByRoomId(UUID.fromString(roomId));
         return game == null ? null : gameRestorer.restore(game);
     }
 

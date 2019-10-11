@@ -1,14 +1,14 @@
 package com.app.repo;
 
-import com.app.DTOs.GameDTO;
+import com.app.entities.Game;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;
 
-public interface GameRepo extends JpaRepository<GameDTO, Long> {
+public interface GameRepo extends JpaRepository<Game, Long> {
 
-    GameDTO findByRoomId(UUID roomId);
+    Game findByRoomId(UUID roomId);
 
-    GameDTO findFirstByRoomIdOrderByIdDesc(UUID roomId);
+    Game findFirstByRoomIdOrderByIdDesc(UUID roomId);
 
 }
