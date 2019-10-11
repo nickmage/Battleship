@@ -1,35 +1,28 @@
-    var token = localStorage.getItem('token');
-    var roomId = sessionStorage.getItem('roomId');
-    var playerId = localStorage.getItem('playerId');
+var token = localStorage.getItem('token');
+var roomId = sessionStorage.getItem('roomId');
+var playerId = localStorage.getItem('playerId');
+var interval;
+var enemyBoardArray = [];
+var UNUSED = 1;
+var MISS = 0;
+var HIT = -1;
+var myTurn = false;
+var init = init();
 
-    var interval;
-
-    var enemyArray = [];
-
-    var init = init();
-
-    var myTurn = false;
-
-    var winner = 0;
 
     function init(){
-        fillEnemyArray();
+        fillEnemyBoardArrayWithUnused();
         getBoards();
 
-        //readycheck
-        console.log(enemyArray);
+        /*ESSENTIAL*/
         interval = setInterval(statusRequest, 1000);
-
     }
 
-
-
-
-    function fillEnemyArray(){
+    function fillEnemyBoardArrayWithUnused(){
         for (let i = 0; i < 10; i++){
-            enemyArray[i] = [];
+            enemyBoardArray[i] = [];
             for (let j = 0; j < 10; j++){
-                enemyArray[i][j] = 0;
+                enemyBoardArray[i][j] = UNUSED;
             }
         }
     }
@@ -100,57 +93,63 @@
 
     function showEnemyBoard(enemyBoard){
         if (enemyBoard.length !== 0) {
-            for (let i = 0; i < enemyBoard.length; i++){
-                /*if (!myTurn) {
-                    for (let i = 0; i < 10; i++) {
-                        for (let j = 0; j < 10; j++) {
-                            document.getElementById("e" + enemyBoard[i].x + enemyBoard[i].y).style.backgroundColor = "rgba(36, 79, 154, 0.9)";
-                        }
-                    }
-                }*/
-                //UNUSED
-                /*if (enemyBoard[i].value === 0) {
-                    if (myTurn) {
-                        document.getElementById("e" + enemyBoard[i].x + enemyBoard[i].y).style.backgroundColor = "rgba(36, 79, 154, 0.9)";                    
-                    } else {
-                        document.getElementById("e" + enemyBoard[i].x + enemyBoard[i].y).style.backgroundColor = "rgba(36, 79, 154, 0.5)";
-                    }
-                }*/
-                //HIT
-                if (enemyBoard[i].value < 0) {
-                    if (myTurn) {
-                        document.getElementById("e" + enemyBoard[i].x + enemyBoard[i].y).style.backgroundColor = "rgb(255,2,0)";                        
-                    } else {
-                        document.getElementById("e" + enemyBoard[i].x + enemyBoard[i].y).style.backgroundColor = "rgba(255,2,0,0.5)";
-                    }
-                    enemyArray[enemyBoard[i].x][enemyBoard[i].y] = enemyBoard[i].value;
-                }
-                //MISS
-                if (enemyBoard[i].value === 0) {
-                    if (myTurn) {
-                        document.getElementById("e" + enemyBoard[i].x + enemyBoard[i].y).style.backgroundColor = "rgb(106,167,215)";                        
-                    } else {
-                        document.getElementById("e" + enemyBoard[i].x + enemyBoard[i].y).style.backgroundColor = "rgba(106,167,215,0.5)";
-                    }
-                    enemyArray[enemyBoard[i].x][enemyBoard[i].y] = enemyBoard[i].value;
-                }
-            }
-        } else {
+            fillEnemyArray(enemyBoard);
+            revealCells();
+        }
+        else {
             if (!myTurn) {
                 for (let i = 0; i < 10; i++) {
                     for (let j = 0; j < 10; j++) {
                         document.getElementById("e" + i + j).style.backgroundColor = "rgba(36, 79, 154, 0.5)";
                     }
-                }                                  
+                }
             }
-        }       
+        }
+    }
+
+    function fillEnemyArray(enemyBoard){
+        for (let i = 0; i < enemyBoard.length; i++){
+            enemyBoardArray[enemyBoard[i].x][enemyBoard[i].y] = enemyBoard[i].value;
+        }
+    }
+
+    function revealCells(){
+        for (let i = 0; i < enemyBoardArray.length; i++){
+            for (let j = 0; j < enemyBoardArray.length; j++){
+                //UNUSED
+                if (enemyBoardArray[i][j] === UNUSED) {
+                    if (myTurn) {
+                        document.getElementById("e" + i + j).style.backgroundColor = "rgba(36, 79, 154, 0.9)";
+                    } else {
+                        document.getElementById("e" + i + j).style.backgroundColor = "rgba(36, 79, 154, 0.5)";
+                    }
+                }
+                //HIT
+                if (enemyBoardArray[i][j] === HIT) {
+                    if (myTurn) {
+                        document.getElementById("e" + i + j).style.backgroundColor = "rgb(255,2,0)";
+                    } else {
+                        document.getElementById("e" + i + j).style.backgroundColor = "rgba(255,2,0,0.5)";
+                    }
+                }
+                //MISS
+                if (enemyBoardArray[i][j] === MISS) {
+                    if (myTurn) {
+                        document.getElementById("e" + i + j).style.backgroundColor = "rgb(106,167,215)";
+                    } else {
+                        document.getElementById("e" + i + j).style.backgroundColor = "rgba(106,167,215,0.5)";
+                    }
+                }
+
+            }
+        }
     }
 
     function makeShot(element) {
         if (myTurn) {
             var x = parseInt(element.id.charAt(1));
             var y = parseInt(element.id.charAt(2));
-            if (enemyArray[x][y] === 0) {
+            if (enemyBoardArray[x][y] === UNUSED) {
                 $.ajax({
                     type: 'POST',
                     url: '/game/shot',
@@ -160,12 +159,12 @@
                     data: "roomId=" + roomId + "&playerId=" + playerId + "&x=" + x + "&y=" + y,
                     success: function (data) {
                         console.log(data);
+                        myTurn = data.myTurn;
                         showEnemyShips(data.remainingEnemyShips);
                         showEnemyBoard(data.interactedCells);
-                        myTurn = data.myTurn;
-                        if (!myTurn){
+                        /*if (!myTurn){
                             getBoards();
-                        }
+                        }*/
                         if (data.winner !== 0){
                             gameOver(data.winner);
                         }
@@ -193,15 +192,18 @@
                 myTurn = data.myTurn;
                 showPlayerShips(data.playerShips);
                 showPlayerBoard(data.playerBoard);
+                revealCells();
                 if (data.winner !== 0){
                     gameOver(data.winner);
                 }
+                /*if (!myTurn){
+                    getBoards();
+                }*/
             },
         });
     }
 
     function gameOver(state) {
-        console.log(state);
         clearInterval(interval);
         var player = 1;
         document.getElementById("state").innerHTML = (state === player) ?

@@ -40,7 +40,6 @@ public class TurnMaker {
         ShotResponseWrapper response = new ShotResponseWrapper();
         int status = checkShotStatus(room, x, y, response);
         response.setMyTurn(status != MISS);
-        setRoomCurrentPlayer(room, status);
         try {
             response.setRemainingEnemyShips(remainingShips.getRemainingShips(room.getCurrentPlayer() == 1 ?
                                             room.getPlayer2Ships() : room.getPlayer1Ships()));
@@ -58,8 +57,10 @@ public class TurnMaker {
             } else {
                 scoreboardSaver.storeScoreboard(room.getPlayer2Name(), room.getPlayer1Name());
             }
+            setRoomCurrentPlayer(room, status);
             return response;
         }
+        setRoomCurrentPlayer(room, status);
         response.setWinner(0);
         return response;
     }

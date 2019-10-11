@@ -8,9 +8,7 @@ Possible solution: set redirect in another place.
 
 
 
-
-
-
-
-
-
+game front
+private rooms
+extraordinary flow
+tests
