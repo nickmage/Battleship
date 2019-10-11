@@ -1,10 +1,17 @@
 package com.app.models;
 
 public class RemainingShips {
-    private int oneDeckShips = 4;
-    private int twoDeckShips = 3;
-    private int threeDeckShips = 2;
-    private int fourDeckShips = 1;
+    private int oneDeckShips;
+    private int twoDeckShips;
+    private int threeDeckShips;
+    private int fourDeckShips;
+
+    public RemainingShips(int oneDeckShips, int twoDeckShips, int threeDeckShips, int fourDeckShips) {
+        this.oneDeckShips = oneDeckShips;
+        this.twoDeckShips = twoDeckShips;
+        this.threeDeckShips = threeDeckShips;
+        this.fourDeckShips = fourDeckShips;
+    }
 
     public int getOneDeckShips() {
         return oneDeckShips;

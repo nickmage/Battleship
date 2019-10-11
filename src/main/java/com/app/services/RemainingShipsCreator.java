@@ -8,14 +8,10 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 
 @Service
-public class RemainingShipsCreator {
+class RemainingShipsCreator {
 
-    public RemainingShips getRemainingShips(ArrayList<ArrayList<BoardCell>> ships) throws WinnerException {
-        RemainingShips remainingShips = new RemainingShips();
-        int oneDeck = 0;
-        int twoDeck = 0;
-        int threeDeck = 0;
-        int fourDeck = 0;
+    RemainingShips getRemainingShips(ArrayList<ArrayList<BoardCell>> ships) throws WinnerException {
+        int oneDeck = 0, twoDeck = 0, threeDeck = 0, fourDeck = 0;
         for (ArrayList<BoardCell> ship : ships) {
             int status = isShipInOrder(ship);
             if (status == 1) {
@@ -31,11 +27,7 @@ public class RemainingShipsCreator {
         if (oneDeck == 0 && twoDeck == 0 && threeDeck == 0 && fourDeck == 0) {
             throw new WinnerException();
         }
-        remainingShips.setOneDeckShips(oneDeck);
-        remainingShips.setTwoDeckShips(twoDeck);
-        remainingShips.setThreeDeckShips(threeDeck);
-        remainingShips.setFourDeckShips(fourDeck);
-        return remainingShips;
+        return new RemainingShips(oneDeck, twoDeck, threeDeck, fourDeck);
     }
 
     //return 0 if ship is sunken or ship's deck type
@@ -50,12 +42,8 @@ public class RemainingShipsCreator {
         return count == 0 ? 0 : deckType;
     }
 
-    public RemainingShips getDestroyedShips(){
-        RemainingShips remainingShips = new RemainingShips();
-        remainingShips.setOneDeckShips(0);
-        remainingShips.setTwoDeckShips(0);
-        remainingShips.setThreeDeckShips(0);
-        remainingShips.setFourDeckShips(0);
-        return remainingShips;
+    RemainingShips getDestroyedShips(){
+        return new RemainingShips(0, 0, 0, 0);
     }
+
 }

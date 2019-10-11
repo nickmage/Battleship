@@ -7,9 +7,9 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 
 @Service
-public class BoardCreator {
+class BoardCreator {
 
-    public ArrayList<ArrayList<BoardCell>> getShips(Ship[] ships){
+    ArrayList<ArrayList<BoardCell>> getShips(Ship[] ships){
         ArrayList<ArrayList<BoardCell>> board = new ArrayList<>();
         for (Ship ship: ships) {
             ArrayList<BoardCell> shipCells = new ArrayList<>();
@@ -19,7 +19,7 @@ public class BoardCreator {
         return board;
     }
 
-    public ArrayList<BoardCell> getBoard(Ship[] ships){
+    ArrayList<BoardCell> getBoard(Ship[] ships){
         ArrayList<BoardCell> board = new  ArrayList<>();
         for (Ship ship: ships) {
             addCells(ship, board);
@@ -39,23 +39,4 @@ public class BoardCreator {
         }
     }
 
-    /** turnmaker used by restoration
-     *
-     * abstract factory
-     * builder
-     * factory method
-     * lazy initialisation
-     * singleton(ссылка на себя, с памяти не выкидывается)
-     * fasade
-     * decorator
-     * composite
-     * chain of responsibility
-     * command(action)
-     * iterator/cursor
-     * mediator
-     * memento
-     * observer
-     * state
-     * visitor
-     */
 }

@@ -24,7 +24,7 @@ public class GameRestorer {
         this.shotRepo = shotRepo;
     }
 
-    public Room restore(Game game) throws IOException {
+    Room restore(Game game) throws IOException {
         Room room = new Room();
         room.setRoomId(game.getRoomId());
         room.setCurrentPlayer(game.getCurrentPlayer());
@@ -95,6 +95,5 @@ public class GameRestorer {
     private List<Shot> getShotList(UUID roomId, UUID playerId, int number) {
         return shotRepo.findByRoomIdAndPlayerIdAndValueEquals(roomId, playerId, 0);
     }
-
 
 }

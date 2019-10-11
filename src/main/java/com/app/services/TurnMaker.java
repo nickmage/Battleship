@@ -20,13 +20,7 @@ public class TurnMaker {
 
     private final int MISS = 0;
     private final int HIT = -1;
-    private final int SINK = 1;
-    private final int CURRENT_PLAYER = 1;
-    private final int OPPONENT = -1;
     private final int BOARD_SIZE = 10;
-    private final char HORIZONTAL = 'h';
-    private final char VERTICAL = 'v';
-    private final char NONE = '-';
     private final GameRepo gameRepo;
     private final ShotRepo shotRepo;
     private final ObjectMapper objectMapper;
@@ -57,7 +51,8 @@ public class TurnMaker {
             game.setWinner(game.getCurrentPlayer());
             gameRepo.save(game);
             int winner = room.getCurrentPlayer();
-            response.setWinner(winner);
+            int thisPlayer = 1;
+            response.setWinner(thisPlayer);
             if (winner == 1){
                 scoreboardSaver.storeScoreboard(room.getPlayer1Name(), room.getPlayer2Name());
             } else {
@@ -77,8 +72,6 @@ public class TurnMaker {
             if (isShipHit(ship, x, y)) {
                 if (isShipSunken(ship)) {
                     saveSunken(room, ship, interactedCells);
-                    fillListsWithCells(room, x, y, response, interactedCells, currentPlayer, true);
-                    return SINK;
                 }
                 fillListsWithCells(room, x, y, response, interactedCells, currentPlayer, true);
                 return HIT;
@@ -129,10 +122,10 @@ public class TurnMaker {
 
     private void saveSunken(Room room, ArrayList<BoardCell> ship, ArrayList<BoardCell> interactedCells) throws JsonProcessingException {
         ArrayList<BoardCell> sunkenShipSurroundings = new ArrayList<>();
-        char orientation = shipOrientation(ship);
         int y = ship.get(0).getY();
         int x = ship.get(0).getX();
-        if (orientation == NONE || orientation == VERTICAL) {
+        ShipOrientation orientation = shipOrientation(ship);
+        if (orientation == ShipOrientation.NONE || orientation == ShipOrientation.VERTICAL) {
             saveSunkenVerticalShip(ship, sunkenShipSurroundings, x, y);
         } else {
             saveSunkenHorizontalShip(ship, sunkenShipSurroundings, x, y);
@@ -142,17 +135,11 @@ public class TurnMaker {
             player2Board.addAll(sunkenShipSurroundings);
             room.getEnemyBoardForPlayer1().addAll(sunkenShipSurroundings);
             storeGameToDB(room.getRoomId(), room.getPlayer2Ships());
-            /*for (BoardCell cell : sunkenShipSurroundings) {
-                storeShotToDB(room.getRoomId(), room.getPlayer1Id(), x, y, MISS);
-            }*/
         } else {
             ArrayList<BoardCell> player1Board = room.getPlayer1Board();
             player1Board.addAll(sunkenShipSurroundings);
             room.getEnemyBoardForPlayer2().addAll(sunkenShipSurroundings);
             storeGameToDB(room.getRoomId(), room.getPlayer1Ships());
-            /*for (BoardCell cell : sunkenShipSurroundings) {
-                storeShotToDB(room.getRoomId(), room.getPlayer2Id(), x, y, MISS);
-            }*/
         }
         interactedCells.addAll(sunkenShipSurroundings);
     }
@@ -225,13 +212,13 @@ public class TurnMaker {
         }
     }
 
-    private char shipOrientation(ArrayList<BoardCell> ship) {
+    private ShipOrientation shipOrientation(ArrayList<BoardCell> ship) {
         if (ship.size() == 1) {
-            return NONE;
+            return ShipOrientation.NONE;
         } else if (ship.get(0).getX() == ship.get(1).getX()) {
-            return HORIZONTAL;
+            return ShipOrientation.HORIZONTAL;
         } else {
-            return VERTICAL;
+            return ShipOrientation.VERTICAL;
         }
     }
 
@@ -296,4 +283,5 @@ public class TurnMaker {
         game.setPlayer1Ships(objectMapper.writeValueAsString(ships));
         gameRepo.save(game);
     }
+
 }

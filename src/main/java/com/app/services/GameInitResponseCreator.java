@@ -9,12 +9,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class GameInitResponseCreator {
 
-    private final int CURRENT_PLAYER = 1;
-    private final int OPPONENT = -1;
     private final RemainingShipsCreator remainingShips;
 
-
-    public GameInitResponseCreator(RemainingShipsCreator remainingShips, ScoreboardSaver scoreboardSaver) {
+    public GameInitResponseCreator(RemainingShipsCreator remainingShips) {
         this.remainingShips = remainingShips;
     }
 

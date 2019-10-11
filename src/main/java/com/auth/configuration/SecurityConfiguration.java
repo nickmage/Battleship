@@ -23,8 +23,6 @@ import javax.sql.DataSource;
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     private DataSource dataSource;
-    /*private UserRepo userRepo;
-    private AuthProvider authProvider;*/
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -42,12 +40,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .formLogin()
                     .loginPage("/login")
                     .permitAll()
-                /*.and()
-                    .logout()
-                    .logoutUrl("/logout")
-                    .invalidateHttpSession(true)
-                    .deleteCookies("JSESSIONID")
-                    .permitAll()*/
                 .and()
                     .addFilter(new JwtAuthorizationFilter(authenticationManager()))
                     .addFilter(new JwtAuthenticationFilter(authenticationManager()))
@@ -69,7 +61,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .dataSource(dataSource)
                 .usersByUsernameQuery("select username, password, id from account where username=?")
                 .authoritiesByUsernameQuery("select username, role from account where username=?");
-                /*.authoritiesByUsernameQuery("select u.username, ur.role from account u inner join user_role ur on u.id = ur.user_id where u.username=?");*/
     }
 
     @Bean

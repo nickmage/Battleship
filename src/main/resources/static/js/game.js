@@ -194,7 +194,6 @@
                 showPlayerShips(data.playerShips);
                 showPlayerBoard(data.playerBoard);
                 if (data.winner !== 0){
-                    clearInterval(interval);
                     gameOver(data.winner);
                 }
             },
@@ -203,6 +202,7 @@
 
     function gameOver(state) {
         console.log(state);
+        clearInterval(interval);
         var player = 1;
         document.getElementById("state").innerHTML = (state === player) ?
             'Congratulations, you win!': 'You lose, better luck next time!';
@@ -213,11 +213,9 @@
     }
 
     function scoreboard(){
-       clearInterval(interval);
        window.location.replace("#/scoreboard");
     }
 
     function gotoMenu(){
-        clearInterval(interval);
         window.location.replace("#/menu");
     }

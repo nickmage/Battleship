@@ -4,7 +4,6 @@ import com.app.entities.Game;
 import com.app.entities.Match;
 
 import com.app.cache.RoomCache;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -12,14 +11,11 @@ import java.util.Random;
 
 @Service
 public class GameCreator {
-    private final Match match;
-    private final Game game;
-    private final ObjectMapper objectMapper;
 
-    public GameCreator(Match match, Game game, ObjectMapper objectMapper) {
-        this.match = match;
+    private final Game game;
+
+    public GameCreator(Game game) {
         this.game = game;
-        this.objectMapper = objectMapper;
     }
 
     public Game createNewGame(Match match) {

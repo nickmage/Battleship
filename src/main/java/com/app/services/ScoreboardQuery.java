@@ -15,6 +15,7 @@ public class ScoreboardQuery {
         this.scoreboardRepo = scoreboardRepo;
     }
 
+    @Deprecated
     public List<Scoreboard> getScoreboard(){
         return scoreboardRepo.findTop10ByOrderByWinsDesc();
     }

@@ -68,7 +68,7 @@ public class GameController {
 
     @GetMapping("/status")
     public ResponseEntity gameStatus(@RequestParam(name = "roomId") String roomId,
-                                   @RequestParam(name = "playerId") String playerId) throws IOException {
+                                     @RequestParam(name = "playerId") String playerId) throws IOException {
         if (roomId != null && playerId != null && !roomId.equals("null") && !playerId.equals("null")){
             Room room = gameFinder.findGame(roomId);
             if (room != null){
@@ -82,7 +82,7 @@ public class GameController {
 
     @PostMapping("/win")
     public ResponseEntity games(@RequestParam(name = "winner") String winner,
-                                     @RequestParam(name = "loser") String loser) throws IOException {
+                                @RequestParam(name = "loser") String loser) {
         scoreboardSaver.storeScoreboard(winner, loser);
         return new ResponseEntity(HttpStatus.OK);
     }

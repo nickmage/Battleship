@@ -31,9 +31,6 @@ public class GameStatusResponseCreator {
             response.setPlayerShips(remainingShips.getRemainingShips(room.getPlayer1Ships()));
         } catch (WinnerException e) {
             actionOnWinnerPresence(response, room, 1);
-            /*response.setPlayerShips(remainingShips.getDestroyedShips());
-            response.setWinner(room.getWinner() == 1 ? CURRENT_PLAYER : OPPONENT);
-            RoomCache.rooms.remove(room.getRoomId().toString());*/
         }
     }
 
@@ -43,9 +40,6 @@ public class GameStatusResponseCreator {
             response.setPlayerShips(remainingShips.getRemainingShips(room.getPlayer2Ships()));
         } catch (WinnerException e) {
             actionOnWinnerPresence(response, room, 2);
-            /*response.setPlayerShips(remainingShips.getDestroyedShips());
-            response.setWinner(room.getWinner() == 2 ? CURRENT_PLAYER : OPPONENT);
-            RoomCache.rooms.remove(room.getRoomId().toString());*/
         }
         response.setMyTurn(room.getCurrentPlayer() == 2);
     }
