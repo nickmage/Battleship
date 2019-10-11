@@ -9,13 +9,9 @@ var HIT = -1;
 var myTurn = false;
 var init = init();
 
-
     function init(){
         fillEnemyBoardArrayWithUnused();
         getBoards();
-
-        /*ESSENTIAL*/
-        interval = setInterval(statusRequest, 1000);
     }
 
     function fillEnemyBoardArrayWithUnused(){
@@ -43,9 +39,9 @@ var init = init();
                 showEnemyShips(data.enemyShips);
                 showPlayerBoard(data.playerBoard);
                 showEnemyBoard(data.enemyBoard);
-                /*if(myTurn){
-                    stopRequesting();
-                }*/
+                if (!myTurn){
+                    interval = setInterval(statusRequest, 1000);
+                }
                 if (data.winner !== 0){
                     gameOver(data.winner);
                 }
@@ -162,10 +158,10 @@ var init = init();
                         myTurn = data.myTurn;
                         showEnemyShips(data.remainingEnemyShips);
                         showEnemyBoard(data.interactedCells);
-                        /*if (!myTurn){
-                            getBoards();
-                        }*/
-                        if (data.winner !== 0){
+                        if (!myTurn) {
+                            interval = setInterval(statusRequest, 1000);
+                        }
+                        if (data.winner !== 0) {
                             gameOver(data.winner);
                         }
                     },
@@ -196,9 +192,9 @@ var init = init();
                 if (data.winner !== 0){
                     gameOver(data.winner);
                 }
-                /*if (!myTurn){
-                    getBoards();
-                }*/
+                if (myTurn){
+                    clearInterval(interval);
+                }
             },
         });
     }
