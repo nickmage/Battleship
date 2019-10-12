@@ -124,14 +124,6 @@ public class TurnMaker {
 
     private void saveSunken(Room room, ArrayList<BoardCell> ship, ArrayList<BoardCell> interactedCells) throws JsonProcessingException {
         ArrayList<BoardCell> sunkenShipSurroundings = getSunkenShipSurroundings(ship);
-        /*int y = ship.get(0).getY();
-        int x = ship.get(0).getX();
-        ShipOrientation orientation = shipOrientation(ship);
-        if (orientation == ShipOrientation.NONE || orientation == ShipOrientation.VERTICAL) {
-            saveSunkenVerticalShip(ship, sunkenShipSurroundings, x, y);
-        } else {
-            saveSunkenHorizontalShip(ship, sunkenShipSurroundings, x, y);
-        }*/
         if (room.getCurrentPlayer() == 1) {
             ArrayList<BoardCell> player2Board = room.getPlayer2Board();
             player2Board.addAll(sunkenShipSurroundings);
@@ -240,7 +232,9 @@ public class TurnMaker {
     private int setShipHit(ArrayList<BoardCell> ship, int x, int y) {
         for (BoardCell cell : ship) {
             if (cell.getX() == x && cell.getY() == y) {
-                cell.setValue(-cell.getValue());
+                if (cell.getValue() > 0){
+                    cell.setValue(-cell.getValue());
+                }
                 return cell.getValue();
             }
         }

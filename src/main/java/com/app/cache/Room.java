@@ -17,10 +17,10 @@ public class Room {
     private String player2Name;
     private UUID player2Id;
 
-    private ArrayList<BoardCell> player1Board;//player1Ships modified + shots of player2
-    private ArrayList<BoardCell> enemyBoardForPlayer1 = new ArrayList<>();//shots of player1
-    private ArrayList<BoardCell> player2Board;//player2Ships modified + shots of player1
-    private ArrayList<BoardCell> enemyBoardForPlayer2 = new ArrayList<>();//shots of player2
+    private ArrayList<BoardCell> player1Board;                              //player1Ships modified + shots of player2
+    private ArrayList<BoardCell> enemyBoardForPlayer1 = new ArrayList<>();  //shots of player1
+    private ArrayList<BoardCell> player2Board;                              //player2Ships modified + shots of player1
+    private ArrayList<BoardCell> enemyBoardForPlayer2 = new ArrayList<>();  //shots of player2
 
     private ArrayList<ArrayList<BoardCell>> player1Ships;
     private ArrayList<ArrayList<BoardCell>> player2Ships;

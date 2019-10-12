@@ -12,5 +12,6 @@ public interface ShotRepo extends JpaRepository<Shot, Long> {
 
     List<Shot> findByRoomIdAndPlayerIdAndValueEquals(UUID roomId, UUID playerId, Integer value);
 
+    List<Shot> findByRoomIdAndPlayerId(UUID roomId, UUID playerId);
 
 }

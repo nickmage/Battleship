@@ -39,11 +39,9 @@ public class GameRestorer {
         room.setPlayer2Id(game.getPlayer2Id());
 
         room.setWinner(game.getWinner());
-        System.out.println(game.getPlayer1Ships());
-        System.out.println(game.getPlayer2Ships());
+
         setBoards(game, room);
-        System.out.println(game.getPlayer1Ships());
-        System.out.println(game.getPlayer2Ships());
+
         return room;
     }
 
@@ -51,14 +49,12 @@ public class GameRestorer {
         room.setPlayer1Ships(mapShipsFromDB(game.getPlayer1Ships()));
         room.setPlayer2Ships(mapShipsFromDB(game.getPlayer2Ships()));
 
-        room.setPlayer1Board(getPlayerBoard(room.getPlayer1Ships()));
-        room.setPlayer2Board(getPlayerBoard(room.getPlayer2Ships()));
-        /*room.setPlayer1Board(getPlayerBoard(room.getPlayer1Ships(), game.getRoomId(), game.getPlayer2Id(), 2));
-        room.setPlayer2Board(getPlayerBoard(room.getPlayer2Ships(), game.getRoomId(), game.getPlayer1Id(), 1));
+        room.setPlayer1Board(getPlayerBoard(room.getPlayer1Ships(), room.getRoomId(), room.getPlayer2Id()));
+        room.setPlayer2Board(getPlayerBoard(room.getPlayer2Ships(), room.getRoomId(), room.getPlayer1Id()));
 
-        room.setEnemyBoardForPlayer1(getEnemyBoard(game.getRoomId(), game.getPlayer1Id(), 1));
-        room.setEnemyBoardForPlayer2(getEnemyBoard(game.getRoomId(), game.getPlayer2Id(), 2));*/
-    }
+        room.setEnemyBoardForPlayer1(getEnemyBoard(game.getRoomId(), game.getPlayer1Id(), room.getPlayer2Ships()));
+        room.setEnemyBoardForPlayer2(getEnemyBoard(game.getRoomId(), game.getPlayer2Id(), room.getPlayer1Ships()));
+     }
 
     private ArrayList<ArrayList<BoardCell>> mapShipsFromDB(String shipsFromDB) throws IOException {
         BoardCell[][] cells = objectMapper.readValue(shipsFromDB, BoardCell[][].class);
@@ -70,61 +66,53 @@ public class GameRestorer {
         return ships;
     }
 
-    private ArrayList<BoardCell> getPlayerBoard(ArrayList<ArrayList<BoardCell>> ships) {
+    private ArrayList<BoardCell> getPlayerBoard(ArrayList<ArrayList<BoardCell>> ships, UUID roomId, UUID opponentId) {
         ArrayList<BoardCell> playerBoard = new ArrayList<>();
+        fillBoardWithShipSurroundings(ships, playerBoard, true);
+        List<Shot> shots = getShotListOfMisses(roomId, opponentId);
+        for (Shot shot: shots) {
+            playerBoard.add(new BoardCell(shot.getX(), shot.getY(), shot.getValue()));
+        }
+        for (ArrayList<BoardCell> ship : ships) {
+            playerBoard.addAll(ship);
+        }
+        return playerBoard;
+    }
+
+    private void fillBoardWithShipSurroundings(ArrayList<ArrayList<BoardCell>> ships, ArrayList<BoardCell> board, boolean isPlayerBoard){
         for (ArrayList<BoardCell> ship : ships) {
             if (turnMaker.isShipSunken(ship)){
-                playerBoard.addAll(turnMaker.getSunkenShipSurroundings(ship));
+                board.addAll(turnMaker.getSunkenShipSurroundings(ship));
             }
-            playerBoard.addAll(ship);
+            if (isPlayerBoard){
+                board.addAll(ship);
+            }
         }
-
-        //List<Shot> shots = getShotList(roomId, enemyId, number);
-        //fillBoardWithShots(playerBoard, shots);
-        return playerBoard;
     }
 
-
-
-
-
-
-
-    private List<Shot> getShotList(UUID roomId, UUID playerId, int number) {
-        return shotRepo.findByRoomIdAndPlayerIdAndValueEquals(roomId, playerId, 0);
+    private List<Shot> getShotListOfMisses(UUID roomId, UUID playerId) {
+        int miss = 0;
+        return shotRepo.findByRoomIdAndPlayerIdAndValueEquals(roomId, playerId, miss);
     }
 
-
-
-    /*private ArrayList<BoardCell> getPlayerBoard(ArrayList<ArrayList<BoardCell>> ships, UUID roomId, UUID enemyId, int number) {
-        ArrayList<BoardCell> playerBoard = new ArrayList<>();
-        for (ArrayList<BoardCell> ship : ships) {
-            playerBoard.addAll(ship);
-        }
-        List<Shot> shots = getShotList(roomId, enemyId, number);
-        fillBoardWithShots(playerBoard, shots);
-        return playerBoard;
-    }
-
-    private ArrayList<BoardCell> getEnemyBoard(UUID roomId, UUID enemyId, int number) {
+    private ArrayList<BoardCell> getEnemyBoard(UUID roomId, UUID playerId, ArrayList<ArrayList<BoardCell>> ships) {
         ArrayList<BoardCell> enemyBoard = new ArrayList<>();
-        List<Shot> shots = getShotList(roomId, enemyId, number);
-        fillBoardWithShots(enemyBoard, shots);
+        List<Shot> shots = getAllShotList(roomId, playerId);
+        fillBoardWithShots(enemyBoard, shots, ships);
         return enemyBoard;
     }
 
-    private void fillBoardWithShots(ArrayList<BoardCell> board, List<Shot> shots) {
-        if (shots != null && shots.size() != 0) {
-            for (Shot shot : shots) {
-                BoardCell shotCell = new BoardCell();
-                shotCell.setX(shot.getX());
-                shotCell.setY(shot.getY());
-                shotCell.setValue(shot.getValue());
-                board.add(shotCell);
-            }
-        }
+    private List<Shot> getAllShotList(UUID roomId, UUID playerId) {
+        return shotRepo.findByRoomIdAndPlayerId(roomId, playerId);
     }
 
-    */
+    private void fillBoardWithShots(ArrayList<BoardCell> board, List<Shot> shots, ArrayList<ArrayList<BoardCell>> ships) {
+        if (shots != null && shots.size() != 0) {
+            for (Shot shot : shots) {
+                board.add(new BoardCell(shot.getX(), shot.getY(), shot.getValue() == 0 ? 0 : -1));
+            }
+        }
+        fillBoardWithShipSurroundings(ships, board, false);
+    }
 
 }
