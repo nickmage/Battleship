@@ -27,6 +27,7 @@ public class GameRestorer {
     Room restore(Game game) throws IOException {
         Room room = new Room();
         room.setRoomId(game.getRoomId());
+
         room.setCurrentPlayer(game.getCurrentPlayer());
 
         room.setPlayer1Name(game.getPlayer1Name());
@@ -36,24 +37,28 @@ public class GameRestorer {
         room.setPlayer2Id(game.getPlayer2Id());
 
         room.setWinner(game.getWinner());
-
+        System.out.println(game.getPlayer1Ships());
+        System.out.println(game.getPlayer2Ships());
         setBoards(game, room);
-
+        System.out.println(game.getPlayer1Ships());
+        System.out.println(game.getPlayer2Ships());
         return room;
     }
 
     private void setBoards(Game game, Room room) throws IOException {
-        room.setPlayer1Ships(getShips(game.getPlayer1Ships()));
-        room.setPlayer2Ships(getShips(game.getPlayer2Ships()));
+        room.setPlayer1Ships(mapShipsFromDB(game.getPlayer1Ships()));
+        room.setPlayer2Ships(mapShipsFromDB(game.getPlayer2Ships()));
 
-        room.setPlayer1Board(getPlayerBoard(room.getPlayer1Ships(), game.getRoomId(), game.getPlayer2Id(), 2));
+        room.setPlayer1Board(getPlayerBoard(room.getPlayer1Ships()));
+        room.setPlayer2Board(getPlayerBoard(room.getPlayer2Ships()));
+        /*room.setPlayer1Board(getPlayerBoard(room.getPlayer1Ships(), game.getRoomId(), game.getPlayer2Id(), 2));
         room.setPlayer2Board(getPlayerBoard(room.getPlayer2Ships(), game.getRoomId(), game.getPlayer1Id(), 1));
 
         room.setEnemyBoardForPlayer1(getEnemyBoard(game.getRoomId(), game.getPlayer1Id(), 1));
-        room.setEnemyBoardForPlayer2(getEnemyBoard(game.getRoomId(), game.getPlayer2Id(), 2));
+        room.setEnemyBoardForPlayer2(getEnemyBoard(game.getRoomId(), game.getPlayer2Id(), 2));*/
     }
 
-    private ArrayList<ArrayList<BoardCell>> getShips(String shipsFromDB) throws IOException {
+    private ArrayList<ArrayList<BoardCell>> mapShipsFromDB(String shipsFromDB) throws IOException {
         BoardCell[][] cells = objectMapper.readValue(shipsFromDB, BoardCell[][].class);
         ArrayList<ArrayList<BoardCell>> ships = new ArrayList<>();
         for (BoardCell[] cell : cells) {
@@ -62,6 +67,26 @@ public class GameRestorer {
         }
         return ships;
     }
+
+
+
+    private ArrayList<BoardCell> getPlayerBoard(ArrayList<ArrayList<BoardCell>> ships) {
+        ArrayList<BoardCell> playerBoard = new ArrayList<>();
+        for (ArrayList<BoardCell> ship : ships) {
+            playerBoard.addAll(ship);
+        }
+
+
+        //List<Shot> shots = getShotList(roomId, enemyId, number);
+        //fillBoardWithShots(playerBoard, shots);
+        return playerBoard;
+    }
+
+
+
+
+
+
 
     private ArrayList<BoardCell> getPlayerBoard(ArrayList<ArrayList<BoardCell>> ships, UUID roomId, UUID enemyId, int number) {
         ArrayList<BoardCell> playerBoard = new ArrayList<>();

@@ -10,7 +10,7 @@ import java.util.ArrayList;
 @Service
 class RemainingShipsCreator {
 
-    RemainingShips getRemainingShips(ArrayList<ArrayList<BoardCell>> ships) throws WinnerException {
+    public RemainingShips getRemainingShips(ArrayList<ArrayList<BoardCell>> ships) throws WinnerException {
         int oneDeck = 0, twoDeck = 0, threeDeck = 0, fourDeck = 0;
         for (ArrayList<BoardCell> ship : ships) {
             int status = isShipInOrder(ship);
@@ -42,7 +42,7 @@ class RemainingShipsCreator {
         return count == 0 ? 0 : deckType;
     }
 
-    RemainingShips getDestroyedShips(){
+    public RemainingShips getDestroyedShips(){
         return new RemainingShips(0, 0, 0, 0);
     }
 

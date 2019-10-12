@@ -5,6 +5,7 @@ import com.app.entities.Shot;
 import com.app.cache.Room;
 import com.app.models.BoardCell;
 import com.app.exception.WinnerException;
+import com.app.models.ShipOrientation;
 import com.app.repo.GameRepo;
 import com.app.repo.ShotRepo;
 import com.app.response_wrappers.ShotResponseWrapper;
@@ -110,13 +111,13 @@ public class TurnMaker {
             ArrayList<BoardCell> player2Board = room.getPlayer2Board();
             int value = setShipHit(player2Board, x, y);
             room.getEnemyBoardForPlayer1().add(cell);
-            storeGameToDB(room.getRoomId(), room.getPlayer2Ships());
+            storeGameToDB(room.getRoomId(), room.getPlayer2Ships(), currentPlayer);
             storeShotToDB(room.getRoomId(), room.getPlayer1Id(), x, y, value);
         } else {
             ArrayList<BoardCell> player1Board = room.getPlayer1Board();
             int value = setShipHit(player1Board, x, y);
             room.getEnemyBoardForPlayer2().add(cell);
-            storeGameToDB(room.getRoomId(), room.getPlayer1Ships());
+            storeGameToDB(room.getRoomId(), room.getPlayer1Ships(), currentPlayer);
             storeShotToDB(room.getRoomId(), room.getPlayer2Id(), x, y, value);
         }
     }
@@ -135,12 +136,12 @@ public class TurnMaker {
             ArrayList<BoardCell> player2Board = room.getPlayer2Board();
             player2Board.addAll(sunkenShipSurroundings);
             room.getEnemyBoardForPlayer1().addAll(sunkenShipSurroundings);
-            storeGameToDB(room.getRoomId(), room.getPlayer2Ships());
+            storeGameToDB(room.getRoomId(), room.getPlayer2Ships(), 1);
         } else {
             ArrayList<BoardCell> player1Board = room.getPlayer1Board();
             player1Board.addAll(sunkenShipSurroundings);
             room.getEnemyBoardForPlayer2().addAll(sunkenShipSurroundings);
-            storeGameToDB(room.getRoomId(), room.getPlayer1Ships());
+            storeGameToDB(room.getRoomId(), room.getPlayer1Ships(), 2);
         }
         interactedCells.addAll(sunkenShipSurroundings);
     }
@@ -249,13 +250,13 @@ public class TurnMaker {
             ArrayList<BoardCell> player2Board = room.getPlayer2Board();
             player2Board.add(cell);
             room.getEnemyBoardForPlayer1().add(cell);
-            storeGameToDB(room.getRoomId(), room.getPlayer2Ships());
+            storeGameToDB(room.getRoomId(), room.getPlayer2Ships(), currentPlayer);
             storeShotToDB(room.getRoomId(), room.getPlayer1Id(), x, y, MISS);
         } else {
             ArrayList<BoardCell> player1Board = room.getPlayer1Board();
             player1Board.add(cell);
             room.getEnemyBoardForPlayer2().add(cell);
-            storeGameToDB(room.getRoomId(), room.getPlayer1Ships());
+            storeGameToDB(room.getRoomId(), room.getPlayer1Ships(), currentPlayer);
             storeShotToDB(room.getRoomId(), room.getPlayer2Id(), x, y, MISS);
         }
     }
@@ -279,9 +280,13 @@ public class TurnMaker {
         shotRepo.save(shot);
     }
 
-    private void storeGameToDB(UUID roomId, ArrayList<ArrayList<BoardCell>> ships) throws JsonProcessingException {
+    private void storeGameToDB(UUID roomId, ArrayList<ArrayList<BoardCell>> ships, int currentPlayer) throws JsonProcessingException {
         Game game = gameRepo.findByRoomId(roomId);
-        game.setPlayer1Ships(objectMapper.writeValueAsString(ships));
+        if (currentPlayer == 1){
+            game.setPlayer2Ships(objectMapper.writeValueAsString(ships));
+        } else {
+            game.setPlayer1Ships(objectMapper.writeValueAsString(ships));
+        }
         gameRepo.save(game);
     }
 
