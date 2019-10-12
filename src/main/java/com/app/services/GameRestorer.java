@@ -18,10 +18,12 @@ import java.util.UUID;
 public class GameRestorer {
     private final ObjectMapper objectMapper;
     private final ShotRepo shotRepo;
+    private final TurnMaker turnMaker;
 
-    public GameRestorer(ObjectMapper objectMapper, ShotRepo shotRepo) {
+    public GameRestorer(ObjectMapper objectMapper, ShotRepo shotRepo, TurnMaker turnMaker) {
         this.objectMapper = objectMapper;
         this.shotRepo = shotRepo;
+        this.turnMaker = turnMaker;
     }
 
     Room restore(Game game) throws IOException {
@@ -68,14 +70,14 @@ public class GameRestorer {
         return ships;
     }
 
-
-
     private ArrayList<BoardCell> getPlayerBoard(ArrayList<ArrayList<BoardCell>> ships) {
         ArrayList<BoardCell> playerBoard = new ArrayList<>();
         for (ArrayList<BoardCell> ship : ships) {
+            if (turnMaker.isShipSunken(ship)){
+                playerBoard.addAll(turnMaker.getSunkenShipSurroundings(ship));
+            }
             playerBoard.addAll(ship);
         }
-
 
         //List<Shot> shots = getShotList(roomId, enemyId, number);
         //fillBoardWithShots(playerBoard, shots);
@@ -88,7 +90,13 @@ public class GameRestorer {
 
 
 
-    private ArrayList<BoardCell> getPlayerBoard(ArrayList<ArrayList<BoardCell>> ships, UUID roomId, UUID enemyId, int number) {
+    private List<Shot> getShotList(UUID roomId, UUID playerId, int number) {
+        return shotRepo.findByRoomIdAndPlayerIdAndValueEquals(roomId, playerId, 0);
+    }
+
+
+
+    /*private ArrayList<BoardCell> getPlayerBoard(ArrayList<ArrayList<BoardCell>> ships, UUID roomId, UUID enemyId, int number) {
         ArrayList<BoardCell> playerBoard = new ArrayList<>();
         for (ArrayList<BoardCell> ship : ships) {
             playerBoard.addAll(ship);
@@ -117,8 +125,6 @@ public class GameRestorer {
         }
     }
 
-    private List<Shot> getShotList(UUID roomId, UUID playerId, int number) {
-        return shotRepo.findByRoomIdAndPlayerIdAndValueEquals(roomId, playerId, 0);
-    }
+    */
 
 }

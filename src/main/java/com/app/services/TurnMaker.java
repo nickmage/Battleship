@@ -123,15 +123,15 @@ public class TurnMaker {
     }
 
     private void saveSunken(Room room, ArrayList<BoardCell> ship, ArrayList<BoardCell> interactedCells) throws JsonProcessingException {
-        ArrayList<BoardCell> sunkenShipSurroundings = new ArrayList<>();
-        int y = ship.get(0).getY();
+        ArrayList<BoardCell> sunkenShipSurroundings = getSunkenShipSurroundings(ship);
+        /*int y = ship.get(0).getY();
         int x = ship.get(0).getX();
         ShipOrientation orientation = shipOrientation(ship);
         if (orientation == ShipOrientation.NONE || orientation == ShipOrientation.VERTICAL) {
             saveSunkenVerticalShip(ship, sunkenShipSurroundings, x, y);
         } else {
             saveSunkenHorizontalShip(ship, sunkenShipSurroundings, x, y);
-        }
+        }*/
         if (room.getCurrentPlayer() == 1) {
             ArrayList<BoardCell> player2Board = room.getPlayer2Board();
             player2Board.addAll(sunkenShipSurroundings);
@@ -144,6 +144,19 @@ public class TurnMaker {
             storeGameToDB(room.getRoomId(), room.getPlayer1Ships(), 2);
         }
         interactedCells.addAll(sunkenShipSurroundings);
+    }
+
+    public ArrayList<BoardCell> getSunkenShipSurroundings(ArrayList<BoardCell> ship){
+        ArrayList<BoardCell> sunkenShipSurroundings = new ArrayList<>();
+        int y = ship.get(0).getY();
+        int x = ship.get(0).getX();
+        ShipOrientation orientation = shipOrientation(ship);
+        if (orientation == ShipOrientation.NONE || orientation == ShipOrientation.VERTICAL) {
+            saveSunkenVerticalShip(ship, sunkenShipSurroundings, x, y);
+        } else {
+            saveSunkenHorizontalShip(ship, sunkenShipSurroundings, x, y);
+        }
+        return sunkenShipSurroundings;
     }
 
     private void saveSunkenHorizontalShip(ArrayList<BoardCell> ship, ArrayList<BoardCell> sunkenShipSurroundings, int x, int y){
@@ -234,7 +247,7 @@ public class TurnMaker {
         return 0;
     }
 
-    private boolean isShipSunken(ArrayList<BoardCell> ship) {
+    public boolean isShipSunken(ArrayList<BoardCell> ship) {
         int count = 0;
         for (BoardCell boardCell : ship) {
             if (boardCell.getValue() < 0) {
