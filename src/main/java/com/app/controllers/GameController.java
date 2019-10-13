@@ -2,6 +2,8 @@ package com.app.controllers;
 
 import com.app.cache.Room;
 import com.app.cache.RoomCache;
+import com.app.entities.Game;
+import com.app.repo.GameRepo;
 import com.app.response_wrappers.GameInitResponseWrapper;
 import com.app.response_wrappers.GameStatusResponseWrapper;
 import com.app.services.*;
@@ -11,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/game")
@@ -22,17 +25,18 @@ public class GameController {
     private final GameInitResponseCreator initResponseCreator;
     private final GameStatusResponseCreator statusResponseCreator;
     private final ScoreboardSaver scoreboardSaver;
+    private final GameRepo gameRepo;
 
     public GameController(TurnMaker turnMaker, TurnValidator turnValidator,
                           GameFinder gameFinder, GameInitResponseCreator initResponseCreator,
-                          GameStatusResponseCreator statusResponseCreator, ScoreboardSaver scoreboardSaver) {
-
+                          GameStatusResponseCreator statusResponseCreator, ScoreboardSaver scoreboardSaver, GameRepo gameRepo) {
         this.turnMaker = turnMaker;
         this.turnValidator = turnValidator;
         this.gameFinder = gameFinder;
         this.initResponseCreator = initResponseCreator;
         this.statusResponseCreator = statusResponseCreator;
         this.scoreboardSaver = scoreboardSaver;
+        this.gameRepo = gameRepo;
     }
 
     @GetMapping("/init")
@@ -77,6 +81,28 @@ public class GameController {
             }
         }
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
+    }
+
+
+
+
+
+
+    @PostMapping("/surrender")
+    public ResponseEntity surrender(@RequestParam(name = "roomId") String roomId,
+                                    @RequestParam(name = "playerId") String playerId) throws IOException {
+        Room room = gameFinder.findGame(roomId);
+        int winner;
+        if (room.getPlayer1Id().toString().equals(playerId)){
+            winner = 2;
+        } else if (room.getPlayer2Id().toString().equals(playerId)){
+            winner = 1;
+        } else return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        room.setWinner(winner);
+        Game game = gameRepo.findByRoomId(UUID.fromString(roomId));
+        game.setWinner(winner);
+        gameRepo.save(game);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
 

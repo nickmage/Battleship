@@ -45,7 +45,7 @@ public class TurnMaker {
             response.setRemainingEnemyShips(remainingShips.getRemainingShips(room.getCurrentPlayer() == 1 ?
                                             room.getPlayer2Ships() : room.getPlayer1Ships()));
         } catch (WinnerException e) {
-            room.setWinner(1);
+            room.setWinner(room.getCurrentPlayer());//1);
             response.setRemainingEnemyShips(remainingShips.getDestroyedShips());
             Game game = gameRepo.findByRoomId(room.getRoomId());
             game.setWinner(game.getCurrentPlayer());
@@ -111,13 +111,13 @@ public class TurnMaker {
             ArrayList<BoardCell> player2Board = room.getPlayer2Board();
             int value = setShipHit(player2Board, x, y);
             room.getEnemyBoardForPlayer1().add(cell);
-            storeGameToDB(room.getRoomId(), room.getPlayer2Ships(), currentPlayer);
+            storeGameToDB(room.getRoomId(), room.getPlayer2Ships(), currentPlayer, true);
             storeShotToDB(room.getRoomId(), room.getPlayer1Id(), x, y, value);
         } else {
             ArrayList<BoardCell> player1Board = room.getPlayer1Board();
             int value = setShipHit(player1Board, x, y);
             room.getEnemyBoardForPlayer2().add(cell);
-            storeGameToDB(room.getRoomId(), room.getPlayer1Ships(), currentPlayer);
+            storeGameToDB(room.getRoomId(), room.getPlayer1Ships(), currentPlayer, true);
             storeShotToDB(room.getRoomId(), room.getPlayer2Id(), x, y, value);
         }
     }
@@ -128,12 +128,12 @@ public class TurnMaker {
             ArrayList<BoardCell> player2Board = room.getPlayer2Board();
             player2Board.addAll(sunkenShipSurroundings);
             room.getEnemyBoardForPlayer1().addAll(sunkenShipSurroundings);
-            storeGameToDB(room.getRoomId(), room.getPlayer2Ships(), 1);
+            storeGameToDB(room.getRoomId(), room.getPlayer2Ships(), 1, true);
         } else {
             ArrayList<BoardCell> player1Board = room.getPlayer1Board();
             player1Board.addAll(sunkenShipSurroundings);
             room.getEnemyBoardForPlayer2().addAll(sunkenShipSurroundings);
-            storeGameToDB(room.getRoomId(), room.getPlayer1Ships(), 2);
+            storeGameToDB(room.getRoomId(), room.getPlayer1Ships(), 2, true);
         }
         interactedCells.addAll(sunkenShipSurroundings);
     }
@@ -257,13 +257,13 @@ public class TurnMaker {
             ArrayList<BoardCell> player2Board = room.getPlayer2Board();
             player2Board.add(cell);
             room.getEnemyBoardForPlayer1().add(cell);
-            storeGameToDB(room.getRoomId(), room.getPlayer2Ships(), currentPlayer);
+            storeGameToDB(room.getRoomId(), room.getPlayer2Ships(), currentPlayer, false);
             storeShotToDB(room.getRoomId(), room.getPlayer1Id(), x, y, MISS);
         } else {
             ArrayList<BoardCell> player1Board = room.getPlayer1Board();
             player1Board.add(cell);
             room.getEnemyBoardForPlayer2().add(cell);
-            storeGameToDB(room.getRoomId(), room.getPlayer1Ships(), currentPlayer);
+            storeGameToDB(room.getRoomId(), room.getPlayer1Ships(), currentPlayer, false);
             storeShotToDB(room.getRoomId(), room.getPlayer2Id(), x, y, MISS);
         }
     }
@@ -287,13 +287,17 @@ public class TurnMaker {
         shotRepo.save(shot);
     }
 
-    private void storeGameToDB(UUID roomId, ArrayList<ArrayList<BoardCell>> ships, int currentPlayer) throws JsonProcessingException {
+    private void storeGameToDB(UUID roomId, ArrayList<ArrayList<BoardCell>> ships, int currentPlayer, boolean hit) throws JsonProcessingException {
         Game game = gameRepo.findByRoomId(roomId);
         if (currentPlayer == 1){
             game.setPlayer2Ships(objectMapper.writeValueAsString(ships));
         } else {
             game.setPlayer1Ships(objectMapper.writeValueAsString(ships));
         }
+        if (!hit) {
+            currentPlayer = currentPlayer == 1 ? 2 : 1;
+        }
+        game.setCurrentPlayer(currentPlayer);
         gameRepo.save(game);
     }
 

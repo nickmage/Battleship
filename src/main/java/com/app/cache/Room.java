@@ -131,22 +131,4 @@ public class Room {
         this.roomId = roomId;
     }
 
-    @Override
-    public String toString() {
-        return "Room{" +
-                "roomId=" + roomId +
-                ", currentPlayer=" + currentPlayer +
-                ", player1Name='" + player1Name + '\'' +
-                ", player1Id=" + player1Id +
-                ", player2Name='" + player2Name + '\'' +
-                ", player2Id=" + player2Id +
-                ", player1Board=" + player1Board +
-                ", enemyBoardForPlayer1=" + enemyBoardForPlayer1 +
-                ", player2Board=" + player2Board +
-                ", enemyBoardForPlayer2=" + enemyBoardForPlayer2 +
-                ", shipsOfPlayer1=" + player1Ships +
-                ", shipsOfPlayer2=" + player2Ships +
-                ", winner=" + winner +
-                '}';
-    }
 }

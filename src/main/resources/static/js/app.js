@@ -61,6 +61,16 @@ app.config(function($routeProvider, $httpProvider) {
     controller : 'SuccessController'
     })
 
+    .when('/roomlist', {
+    templateUrl : 'roomlist.html',
+    controller : 'RoomListController'
+    })
+
+    .when('/room', {
+    templateUrl : 'room.html',
+    controller : 'RoomController'
+    })
+
     .otherwise({redirectTo: '/'});
 
 });
@@ -97,10 +107,10 @@ app.controller('RegistrationController', function($scope, $http) {
 });
 
 app.controller('ScoreboardController', function($scope, $http) {
-        var script = document.createElement('script');
-        script.type = 'text/javascript';
-        script.src = "js/scoreboard.js";
-        document.body.appendChild(script);
+    var script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = "js/scoreboard.js";
+    document.body.appendChild(script);
 });
 
 app.controller('MenuController', function($scope, $http) {
@@ -137,6 +147,29 @@ app.controller('GameController', function($scope, $http) {
 
 app.controller('SuccessController', function($scope, $http) {
 });
+
+app.controller('RoomListController', function($scope, $http, $window) {
+    var script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = "js/login.js";
+    document.body.appendChild(script);
+    var script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = "js/roomlist.js";
+    document.body.appendChild(script);
+});
+
+app.controller('RoomController', function($scope, $http, $window) {
+    var script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = "js/login.js";
+    document.body.appendChild(script);
+    var script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = "js/room.js";
+    document.body.appendChild(script);
+});
+
 
 /*app.factory("httpInterceptor", ["$q", "$window", "$log",
 function ($q, $window, $log) {

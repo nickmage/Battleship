@@ -12,13 +12,8 @@ import java.util.Random;
 @Service
 public class GameCreator {
 
-    private final Game game;
-
-    public GameCreator(Game game) {
-        this.game = game;
-    }
-
     public Game createNewGame(Match match) {
+        Game game = new Game();
         game.setRoomId(match.getRoomId());
         game.setCurrentPlayer(new Random().nextInt(2) + 1);
         game.setPlayer1Name(match.getPlayer1Name());

@@ -16,6 +16,7 @@ var board = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],    // 0 represents free cells
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 ];
+var roomId = sessionStorage.getItem('roomId');
 var request = [];
 
 function getUsername(){
@@ -1091,6 +1092,7 @@ function removeShipFromRequest(x, y){
 }
 
 function sendBoard() {
+
     $.ajax({
         type: 'POST',
         url: '/start',
@@ -1103,7 +1105,9 @@ function sendBoard() {
         statusCode: {
             200: function (data) {
                 localStorage.setItem('playerId', data.playerId);
-                sessionStorage.setItem('roomId', data.roomId);
+                if (roomId === null){
+                    sessionStorage.setItem('roomId', data.roomId);
+                }
                 window.location.replace("#/lobby");
             },
             400: function (data) {
@@ -1111,8 +1115,4 @@ function sendBoard() {
             }
         }
     });
-}
-
-function getToLobby(){
-    window.location.href = "#/lobby";
 }

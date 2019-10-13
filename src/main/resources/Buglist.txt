@@ -6,8 +6,7 @@ N. B. It doesn't appear using incognito mode!
 Possible solution: set redirect in another place.
 
 
-
-extraordinary flow
+js action on leave the game in lobby/game
 private rooms
 tests
 html/css
