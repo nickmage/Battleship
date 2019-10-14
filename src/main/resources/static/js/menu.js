@@ -2,10 +2,14 @@ var token = localStorage.getItem('token');
 var userFromToken = getUsername();
 
 function getUsername(){
-    let username = parseJwt(token).sub;
-    document.getElementById("user").innerText = username;
-    localStorage.setItem('username', username);
-};
+    if (localStorage.setItem('username') !== null){
+        document.getElementById("user").innerText = username;
+    } else {
+        let username = parseJwt(token).sub;
+        document.getElementById("user").innerText = username;
+        localStorage.setItem('username', username);
+    }
+}
 
 function parseJwt (token) {
     var base64Url = token.split('.')[1];

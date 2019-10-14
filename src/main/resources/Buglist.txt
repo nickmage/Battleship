@@ -7,6 +7,6 @@ Possible solution: set redirect in another place.
 
 
 js action on leave the game in lobby/game
-private rooms
+concurrency issue
 tests
 html/css

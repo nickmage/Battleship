@@ -32,62 +32,7 @@ button:hover{
 	background-color: rgba(36, 79, 154, 0.9);
 }
 p{
-    font-size: 32px;
-    font-weight: bold;
-}
-#passwordError{
-   color: red;
-}
-table{
     font-size: 24px;
-    margin: 0px auto;
-}
-form{
-	border-radius: 45px;
-	background: rgba(50, 94, 60, 1);
-	align-content: center;
-	font-size: 24px;
-}
-input{
-	background-color: rgb(217, 217, 217);
-	border-radius: 45px;
-	border: solid rgba(0, 0, 0, 1);
-	margin: 24px;
-	padding: 24px;
-	font-size: 24px;
-}
-.overlay_popup {
-	display:none;
-	position:fixed;
-	z-index: 999;
-	top:0;
-	right:0;
-	left:0;
-	bottom:0;
-	background:#000;
-	opacity:0.5;
-	border-radius: 0;
-}
-.popup {
-	display: none;
-	z-index: 1000;
-	width:100%;
-	min-height:100%;
-	background-color: rgba(0,0,0,0.5);
-	overflow:hidden;
-	position:fixed;
-	top:0;
-}
-.object{
-	border-radius: 45px;
-	background: rgba(50, 94, 60, 1);
-	margin: 200px auto 0 auto;
-	color: black;
-	box-shadow: 0 0 10px #000;
-	width: 440px;
-	height: 220px;
-	text-align: center;
-	padding: 50px 50px;
 }
 header{
 	background-color: black;
@@ -108,4 +53,3 @@ footer{
 	margin-top: 0;
 	padding: 46px 46px 24px;
 }
-

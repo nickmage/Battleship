@@ -2,28 +2,28 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Room list</title>
+    <title>Battleship Game</title>
     <link rel="stylesheet" type="text/css" href="style/roomlist.css">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
     <link rel="icon" href="img/icon.png" type="image/icon type">
 </head>
 <body>
-<header><h1>The Battleship Game</h1></header>
-<p>Room list</p>
-<div id="roomList"></div>
 <div class="overlay_popup"></div>
 <div class="popup" id="popup1">
     <div class="object">
         <form id="form">
             <label>Please enter the password:<br>
-                <span id="passwordError" hidden></span>
-                <input id="password" name="password" type="password" maxlength="20"></label><br>
+               <span id="passwordError" hidden></span>
+               <input id="password" name="password" type="password" maxlength="20"></label><br>
         </form>
         <button onclick="enter()">Enter</button>
         <button onclick="closePopup()">Close</button>
     </div>
 </div>
-<div><button onclick="location.href='#/menu'" type="button">Get back</button></div>
-<footer>The game was created by Nickolay Moiseyenko in 2019.</footer>
+<div id="panel">
+    <p>Room list</p>
+    <div id="roomList"></div>
+    <div><button onclick="location.href='#/menu'" type="button">Get back</button></div>
+</div>
 </body>
 </html>
