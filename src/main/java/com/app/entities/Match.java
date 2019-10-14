@@ -10,7 +10,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "matchmaking")
 @Component
-public class Match {
+public class Match implements Matchmaking {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

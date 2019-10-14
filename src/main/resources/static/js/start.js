@@ -1,6 +1,5 @@
 var token = localStorage.getItem('token');
-var userFromToken = getUsername();
-var user = document.getElementById("user").innerText;
+var user = setUsername();
 var shipOrientation = ['-', 'v', 'v', 'v'];
 var selectedShip = [false, false, false, false];
 var ids = ["ship1", "ship2", "ship3", "ship4"];
@@ -19,20 +18,9 @@ var board = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],    // 0 represents free cells
 var roomId = sessionStorage.getItem('roomId');
 var request = [];
 
-function getUsername(){
-    let username = parseJwt(token).sub;
-    document.getElementById("user").innerText = username;
-    localStorage.setItem('username', username);
-};
-
-function parseJwt (token) {
-    var base64Url = token.split('.')[1];
-    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-    }).join(''));
-    return JSON.parse(jsonPayload);
-};
+function setUsername(){
+    document.getElementById("user").innerText = localStorage.getItem('username');
+}
 
 function setStyleForSelectedShip(id, index) {
     for (var i = 0; i < ids.length; i++) {
@@ -1092,14 +1080,19 @@ function removeShipFromRequest(x, y){
 }
 
 function sendBoard() {
-
+    var headers = {};
+    headers.Authorization = token;
+    headers.Username = localStorage.getItem('username');
+    if (roomId !== null){
+        headers.RoomId = roomId;
+    }
     $.ajax({
         type: 'POST',
         url: '/start',
-        headers: {
+        headers: headers,/*{
             'Authorization':token,
             'Username':user
-        },
+        },*/
         contentType: 'application/json',
         data: JSON.stringify(request),
         statusCode: {

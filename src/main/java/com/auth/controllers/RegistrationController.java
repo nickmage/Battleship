@@ -29,9 +29,8 @@ public class RegistrationController {
         if (userFromDB != null){
             return new ResponseEntity(HttpStatus.NOT_ACCEPTABLE);
         }
-        else if (username != null && password != null && confirmPassword != null &&
-                username.length() >= 3 && password.length() >= 5 && username.length() <= 20 && password.length() <= 20 &&
-                password.equals(confirmPassword)) {
+        else if (username != null && password != null && username.length() >= 3 && password.length() >= 5 &&
+                username.length() <= 20 && password.length() <= 20 && password.equals(confirmPassword)) {
             User user = new User();
             user.setUsername(username);
             user.setPassword(passwordEncoder.encode(password));
@@ -43,9 +42,4 @@ public class RegistrationController {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping("/all")
-    public Iterable<User> getAllUsers() {
-        // This returns a JSON or XML with the users
-        return userRepo.findAll();
-    }
 }

@@ -1,0 +1,110 @@
+body{
+	padding: 0px;
+	margin: 0px;
+	background: rgba(50, 59, 94, 1);
+	font-family: "Sniglet", Arial, sans-serif;
+	text-align: center;
+	color: rgb(217, 217, 217);
+}
+header{
+	background-color: black;
+	background-color: rgba(0, 0, 0, 1);
+	font-size: 24px;
+	text-align: center;
+	font-style: italic;
+	margin-top: 0px;
+	padding: 8px;
+}
+form{
+	border-radius: 45px;
+	background: rgba(50, 94, 60, 1);
+	align-content: center;
+	font-size: 24px;
+}
+input{
+	background-color: rgb(217, 217, 217);
+	border-radius: 45px;
+	border: solid rgba(0, 0, 0, 1);
+	margin: 24px;
+	padding: 24px;
+	font-size: 24px;
+}
+#button{
+	text-align: center;
+	margin: 24px;
+	padding: 24px;
+	background-color: rgba(50, 94, 60, 1);
+}
+#button:hover{
+	background-color: rgba(36, 79, 154, 0.9);
+}
+footer{
+	background-color: rgba(0, 0, 0, 1);
+	font-family: "Sniglet", Arial, sans-serif;
+	font-size: 12px;
+	text-align: center;
+	color: rgb(217, 217, 217);
+	font-style: italic;
+	margin-top: 0;
+	padding: 46px 46px 24px;
+}
+button{
+	border-radius: 45px;
+	background: rgba(50, 94, 60, 1);
+	border-spacing:0p;
+	padding: 12px;
+	font-size: 24px;
+	table-layout: fixed;
+	margin: 16px 0 0 0;
+	border: 3px solid black;
+}
+#message{
+   color: red;
+}
+.overlay_popup {
+	display:none;
+	position:fixed;
+	z-index: 999;
+	top:0;
+	right:0;
+	left:0;
+	bottom:0;
+	background:#000;
+	opacity:0.5;
+	border-radius: 0;
+}
+.popup {
+	display: none;
+	z-index: 1000;
+	width:100%;
+	min-height:100%;
+	background-color: rgba(0,0,0,0.5);
+	overflow:hidden;
+	position:fixed;
+	top:0;
+}
+.object{
+	border-radius: 45px;
+	background: rgba(50, 94, 60, 1);
+	margin: 200px auto 0 auto;
+	color: black;
+	box-shadow: 0 0 10px #000;
+	width: 340px;
+	height: 180px;
+	text-align: center;
+	padding: 50px 70px;
+}
+.buttons{
+	border-radius: 45px;
+	background: rgba(50, 94, 60, 1);
+	border-spacing:0;
+	font-size: 24px;
+	table-layout: fixed;
+	margin: 6px;
+	border: 3px solid black;
+	width: 200px;
+	height: 50px;
+}
+button:hover{
+	background: rgba(36, 79, 154, 0.9);
+}

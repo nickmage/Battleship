@@ -1,9 +1,9 @@
 package com.app.services;
 
 import com.app.entities.Game;
-import com.app.entities.Match;
 
 import com.app.cache.RoomCache;
+import com.app.entities.Matchmaking;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -12,7 +12,7 @@ import java.util.Random;
 @Service
 public class GameCreator {
 
-    public Game createNewGame(Match match) {
+    public Game createNewGame(Matchmaking match) {
         Game game = new Game();
         game.setRoomId(match.getRoomId());
         game.setCurrentPlayer(new Random().nextInt(2) + 1);

@@ -1,7 +1,7 @@
 function validation() {
     var roomName = document.getElementById("roomName").value;
     var password = document.getElementById("password").value;
-    var playerId = localStorage.getItem("playerId");
+    var username = localStorage.getItem("username");
     var token = localStorage.getItem('token');
     document.getElementById("roomNameError").hidden = true;
     document.getElementById("passwordError").hidden = true;
@@ -18,10 +18,10 @@ function validation() {
             headers: {
                 'Authorization':token,
             },
-            data: "roomName=" + roomName + "&password=" + password + "&playerId=" + playerId,
+            data: "roomName=" + roomName + "&password=" + password + "&username=" + username,
             success: function (data) {
                 sessionStorage.setItem('roomId', data);
-                 window.location.replace("#/start");
+                window.location.replace("#/start");
             },
             error: function (data) {
                 console.log(data);

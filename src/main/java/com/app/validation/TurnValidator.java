@@ -10,8 +10,6 @@ import java.util.ArrayList;
 
 @Service
 public class TurnValidator {
-    @Autowired
-    private ObjectMapper objectMapper;
 
     public boolean isValidTurn(Room room, int x, int y, String playerId) {
         return (x >= 0 && x < 10) && (y >= 0 && y < 10)
@@ -19,6 +17,10 @@ public class TurnValidator {
     }
 
     private boolean isPlayerAbleToTurn(Room room, String playerId) {
+        System.out.println("cur pl " + room.getCurrentPlayer());
+        System.out.println(playerId.equals(room.getPlayer1Id().toString()));
+        System.out.println(playerId.equals(room.getPlayer2Id().toString()));
+
         return (room.getCurrentPlayer() == 1 && playerId.equals(room.getPlayer1Id().toString()))
                 || (room.getCurrentPlayer() == 2 && playerId.equals(room.getPlayer2Id().toString()));
     }
