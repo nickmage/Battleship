@@ -1,4 +1,4 @@
-body{
+/*body{
 	padding: 0px;
 	margin: 0px;
 	background: rgba(50, 59, 94, 1);
@@ -14,8 +14,8 @@ header{
 	font-style: italic;
 	margin-top: 0px;
 	padding: 8px;
-}
-form{
+}*/
+/*form{
 	border-radius: 45px;
 	background: rgba(50, 94, 60, 1);
 	margin: 64px 124px;
@@ -39,8 +39,8 @@ input{
 }
 #button:hover{
 	background-color: rgba(36, 79, 154, 0.9);
-}
-footer{
+}*/
+/*footer{
 	background-color: rgba(0, 0, 0, 1);
 	font-family: "Sniglet", Arial, sans-serif;
 	font-size: 12px;
@@ -49,8 +49,8 @@ footer{
 	font-style: italic;
 	margin-top: 0;
 	padding: 46px 46px 24px;
-}
-button{
+}*/
+/*button{
 	border-radius: 45px;
 	background: rgba(50, 94, 60, 1);
 	border-spacing:0p;
@@ -62,4 +62,4 @@ button{
 }
 #message{
    color: red;
-}
+}*/

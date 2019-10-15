@@ -26,12 +26,24 @@ p {
     font-weight: bold;
     margin-top: 0.67em;
 }
-svg polygon {
+polygon {
     stroke-dasharray: 50;
     animation: dashoffset 2.5s linear infinite;
+}
+svg {
+    margin-left:17.5%;
 }
 @keyframes dashoffset {
     to {
         stroke-dashoffset: 100;
     }
+}
+img{
+    margin-left: 37.5%;
+}
+footer {
+    display: none;
+}
+header {
+	display: none;
 }

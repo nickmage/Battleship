@@ -30,21 +30,16 @@ public class PreparationController {
 
     private final UserRepo userRepo;
     private final MatchRepo matchRepo;
-    private final MatchCreator matchCreator;
-    private final GameRepo gameRepo;
-    private final GameCreator gameCreator;
     private final ScoreboardRepo scoreboardRepo;
     private final PrivateMatchRepo privateMatchRepo;
     private final MatchSaver matchSaver;
     private final PrivateMatchCreator privateMatchCreator;
 
-    public PreparationController(UserRepo userRepo, MatchRepo matchRepo, MatchCreator matchCreator,
-                                 GameRepo gameRepo, GameCreator gameCreator, ScoreboardRepo scoreboardRepo, PrivateMatchRepo privateMatchRepo, MatchSaver matchSaver, PrivateMatchCreator privateMatchCreator) {
+    public PreparationController(UserRepo userRepo, MatchRepo matchRepo, ScoreboardRepo scoreboardRepo,
+                                 PrivateMatchRepo privateMatchRepo, MatchSaver matchSaver, PrivateMatchCreator privateMatchCreator) {
         this.userRepo = userRepo;
         this.matchRepo = matchRepo;
-        this.matchCreator = matchCreator;
-        this.gameRepo = gameRepo;
-        this.gameCreator = gameCreator;
+
         this.scoreboardRepo = scoreboardRepo;
         this.privateMatchRepo = privateMatchRepo;
         this.matchSaver = matchSaver;
@@ -107,7 +102,7 @@ public class PreparationController {
             PrivateMatch matchFromDB = privateMatchRepo.findByRoomNameAndPlayer2IdIsNull(roomName);
             if (matchFromDB == null) {
                 return privateMatchCreator.createMatch(roomName, password, username);
-            } else return new ResponseEntity<>("The room with this name already exists.", HttpStatus.OK);
+            } else return new ResponseEntity<>("The room with this name already exists.", HttpStatus.BAD_REQUEST);
         }
     }
 

@@ -3,27 +3,28 @@
 <html lang="en">
 <meta charset="utf-8">
 <title>Battleship Game</title>
-<link rel="stylesheet" type="text/css" href="style/index.css">
+<link rel="stylesheet" type="text/css" href="style/room.css">
 <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 <link rel="icon" href="img/icon.png" type="image/icon type">
 </head>
 <body>
-<!--<header><h1>The Battleship Game</h1></header>-->
-<div id="form">
-    <form action="/registration" method="POST">
-        <span id="message" hidden></span><br>
-        <label>Username:<br>
-            <input id="username" name="username" type="text" maxlength="20"></label><br>
-        <span id="usernameError" hidden></span><br>
-        <label>Password:<br>
-            <input id="password" name="password" type="password" maxlength="20"></label><br>
-        <span id="passwordError" hidden></span><br>
-        <label>Confirm password:<br>
-            <input id="confirmPassword" name="confirmPassword" type="password" maxlength="20"></label><br>
-        <span id="confirmPasswordError" hidden></span><br>
-    </form>
-    <button id="button" onclick="validation()">Sign up</button>
+
+<div id="panel">
+    <div id="form">
+        <form action="/registration" method="POST">
+            <span id="message" hidden></span><br>
+            <label>Username:<br>
+                <input id="username" name="username" type="text" maxlength="20"></label><br>
+            <span id="usernameError" hidden></span><br>
+            <label>Password:<br>
+                <input id="password" name="password" type="password" maxlength="20"></label><br>
+            <span id="passwordError" hidden></span><br>
+            <label>Confirm password:<br>
+                <input id="confirmPassword" name="confirmPassword" type="password" maxlength="20"></label><br>
+            <span id="confirmPasswordError" hidden></span><br>
+        </form>
+        <button id="button" onclick="validation()">Sign up</button>
+    </div>
 </div>
-<!--<footer>The game was created by Nickolay Moiseyenko in 2019.</footer>-->
 </body>
 </html>

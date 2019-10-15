@@ -17,61 +17,45 @@ header{
 	margin-top: 0;
 	padding: 8px;
 }
+p{
+	font-size: 24px;
+}
 table{
-	background: black;
+	background: inherit;
 	margin-left:auto;
 	margin-right:auto;
 	border-collapse: collapse;
 	border: 6px solid black;
 }
-p{
-	font-size: 24px;
-}
-#gameBoard{
+#panel{
+    margin: 34px 12px;
+    padding-bottom: 38px;
 	border-radius: 45px;
 	background: rgb(50, 94, 60);
 }
-#playerName{
-	margin-right: 42px;
-	margin-left: 72px;
-	border: 0;
-	width: 450px;
-	padding: 10px;
-}
-#enemyName{
-	margin-left: 202px;
-	border: 0;
-	width: 450px;
-	padding: 10px;
-}
-#gameBoard{
-	margin: 48px;
-	padding-top: 24px;
-	padding-bottom: 48px;
-}
-#playerBoard{
-	margin-right: 42px;
-	margin-left: 52px;
-}
-#enemyBoard{
-	margin-left: 188px;
+tr, td{
+	padding: 0;
+	margin: 0;
 }
 #playerShips, #enemyShips{
 	background: inherit;
 	border-collapse: collapse;
 	border: 0;
-	width: 450px;
-	height: 100px;
+	width: 70%;
+	margin-bottom: 25px;
+
 }
-#playerShips{
-	margin: 25px auto 25px 84px;
+.container > div {
+  display: inline-block;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 15px;
+  margin 0;
+  max-width: 600px;
+  min-width: 100px;
 }
-#enemyShips{
-	margin: 25px auto 25px 218px;
-}
-tr, td{
-	padding: 0;
-	margin: 0;
+.container div.content {
+  height: 700px;
 }
 button{
 	border: 6px solid black;
@@ -81,7 +65,7 @@ button{
 	margin: 0;
 	padding: 0;
 }
-footer{
+footer {
 	margin-top:auto;
 	background-color: black;
 	background-color: rgba(0, 0, 0, 1);
@@ -114,7 +98,7 @@ footer{
 	position:fixed;
 	top:0;
 }
-.object{
+.object {
 	border-radius: 45px;
 	background: rgba(50, 94, 60, 1);
 	margin: 200px auto 0 auto;
@@ -125,7 +109,7 @@ footer{
 	text-align: center;
 	padding: 50px 70px;
 }
-.exitButton{
+.exitButton {
 	border-radius: 45px;
 	background: rgba(50, 94, 60, 1);
 	border-spacing:0;
@@ -136,7 +120,6 @@ footer{
 	width: 200px;
 	height: 50px;
 }
-button:hover{
+button:hover {
 	background: rgba(36, 79, 154, 0.9);
 }
-

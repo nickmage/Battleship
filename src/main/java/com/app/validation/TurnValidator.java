@@ -17,9 +17,6 @@ public class TurnValidator {
     }
 
     private boolean isPlayerAbleToTurn(Room room, String playerId) {
-        System.out.println("cur pl " + room.getCurrentPlayer());
-        System.out.println(playerId.equals(room.getPlayer1Id().toString()));
-        System.out.println(playerId.equals(room.getPlayer2Id().toString()));
 
         return (room.getCurrentPlayer() == 1 && playerId.equals(room.getPlayer1Id().toString()))
                 || (room.getCurrentPlayer() == 2 && playerId.equals(room.getPlayer2Id().toString()));

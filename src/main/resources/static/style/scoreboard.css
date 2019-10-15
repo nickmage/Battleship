@@ -59,3 +59,7 @@ footer{
 	margin-top: 0;
 	padding: 46px 46px 24px;
 }
+td{
+    padding-left: 10px;
+    padding-right: 10px;
+}

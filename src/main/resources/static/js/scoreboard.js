@@ -29,3 +29,11 @@ function appendTable(list){
     }
     $('#scoreboard').append(data);
 }
+
+function getBack(){
+    if (localStorage.getItem('token') === null){
+        window.location.href='#/';
+    } else {
+        window.location.href='#/menu';
+    }
+}

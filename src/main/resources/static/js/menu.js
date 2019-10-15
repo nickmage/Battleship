@@ -2,8 +2,8 @@ var token = localStorage.getItem('token');
 var userFromToken = getUsername();
 
 function getUsername(){
-    if (localStorage.setItem('username') !== null){
-        document.getElementById("user").innerText = username;
+    if (localStorage.getItem('username') !== null){
+        document.getElementById("user").innerText = localStorage.getItem('username');
     } else {
         let username = parseJwt(token).sub;
         document.getElementById("user").innerText = username;

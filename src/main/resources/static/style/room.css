@@ -35,6 +35,7 @@ p{
     font-size: 24px;
 }
 form{
+    margin-top: 24px;
 	border-radius: 45px;
 	background: rgba(50, 94, 60, 1);
 	align-content: center;
@@ -66,4 +67,7 @@ footer{
 	font-style: italic;
 	margin-top: 0;
 	padding: 46px 46px 24px;
+}
+#roomNameError, #passwordError, #usernameError, #confirmPasswordError{
+    color: red;
 }

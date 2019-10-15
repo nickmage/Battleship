@@ -16,7 +16,7 @@ public class TemplateController {
 
     @GetMapping("/login")
     public String login() {
-       return "forward:/redirectedLogin.html";
+       return "forward:/login.html";
     }
 
     @GetMapping("/logout")

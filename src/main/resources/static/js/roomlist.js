@@ -39,6 +39,7 @@
     }
 
     function showConfirmation(element) {
+        document.getElementById("passwordError").hidden = true;
         roomId = element.getAttribute('id');
         $('.popup').show();
         $('.overlay_popup').show();
