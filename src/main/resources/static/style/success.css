@@ -1,0 +1,55 @@
+body{
+	padding: 0px;
+	margin: 0px;
+	background: rgba(50, 59, 94, 1);
+	font-family: "Sniglet", Arial, sans-serif;
+	text-align: center;
+	color: rgb(217, 217, 217);
+}
+#panel{
+    border-radius: 45px;
+    background: rgba(50, 94, 60, 1);
+    margin: 10%;
+    padding-top: 24px;
+    padding-bottom: 54px;
+}
+button{
+	text-align: center;
+	margin: 24px;
+	padding: 24px;
+	background-color: rgba(50, 94, 60, 1);
+	border-radius: 45px;
+    border-spacing:0p;
+    padding: 12px;
+    font-size: 24px;
+    table-layout: fixed;
+    margin: 16px 0 0 0;
+    border: 2px solid rgb(217, 217, 217);
+    color: black;
+    outline:none;
+}
+button:hover{
+	background-color: rgba(36, 79, 154, 0.9);
+}
+p{
+    font-size: 24px;
+}
+header{
+	background-color: black;
+	background-color: rgba(0, 0, 0, 1);
+	font-size: 24px;
+	text-align: center;
+	font-style: italic;
+	margin-top: 0px;
+	padding: 8px;
+}
+footer{
+	background-color: rgba(0, 0, 0, 1);
+	font-family: "Sniglet", Arial, sans-serif;
+	font-size: 12px;
+	text-align: center;
+	color: rgb(217, 217, 217);
+	font-style: italic;
+	margin-top: 0;
+	padding: 46px 46px 24px;
+}

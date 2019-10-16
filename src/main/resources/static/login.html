@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Battleship Game</title>
+    <link rel="stylesheet" type="text/css" href="style/login.css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
+    <link rel="icon" href="img/icon.png" type="image/icon type">
+</head>
+<body>
+<div id="panel">
+    <form id="form">
+        <label>Username:<br>
+            <span id="usernameError" hidden></span><br>
+            <input id="username" name="username" type="text" maxlength="20"></label><br>
+        <label>Password:<br>
+            <span id="passwordError" hidden></span><br>
+            <input id="password" name="password" type="password" maxlength="20"></label><br>
+    </form>
+    <button id="signIn" onclick="validation()">Sign in</button>
+    <p>Or create new account</p>
+    <button onclick="location.href='#/registration'">Sign up</button>
+</div>
+</body>
+</html>
