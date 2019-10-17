@@ -35,7 +35,6 @@ public class RegistrationController {
             User user = new User();
             user.setUsername(username);
             user.setPassword(passwordEncoder.encode(password));
-            user.setId(UUID.randomUUID());
             user.setRole(Role.ROLE_USER);
             user.setEnabled(true);
             userRepo.save(user);

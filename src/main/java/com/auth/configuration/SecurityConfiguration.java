@@ -36,7 +36,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                             "/index.html", "/scoreboard.html", "/enter.html", "/redirectedLogin.html", "/registration.html",
                             "/style/**", "/js/**", "/img/**")
                     .permitAll()
-                    .anyRequest().permitAll()//authenticated()
+                    .anyRequest().authenticated()//authenticated()
                 .and()
                     .formLogin()
                     .loginPage("/login")

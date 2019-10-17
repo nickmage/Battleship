@@ -9,6 +9,7 @@ import com.app.repo.MatchRepo;
 import com.app.repo.PrivateMatchRepo;
 import com.app.repo.ScoreboardRepo;
 import com.app.response_wrappers.RoomListResponseWrapper;
+import com.app.response_wrappers.ScoreboardWrapper;
 import com.app.services.GameCreator;
 import com.app.services.MatchCreator;
 import com.app.services.MatchSaver;
@@ -85,8 +86,14 @@ public class PreparationController {
     }
 
     @GetMapping("/scoreboard")
-    public ResponseEntity<List<Scoreboard>> scoreboard() {
-        List<Scoreboard> response = scoreboardRepo.findTop10ByOrderByWinsDesc();
+    public ResponseEntity<List<ScoreboardWrapper>> scoreboard() {
+        List<Scoreboard> records = scoreboardRepo.findTop10ByOrderByWinsDesc();
+        List<ScoreboardWrapper> response = new ArrayList<>();
+        for (Scoreboard record : records) {
+            ScoreboardWrapper wrapper = new ScoreboardWrapper(record.getUser().getUsername(),
+                    record.getWins(), record.getLoses());
+            response.add(wrapper);
+        }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -123,15 +130,15 @@ public class PreparationController {
         if (roomId == null || roomId.equals("null") || password == null || password.equals("null") ||
                 username == null || username.equals("null") || roomId.length() == 0 || password.length() == 0 ||
                 username.length() == 0) {
-            return new ResponseEntity<>("Incorrect data.",HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Incorrect data.", HttpStatus.BAD_REQUEST);
         } else {
             PrivateMatch match = privateMatchRepo.findByRoomId(UUID.fromString(roomId));
-            if (match == null){
-                return new ResponseEntity<>("Room not found.",HttpStatus.BAD_REQUEST);
-            } else if (match.getPlayer2Name() != null){
-                return new ResponseEntity<>("This room has been already occupied",HttpStatus.BAD_REQUEST);
-            } else if (!match.getPassword().equals(password)){
-                return new ResponseEntity<>("Password is incorrect.",HttpStatus.BAD_REQUEST);
+            if (match == null) {
+                return new ResponseEntity<>("Room not found.", HttpStatus.BAD_REQUEST);
+            } else if (match.getPlayer2Name() != null) {
+                return new ResponseEntity<>("This room has been already occupied", HttpStatus.BAD_REQUEST);
+            } else if (!match.getPassword().equals(password)) {
+                return new ResponseEntity<>("Password is incorrect.", HttpStatus.BAD_REQUEST);
             } else {
                 match.setPlayer2Name(username);
                 privateMatchRepo.save(match);

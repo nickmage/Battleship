@@ -1,5 +1,7 @@
 package com.auth.entities;
 
+import com.app.entities.Scoreboard;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -8,9 +10,12 @@ import java.util.UUID;
 @Entity
 @Table(name = "account")
 public class User {
+
     @Id
-    @Column(name="id", nullable=false)
+    @Column(name="id", unique = true)
     @Type(type = "uuid-char")
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid2")
     private UUID Id;
 
     @Column(name="username", nullable=false, length = 20)
@@ -27,12 +32,16 @@ public class User {
     @Type(type = "yes_no")
     private Boolean enabled;
 
-    public User(String username, String password, UUID Id, Role role, Boolean enabled) {
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Scoreboard scoreboard;
+
+    public User(String username, String password, UUID Id, Role role, Boolean enabled, Scoreboard scoreboard) {
         this.username = username;
         this.password = password;
         this.Id = Id;
         this.role = role;
         this.enabled = enabled;
+        this.scoreboard = scoreboard;
     }
 
     public User() {
@@ -77,4 +86,13 @@ public class User {
     public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
     }
+
+    public Scoreboard getScoreboard() {
+        return scoreboard;
+    }
+
+    public void setScoreboard(Scoreboard scoreboard) {
+        this.scoreboard = scoreboard;
+    }
+
 }
