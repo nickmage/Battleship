@@ -28,6 +28,8 @@ public class Match implements Matchmaking {
     private String player1Ships;
     @Type(type = "text")
     private String player2Ships;
+    /*match - ENUM isPrivate
+    *  @Enumerated(.STRING)*/
 
     public Match(Long id, String player1Name, UUID player1Id, String player2Name, UUID player2Id,
                  UUID roomId, Date date, String player1Board, String player2Board) {

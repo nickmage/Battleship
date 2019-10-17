@@ -2,17 +2,13 @@ package com.app.services;
 
 import com.app.cache.Room;
 import com.app.cache.RoomCache;
-import com.app.entities.Match;
 import com.app.entities.PrivateMatch;
-import com.app.models.BoardCell;
-import com.app.models.Ship;
 import com.app.repo.PrivateMatchRepo;
 import com.auth.repo.UserRepo;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
 
@@ -32,7 +28,7 @@ public class PrivateMatchCreator {
         match.setPassword(password);
         match.setRoomId(UUID.randomUUID());
         match.setDate(new Date());
-        match.setPlayer1Id(userRepo.findByUsername(username).getUuid());
+        match.setPlayer1Id(userRepo.findByUsername(username).getId());
         match.setPlayer1Name(username);
         cacheNewPrivateRoom(match);
 

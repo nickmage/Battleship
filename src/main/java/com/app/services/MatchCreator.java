@@ -28,7 +28,7 @@ public class MatchCreator {
 
     public Match createNewRoom(User user, Ship[] shipStartCells) throws JsonProcessingException {
         match.setPlayer1Name(user.getUsername());
-        match.setPlayer1Id(user.getUuid());
+        match.setPlayer1Id(user.getId());
         match.setRoomId(UUID.randomUUID());
         match.setDate(new Date());
         ArrayList<ArrayList<BoardCell>> ships = boardCreator.getShips(shipStartCells);
@@ -39,7 +39,7 @@ public class MatchCreator {
 
     public Match joinExistingRoom(Match match, User user, Ship[] shipStartCells) throws JsonProcessingException {
         match.setPlayer2Name(user.getUsername());
-        match.setPlayer2Id(user.getUuid());
+        match.setPlayer2Id(user.getId());
         ArrayList<ArrayList<BoardCell>> ships = boardCreator.getShips(shipStartCells);
         match.setPlayer2Ships(objectMapper.writeValueAsString(ships));
         cacheExistingRoom(match, ships, shipStartCells);

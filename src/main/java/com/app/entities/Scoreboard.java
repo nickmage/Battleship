@@ -12,6 +12,7 @@ public class Scoreboard {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    /*1 to 1 from User*/
     private String username;
     private Integer wins;
     private Integer loses;

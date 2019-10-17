@@ -6,6 +6,10 @@ import com.app.exception.WinnerException;
 import com.app.response_wrappers.GameStatusResponseWrapper;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
 @Service
 public class GameStatusResponseCreator {
     private final RemainingShipsCreator remainingShips;
@@ -36,12 +40,12 @@ public class GameStatusResponseCreator {
 
     private void setResponseForPlayer2(GameStatusResponseWrapper response, Room room) {
         response.setPlayerBoard(room.getPlayer2Board());
+        response.setMyTurn(room.getCurrentPlayer() == 2);
         try {
             response.setPlayerShips(remainingShips.getRemainingShips(room.getPlayer2Ships()));
         } catch (WinnerException e) {
             actionOnWinnerPresence(response, room, 2);
         }
-        response.setMyTurn(room.getCurrentPlayer() == 2);
     }
 
     private void actionOnWinnerPresence(GameStatusResponseWrapper response, Room room, int playerNumber){

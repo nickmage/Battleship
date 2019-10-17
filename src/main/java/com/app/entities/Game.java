@@ -14,11 +14,15 @@ public class Game {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    /*roonID as Id
+    * */
     @Type(type = "uuid-char")
     private UUID roomId;
     private Integer currentPlayer;
     private Integer winner;
-
+    /*take from Accounts
+    *
+    **/
     private String player1Name;
     @Type(type = "uuid-char")
     private UUID player1Id;

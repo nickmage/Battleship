@@ -2,6 +2,7 @@ var token = localStorage.getItem('token');
 var userFromToken = getUsername();
 
 function getUsername(){
+    sessionStorage.removeItem('roomId');
     if (localStorage.getItem('username') !== null){
         document.getElementById("user").innerText = localStorage.getItem('username');
     } else {

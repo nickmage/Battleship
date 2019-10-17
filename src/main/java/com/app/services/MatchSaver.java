@@ -46,7 +46,7 @@ public class MatchSaver {
     }
 
     public ResponseEntity getResponse(Ship[] ships, User userFromDB) throws JsonProcessingException {
-        UUID playerId = userFromDB.getUuid();
+        UUID playerId = userFromDB.getId();
         List<Match> freeRooms = matchRepo.findByPlayer2Name(null);
         //remove rooms to avoid playing with himself
         freeRooms.removeIf(match -> match.getPlayer1Id().equals(playerId));
@@ -77,7 +77,7 @@ public class MatchSaver {
             return new ResponseEntity<>(new StartResponseWrapper(match.getPlayer1Id().toString(),
                     match.getRoomId().toString()), HttpStatus.OK);
         } else {
-            match.setPlayer2Id(user.getUuid());
+            match.setPlayer2Id(user.getId());
             match.setPlayer2Ships(objectMapper.writeValueAsString(ships));
             privateMatchRepo.save(match);
             cachePlayer2Data(match, RoomCache.rooms.get(roomId), ships, shipStartCells);

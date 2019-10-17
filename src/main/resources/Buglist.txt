@@ -9,4 +9,3 @@ Possible solution: set redirect in another place.
 js action on leave the game in lobby/game
 concurrency issue
 tests
-html/css

@@ -9,31 +9,33 @@ import java.util.UUID;
 @Table(name = "account")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-    private String username;
-    private String password;
+    @Column(name="id", nullable=false)
     @Type(type = "uuid-char")
-    private UUID uuid;
-    private String role;
+    private UUID Id;
 
-    public User(Long id, String username, String password, UUID uuid, String role) {
-        this.id = id;
+    @Column(name="username", nullable=false, length = 20)
+    private String username;
+
+    @Column(name="password", nullable=false)
+    private String password;
+
+    @Column(name="role", nullable=false, length = 20)
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+    @Column(name="enabled", nullable=false, length = 20)
+    @Type(type = "yes_no")
+    private Boolean enabled;
+
+    public User(String username, String password, UUID Id, Role role, Boolean enabled) {
         this.username = username;
         this.password = password;
-        this.uuid = uuid;
+        this.Id = Id;
         this.role = role;
+        this.enabled = enabled;
     }
 
     public User() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getUsername() {
@@ -52,19 +54,27 @@ public class User {
         this.password = password;
     }
 
-    public UUID getUuid() {
-        return uuid;
+    public UUID getId() {
+        return Id;
     }
 
-    public void setUuid(UUID uuid) {
-        this.uuid = uuid;
+    public void setId(UUID id) {
+        this.Id = id;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
+    }
+
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
     }
 }
