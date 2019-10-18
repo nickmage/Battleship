@@ -10,6 +10,4 @@ public interface ScoreboardRepo extends JpaRepository<Scoreboard, UUID> {
 
     List<Scoreboard> findTop10ByOrderByWinsDesc();
 
-    //Scoreboard findByUsername(String username);
-
 }

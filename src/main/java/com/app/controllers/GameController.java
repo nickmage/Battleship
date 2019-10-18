@@ -83,17 +83,10 @@ public class GameController {
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
-
-
-
-
-
     @PostMapping("/surrender")
     public ResponseEntity surrender(@RequestParam(name = "roomId") String roomId,
                                     @RequestParam(name = "playerId") String playerId) throws IOException {
-        System.out.println(roomId);
-        System.out.println(playerId);
-        /*Room room = gameFinder.findGame(roomId);
+        Room room = gameFinder.findGame(roomId);
         int winner;
         if (room.getPlayer1Id().toString().equals(playerId)){
             winner = 2;
@@ -103,14 +96,9 @@ public class GameController {
         room.setWinner(winner);
         Game game = gameRepo.findByRoomId(UUID.fromString(roomId));
         game.setWinner(winner);
-        gameRepo.save(game);*/
+        gameRepo.save(game);
         return new ResponseEntity(HttpStatus.OK);
     }
-
-
-
-
-
 
     @PostMapping("/win")
     public ResponseEntity games(@RequestParam(name = "winner") String winner,

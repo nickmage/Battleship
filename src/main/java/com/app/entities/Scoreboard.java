@@ -16,7 +16,7 @@ public class Scoreboard {
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     @Column(name = "order_id", unique = true)
-    private UUID orderId;
+    private UUID id;
 
     @OneToOne
     @JoinColumn(name="user_id")
@@ -29,9 +29,8 @@ public class Scoreboard {
     @Column(name="loses", nullable=false)
     private Integer loses;
 
-    public Scoreboard(/*Long id,*/ UUID  orderId, User user, Integer wins, Integer loses) {
-        this. orderId =  orderId;
-        //this.id = id;
+    public Scoreboard(UUID  id, User user, Integer wins, Integer loses) {
+        this.id =  id;
         this.user = user;
         this.wins = wins;
         this.loses = loses;
@@ -40,13 +39,13 @@ public class Scoreboard {
     public Scoreboard() {
     }
 
-    /*public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
-    }*/
+    }
 
     public User getUser() {
         return user;
@@ -72,11 +71,4 @@ public class Scoreboard {
         this.loses = loses;
     }
 
-    public UUID getOrderId() {
-        return  orderId;
-    }
-
-    public void setOrderId(UUID userId) {
-        this. orderId = userId;
-    }
 }

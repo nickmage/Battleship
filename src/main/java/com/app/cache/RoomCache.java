@@ -6,5 +6,5 @@ import java.util.HashMap;
 
 @Component
 public class RoomCache {
-    public static HashMap<String, Room> rooms = new HashMap<>();
+    public static final HashMap<String, Room> rooms = new HashMap<>();
 }

@@ -50,14 +50,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        /*auth.inMemoryAuthentication()
-                .withUser("user")
-                .password(passwordEncoder().encode("password"))
-                .authorities("ROLE_USER");
-        auth.inMemoryAuthentication()
-                .withUser("lol")
-                .password(passwordEncoder().encode("kekeke"))
-                .authorities("ROLE_USER");*/
         auth.jdbcAuthentication()
                 .dataSource(dataSource)
                 .usersByUsernameQuery("select username, password, enabled from account where username=?")
@@ -75,4 +67,5 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         source.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
         return source;
     }
+
 }

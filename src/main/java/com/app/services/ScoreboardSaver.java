@@ -40,7 +40,11 @@ public class ScoreboardSaver {
             scoreboardRepo.save(newRecord);
         } else {
             Scoreboard recordInDb = user.getScoreboard();
-            recordInDb.setWins(recordInDb.getWins() + 1);
+            if (isWinner){
+                recordInDb.setWins(recordInDb.getWins() + 1);
+            } else {
+                recordInDb.setLoses(recordInDb.getLoses() + 1);
+            }
             userRepo.save(user);
         }
     }
