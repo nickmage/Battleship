@@ -83,11 +83,6 @@ public class GameController {
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
-
-
-
-
-
     @PostMapping("/surrender")
     public ResponseEntity surrender(@RequestParam(name = "roomId") String roomId,
                                     @RequestParam(name = "playerId") String playerId) throws IOException {
@@ -104,11 +99,6 @@ public class GameController {
         gameRepo.save(game);
         return new ResponseEntity(HttpStatus.OK);
     }
-
-
-
-
-
 
     @PostMapping("/win")
     public ResponseEntity games(@RequestParam(name = "winner") String winner,

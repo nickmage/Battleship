@@ -1,7 +1,6 @@
 package com.app.entities;
 
 import org.hibernate.annotations.Type;
-import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -11,36 +10,58 @@ import java.util.UUID;
 @Table(name = "game")
 public class Game {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-
+    @Column(name="id", unique = true)
     @Type(type = "uuid-char")
     private UUID roomId;
-    private Integer currentPlayer;
-    private Integer winner;
 
+    /*take from Accounts
+     *
+     **/
+    @Column(name="player1name")
     private String player1Name;
+
+    @Column(name="player1id")
     @Type(type = "uuid-char")
     private UUID player1Id;
 
+    @Column(name="player2name")
     private String player2Name;
+
+    @Column(name="player2id")
     @Type(type = "uuid-char")
     private UUID player2Id;
 
+    @Column(name="date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date date;
 
-    @Type(type="text")
+    @Column(name="player1ships")
+    @Type(type = "text")
     private String player1Ships;
-    @Type(type="text")
+
+    @Column(name="player2ships")
+    @Type(type = "text")
     private String player2Ships;
 
-    public Game(Long id, UUID roomId, Integer currentPlayer, String player1Name,
-                UUID player1Id, String player2Name, UUID player2Id, Date date,
-                String player1Ships, String player2Ships, Integer winner) {
-        this.id = id;
+    @Column(name="type", nullable=false, length = 20)
+    @Enumerated(EnumType.STRING)
+    private GameType type;
+
+    @Column(name="room_name")
+    private String roomName;
+    @Column(name="password")
+    private String password;
+
+    @Column(name="current_player")
+    private Integer currentPlayer;
+
+    @Column(name="winner")
+    private Integer winner;
+
+    public Game(UUID roomId, String player1Name, UUID player1Id, String player2Name, UUID player2Id, Date date,
+                String player1Ships, String player2Ships, GameType type, String roomName, String password,
+                Integer currentPlayer, Integer winner) {
         this.roomId = roomId;
-        this.currentPlayer = currentPlayer;
         this.player1Name = player1Name;
         this.player1Id = player1Id;
         this.player2Name = player2Name;
@@ -48,18 +69,14 @@ public class Game {
         this.date = date;
         this.player1Ships = player1Ships;
         this.player2Ships = player2Ships;
+        this.type = type;
+        this.roomName = roomName;
+        this.password = password;
+        this.currentPlayer = currentPlayer;
         this.winner = winner;
     }
 
     public Game() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public UUID getRoomId() {
@@ -68,14 +85,6 @@ public class Game {
 
     public void setRoomId(UUID roomId) {
         this.roomId = roomId;
-    }
-
-    public Integer getCurrentPlayer() {
-        return currentPlayer;
-    }
-
-    public void setCurrentPlayer(Integer currentPlayer) {
-        this.currentPlayer = currentPlayer;
     }
 
     public String getPlayer1Name() {
@@ -132,6 +141,38 @@ public class Game {
 
     public void setPlayer2Ships(String player2Ships) {
         this.player2Ships = player2Ships;
+    }
+
+    public GameType getType() {
+        return type;
+    }
+
+    public void setType(GameType type) {
+        this.type = type;
+    }
+
+    public String getRoomName() {
+        return roomName;
+    }
+
+    public void setRoomName(String roomName) {
+        this.roomName = roomName;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Integer getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    public void setCurrentPlayer(Integer currentPlayer) {
+        this.currentPlayer = currentPlayer;
     }
 
     public Integer getWinner() {

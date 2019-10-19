@@ -1,18 +1,14 @@
 package com.app.controllers;
 
-import com.app.entities.Match;
-import com.app.entities.PrivateMatch;
+import com.app.entities.Game;
+import com.app.entities.GameType;
 import com.app.entities.Scoreboard;
 import com.app.models.Ship;
 import com.app.repo.GameRepo;
-import com.app.repo.MatchRepo;
-import com.app.repo.PrivateMatchRepo;
 import com.app.repo.ScoreboardRepo;
 import com.app.response_wrappers.RoomListResponseWrapper;
+import com.app.response_wrappers.ScoreboardWrapper;
 import com.app.services.GameCreator;
-import com.app.services.MatchCreator;
-import com.app.services.MatchSaver;
-import com.app.services.PrivateMatchCreator;
 import com.app.validation.BoardValidator;
 import com.auth.entities.User;
 import com.auth.repo.UserRepo;
@@ -29,21 +25,16 @@ import java.util.UUID;
 public class PreparationController {
 
     private final UserRepo userRepo;
-    private final MatchRepo matchRepo;
+    private final GameRepo gameRepo;
     private final ScoreboardRepo scoreboardRepo;
-    private final PrivateMatchRepo privateMatchRepo;
-    private final MatchSaver matchSaver;
-    private final PrivateMatchCreator privateMatchCreator;
+    private final GameCreator gameCreator;
 
-    public PreparationController(UserRepo userRepo, MatchRepo matchRepo, ScoreboardRepo scoreboardRepo,
-                                 PrivateMatchRepo privateMatchRepo, MatchSaver matchSaver, PrivateMatchCreator privateMatchCreator) {
+    public PreparationController(UserRepo userRepo, GameRepo gameRepo, ScoreboardRepo scoreboardRepo,
+                                 GameCreator gameCreator) {
         this.userRepo = userRepo;
-        this.matchRepo = matchRepo;
-
+        this.gameRepo = gameRepo;
         this.scoreboardRepo = scoreboardRepo;
-        this.privateMatchRepo = privateMatchRepo;
-        this.matchSaver = matchSaver;
-        this.privateMatchCreator = privateMatchCreator;
+        this.gameCreator = gameCreator;
     }
 
     @PostMapping("/start")
@@ -54,9 +45,9 @@ public class PreparationController {
         if (userFromDB != null) {
             if (new BoardValidator(ships).isValidBoard()) {
                 if (roomId == null) {
-                    return matchSaver.getResponse(ships, userFromDB);
+                    return gameCreator.getResponseForPublicGame(ships, userFromDB);
                 } else {
-                    return matchSaver.getResponse(ships, userFromDB, roomId);
+                    return gameCreator.getResponseForPrivateGame(ships, userFromDB, roomId);
                 }
             } else {
                 return new ResponseEntity<>("An error has occurred (the board is invalid)! Please try again and send a valid board.",
@@ -68,13 +59,12 @@ public class PreparationController {
         }
     }
 
-
     @GetMapping("/lobby")
     public ResponseEntity lobby(@RequestParam(name = "roomId") String roomId) {
-        Match match = matchRepo.findByRoomId(UUID.fromString(roomId));
-        if (match == null || match.getPlayer2Name() == null) {
-            PrivateMatch privateMatch = privateMatchRepo.findByRoomId(UUID.fromString(roomId));
-            if (privateMatch == null || privateMatch.getPlayer2Id() == null || privateMatch.getPlayer1Ships() == null) {
+        Game game = gameRepo.findByRoomIdAndTypeEquals(UUID.fromString(roomId), GameType.PUBLIC);
+        if (game == null || game.getPlayer2Name() == null) {
+            Game privateGame = gameRepo.findByRoomIdAndTypeEquals(UUID.fromString(roomId), GameType.PRIVATE);
+            if (privateGame == null || privateGame.getPlayer1Ships() == null || privateGame.getPlayer2Ships() == null) {
                 return new ResponseEntity(HttpStatus.NOT_FOUND);
             } else {
                 return new ResponseEntity(HttpStatus.OK);
@@ -85,8 +75,14 @@ public class PreparationController {
     }
 
     @GetMapping("/scoreboard")
-    public ResponseEntity<List<Scoreboard>> scoreboard() {
-        List<Scoreboard> response = scoreboardRepo.findTop10ByOrderByWinsDesc();
+    public ResponseEntity<List<ScoreboardWrapper>> scoreboard() {
+        List<Scoreboard> records = scoreboardRepo.findTop10ByOrderByWinsDesc();
+        List<ScoreboardWrapper> response = new ArrayList<>();
+        for (Scoreboard record : records) {
+            ScoreboardWrapper wrapper = new ScoreboardWrapper(record.getUser().getUsername(),
+                    record.getWins(), record.getLoses());
+            response.add(wrapper);
+        }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -99,19 +95,19 @@ public class PreparationController {
                 username.length() == 0) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } else {
-            PrivateMatch matchFromDB = privateMatchRepo.findByRoomNameAndPlayer2IdIsNull(roomName);
-            if (matchFromDB == null) {
-                return privateMatchCreator.createMatch(roomName, password, username);
+            Game gameFromDB = gameRepo.findByRoomNameAndPlayer2IdIsNull(roomName);
+            if (gameFromDB == null) {
+                return gameCreator.createPrivateGame(roomName, password, username);
             } else return new ResponseEntity<>("The room with this name already exists.", HttpStatus.BAD_REQUEST);
         }
     }
 
     @GetMapping("/roomlist")
     public ResponseEntity<List<RoomListResponseWrapper>> roomList(@RequestParam(name = "playerName") String playerName) {
-        List<PrivateMatch> roomsFromDB = privateMatchRepo.findAllByPlayer2IdIsNullAndPlayer2NameIsNullAndPlayer1NameNot(playerName);
+        List<Game> gamesFromDB = gameRepo.findByPlayer2NameIsNullAndPlayer1NameNotAndTypeEquals(playerName, GameType.PRIVATE);
         List<RoomListResponseWrapper> response = new ArrayList<>();
-        for (PrivateMatch match : roomsFromDB) {
-            response.add(new RoomListResponseWrapper(match.getRoomId(), match.getRoomName(), match.getPlayer1Name()));
+        for (Game game : gamesFromDB) {
+            response.add(new RoomListResponseWrapper(game.getRoomId(), game.getRoomName(), game.getPlayer1Name()));
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -123,18 +119,18 @@ public class PreparationController {
         if (roomId == null || roomId.equals("null") || password == null || password.equals("null") ||
                 username == null || username.equals("null") || roomId.length() == 0 || password.length() == 0 ||
                 username.length() == 0) {
-            return new ResponseEntity<>("Incorrect data.",HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Incorrect data", HttpStatus.BAD_REQUEST);
         } else {
-            PrivateMatch match = privateMatchRepo.findByRoomId(UUID.fromString(roomId));
-            if (match == null){
-                return new ResponseEntity<>("Room not found.",HttpStatus.BAD_REQUEST);
-            } else if (match.getPlayer2Name() != null){
-                return new ResponseEntity<>("This room has been already occupied",HttpStatus.BAD_REQUEST);
-            } else if (!match.getPassword().equals(password)){
-                return new ResponseEntity<>("Password is incorrect.",HttpStatus.BAD_REQUEST);
+            Game game = gameRepo.findByRoomIdAndTypeEquals(UUID.fromString(roomId), GameType.PRIVATE);
+            if (game == null) {
+                return new ResponseEntity<>("Room not found", HttpStatus.BAD_REQUEST);
+            } else if (game.getPlayer2Name() != null) {
+                return new ResponseEntity<>("This room has been already occupied", HttpStatus.BAD_REQUEST);
+            } else if (!game.getPassword().equals(password)) {
+                return new ResponseEntity<>("Password is incorrect", HttpStatus.BAD_REQUEST);
             } else {
-                match.setPlayer2Name(username);
-                privateMatchRepo.save(match);
+                game.setPlayer2Name(username);
+                gameRepo.save(game);
                 return new ResponseEntity<>(HttpStatus.OK);
             }
         }

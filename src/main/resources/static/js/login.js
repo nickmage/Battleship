@@ -29,6 +29,10 @@ function validation() {
                 } else {
                     alert("User not found");
                 }
+            },
+            error: function(){
+                document.getElementById("usernameError").innerHTML = 'Username or password is incorrect';
+                document.getElementById("usernameError").hidden = false;
             }
         });
     }

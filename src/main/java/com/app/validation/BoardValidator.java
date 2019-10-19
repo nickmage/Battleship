@@ -86,7 +86,6 @@ public class BoardValidator {
         return true;
     }
 
-    //x rows y colons
     private boolean checkShipPositioning(Ship firstShip, Ship secondShip) {
         int x = firstShip.getX();
         int y = firstShip.getY();

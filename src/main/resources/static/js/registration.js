@@ -5,6 +5,7 @@
         document.getElementById("usernameError").hidden = true;
         document.getElementById("passwordError").hidden = true;
         document.getElementById("confirmPasswordError").hidden = true;
+        document.getElementById("message").hidden = true;
         if (username === ''){
             document.getElementById("usernameError").innerHTML = 'Username is empty';
             document.getElementById("usernameError").hidden = false;
@@ -44,11 +45,11 @@
             },
             statusCode: {
                 400: function(){
-                    document.getElementById("message").innerHTML = "Username or password is invalid.";
+                    document.getElementById("message").innerHTML = "Username or password is invalid";
                     $("#message").show();
                 },
                 406: function(){
-                    document.getElementById("message").innerHTML = "The user is already exist.";
+                    document.getElementById("message").innerHTML = "The user is already exist";
                     $("#message").show();
                 }
             }

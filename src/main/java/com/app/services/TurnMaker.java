@@ -45,7 +45,7 @@ public class TurnMaker {
             response.setRemainingEnemyShips(remainingShips.getRemainingShips(room.getCurrentPlayer() == 1 ?
                                             room.getPlayer2Ships() : room.getPlayer1Ships()));
         } catch (WinnerException e) {
-            room.setWinner(room.getCurrentPlayer());//1);
+            room.setWinner(room.getCurrentPlayer());
             response.setRemainingEnemyShips(remainingShips.getDestroyedShips());
             Game game = gameRepo.findByRoomId(room.getRoomId());
             game.setWinner(game.getCurrentPlayer());
