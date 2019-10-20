@@ -104,7 +104,7 @@ public class PreparationController {
 
     @GetMapping("/roomlist")
     public ResponseEntity<List<RoomListResponseWrapper>> roomList(@RequestParam(name = "playerName") String playerName) {
-        List<Game> gamesFromDB = gameRepo.findByPlayer2NameIsNullAndPlayer1NameNotAndTypeEquals(playerName, GameType.PRIVATE);
+        List<Game> gamesFromDB = gameRepo.findFreeGamesWithType(playerName, GameType.PRIVATE);
         List<RoomListResponseWrapper> response = new ArrayList<>();
         for (Game game : gamesFromDB) {
             response.add(new RoomListResponseWrapper(game.getRoomId(), game.getRoomName(), game.getPlayer1Name()));

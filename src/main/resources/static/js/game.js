@@ -145,6 +145,7 @@ var init = init();
         if (myTurn) {
             var x = parseInt(element.id.charAt(1));
             var y = parseInt(element.id.charAt(2));
+            //myTurn = false;
             if (enemyBoardArray[x][y] === UNUSED) {
                 $.ajax({
                     type: 'POST',

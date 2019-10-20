@@ -6,6 +6,16 @@ public class Ship {
     private char orientation;
     private int deckType;
 
+    public Ship(int x, int y, char orientation, int deckType) {
+        this.x = x;
+        this.y = y;
+        this.orientation = orientation;
+        this.deckType = deckType;
+    }
+
+    public Ship() {
+    }
+
     public int getX() {
         return x;
     }

@@ -19,12 +19,16 @@ public class BoardValidator {
     }
 
     private boolean notNull() {
-        for (Ship ship : ships) {
-            if (ship == null) {
-                return false;
+        if (ships == null) {
+            return false;
+        } else {
+            for (Ship ship : ships) {
+                if (ship == null) {
+                    return false;
+                }
             }
+            return true;
         }
-        return true;
     }
 
     private boolean isCorrectShipsQuantity() {

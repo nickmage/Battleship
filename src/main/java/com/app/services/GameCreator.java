@@ -35,9 +35,7 @@ public class GameCreator {
 
     public ResponseEntity getResponseForPublicGame(Ship[] ships, User userFromDB) throws JsonProcessingException {
         String username = userFromDB.getUsername();
-        List<Game> freeRooms = gameRepo.findByPlayer2NameIsNullAndPlayer1NameNotAndTypeEquals(username, GameType.PUBLIC);
-        //remove rooms to avoid playing with himself
-        //freeRooms.removeIf(match -> match.getPlayer1Id().equals(playerId));
+        List<Game> freeRooms = gameRepo.findFreeGamesWithType(username, GameType.PUBLIC);
         if (freeRooms.size() == 0) {
             Game game = createPublicGame(userFromDB, ships);
             gameRepo.save(game);
@@ -46,7 +44,6 @@ public class GameCreator {
         } else {
             Game game = joinExistingPublicGame(freeRooms.get(0), userFromDB, ships);
             gameRepo.save(game);
-            //gameRepo.save(gameCreator.createNewPublicGame(match));
             return new ResponseEntity<>(new StartResponseWrapper(game.getPlayer2Id().toString(),
                     game.getRoomId().toString()), HttpStatus.OK);
         }
@@ -92,14 +89,6 @@ public class GameCreator {
         room.setPlayer2Ships(ships);
     }
 
-
-
-
-
-
-
-
-
     public ResponseEntity createPrivateGame(String roomName, String password, String username){
         Game game = new Game();
         game.setRoomName(roomName);
@@ -129,7 +118,6 @@ public class GameCreator {
         room.setCurrentPlayer(game.getCurrentPlayer());
     }
 
-
     public ResponseEntity getResponseForPrivateGame(Ship[] shipStartCells, User user, String roomId) throws JsonProcessingException {
         Game game = gameRepo.findByRoomIdAndTypeEquals(UUID.fromString(roomId), GameType.PRIVATE);
         ArrayList<ArrayList<BoardCell>> ships = boardCreator.getShips(shipStartCells);
@@ -151,7 +139,6 @@ public class GameCreator {
         }
     }
 
-
     private void cachePlayer1Data(Room room, ArrayList<ArrayList<BoardCell>> ships, Ship[] shipStartCells){
         room.setPlayer1Ships(ships);
         room.setPlayer1Board(boardCreator.getBoard(shipStartCells));
@@ -163,34 +150,5 @@ public class GameCreator {
         room.setPlayer2Ships(ships);
         room.setPlayer2Board(boardCreator.getBoard(shipStartCells));
     }
-
-
-
-
-
-
-    /*public Game createNewRoom(User user, Ship[] shipStartCells) throws JsonProcessingException {
-        match.setPlayer1Name(user.getUsername());
-        match.setPlayer1Id(user.getId());
-        match.setRoomId(UUID.randomUUID());
-        match.setDate(new Date());
-        ArrayList<ArrayList<BoardCell>> ships = boardCreator.getShips(shipStartCells);
-        match.setPlayer1Ships(objectMapper.writeValueAsString(ships));
-        match.setType(MatchType.PUBLIC);
-        cacheNewRoom(ships, shipStartCells, match.getRoomId());
-        return game;
-    }
-
-    */
-
-
-
-
-
-
-
-
-
-
 
 }
