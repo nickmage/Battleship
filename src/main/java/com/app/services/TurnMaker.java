@@ -1,20 +1,16 @@
 package com.app.services;
 
 import com.app.entities.Game;
-import com.app.entities.Shot;
 import com.app.cache.Room;
 import com.app.models.BoardCell;
 import com.app.exception.WinnerException;
 import com.app.models.ShipOrientation;
 import com.app.repo.GameRepo;
-import com.app.repo.ShotRepo;
 import com.app.response_wrappers.ShotResponseWrapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.UUID;
 
 @Service
 public class TurnMaker {
@@ -23,18 +19,15 @@ public class TurnMaker {
     private final int HIT = -1;
     private final int BOARD_SIZE = 10;
     private final GameRepo gameRepo;
-    private final ShotRepo shotRepo;
-    private final ObjectMapper objectMapper;
     private final RemainingShipsCreator remainingShips;
     private final ScoreboardSaver scoreboardSaver;
+    private final DBStorer dbStorer;
 
-    public TurnMaker(GameRepo gameRepo, ShotRepo shotRepo,
-                     ObjectMapper objectMapper, RemainingShipsCreator remainingShips, ScoreboardSaver scoreboardSaver) {
+    public TurnMaker(GameRepo gameRepo, RemainingShipsCreator remainingShips, ScoreboardSaver scoreboardSaver, DBStorer dbStorer) {
         this.gameRepo = gameRepo;
-        this.shotRepo = shotRepo;
-        this.objectMapper = objectMapper;
         this.remainingShips = remainingShips;
         this.scoreboardSaver = scoreboardSaver;
+        this.dbStorer = dbStorer;
     }
 
     public ShotResponseWrapper makeShot(Room room, int x, int y) throws JsonProcessingException {
@@ -45,20 +38,7 @@ public class TurnMaker {
             response.setRemainingEnemyShips(remainingShips.getRemainingShips(room.getCurrentPlayer() == 1 ?
                                             room.getPlayer2Ships() : room.getPlayer1Ships()));
         } catch (WinnerException e) {
-            room.setWinner(room.getCurrentPlayer());
-            response.setRemainingEnemyShips(remainingShips.getDestroyedShips());
-            Game game = gameRepo.findByRoomId(room.getRoomId());
-            game.setWinner(game.getCurrentPlayer());
-            gameRepo.save(game);
-            int winner = room.getCurrentPlayer();
-            int thisPlayer = 1;
-            response.setWinner(thisPlayer);
-            if (winner == 1){
-                scoreboardSaver.storeScoreboard(room.getPlayer1Name(), room.getPlayer2Name());
-            } else {
-                scoreboardSaver.storeScoreboard(room.getPlayer2Name(), room.getPlayer1Name());
-            }
-            setRoomCurrentPlayer(room, status);
+            actionOnWinnerState(room, response, status);
             return response;
         }
         setRoomCurrentPlayer(room, status);
@@ -111,14 +91,14 @@ public class TurnMaker {
             ArrayList<BoardCell> player2Board = room.getPlayer2Board();
             int value = setShipHit(player2Board, x, y);
             room.getEnemyBoardForPlayer1().add(cell);
-            storeGameToDB(room.getRoomId(), room.getPlayer2Ships(), currentPlayer, true);
-            storeShotToDB(room.getRoomId(), room.getPlayer1Id(), x, y, value);
+            dbStorer.storeGameToDB(room.getRoomId(), room.getPlayer2Ships(), currentPlayer, true);
+            dbStorer.storeShotToDB(room.getRoomId(), room.getPlayer1Id(), x, y, value);
         } else {
             ArrayList<BoardCell> player1Board = room.getPlayer1Board();
             int value = setShipHit(player1Board, x, y);
             room.getEnemyBoardForPlayer2().add(cell);
-            storeGameToDB(room.getRoomId(), room.getPlayer1Ships(), currentPlayer, true);
-            storeShotToDB(room.getRoomId(), room.getPlayer2Id(), x, y, value);
+            dbStorer.storeGameToDB(room.getRoomId(), room.getPlayer1Ships(), currentPlayer, true);
+            dbStorer.storeShotToDB(room.getRoomId(), room.getPlayer2Id(), x, y, value);
         }
     }
 
@@ -128,17 +108,17 @@ public class TurnMaker {
             ArrayList<BoardCell> player2Board = room.getPlayer2Board();
             player2Board.addAll(sunkenShipSurroundings);
             room.getEnemyBoardForPlayer1().addAll(sunkenShipSurroundings);
-            storeGameToDB(room.getRoomId(), room.getPlayer2Ships(), 1, true);
+            dbStorer.storeGameToDB(room.getRoomId(), room.getPlayer2Ships(), 1, true);
         } else {
             ArrayList<BoardCell> player1Board = room.getPlayer1Board();
             player1Board.addAll(sunkenShipSurroundings);
             room.getEnemyBoardForPlayer2().addAll(sunkenShipSurroundings);
-            storeGameToDB(room.getRoomId(), room.getPlayer1Ships(), 2, true);
+            dbStorer.storeGameToDB(room.getRoomId(), room.getPlayer1Ships(), 2, true);
         }
         interactedCells.addAll(sunkenShipSurroundings);
     }
 
-    public ArrayList<BoardCell> getSunkenShipSurroundings(ArrayList<BoardCell> ship){
+    ArrayList<BoardCell> getSunkenShipSurroundings(ArrayList<BoardCell> ship){
         ArrayList<BoardCell> sunkenShipSurroundings = new ArrayList<>();
         int y = ship.get(0).getY();
         int x = ship.get(0).getX();
@@ -241,7 +221,7 @@ public class TurnMaker {
         return 0;
     }
 
-    public boolean isShipSunken(ArrayList<BoardCell> ship) {
+    boolean isShipSunken(ArrayList<BoardCell> ship) {
         int count = 0;
         for (BoardCell boardCell : ship) {
             if (boardCell.getValue() < 0) {
@@ -257,14 +237,14 @@ public class TurnMaker {
             ArrayList<BoardCell> player2Board = room.getPlayer2Board();
             player2Board.add(cell);
             room.getEnemyBoardForPlayer1().add(cell);
-            storeGameToDB(room.getRoomId(), room.getPlayer2Ships(), currentPlayer, false);
-            storeShotToDB(room.getRoomId(), room.getPlayer1Id(), x, y, MISS);
+            dbStorer.storeGameToDB(room.getRoomId(), room.getPlayer2Ships(), currentPlayer, false);
+            dbStorer.storeShotToDB(room.getRoomId(), room.getPlayer1Id(), x, y, MISS);
         } else {
             ArrayList<BoardCell> player1Board = room.getPlayer1Board();
             player1Board.add(cell);
             room.getEnemyBoardForPlayer2().add(cell);
-            storeGameToDB(room.getRoomId(), room.getPlayer1Ships(), currentPlayer, false);
-            storeShotToDB(room.getRoomId(), room.getPlayer2Id(), x, y, MISS);
+            dbStorer.storeGameToDB(room.getRoomId(), room.getPlayer1Ships(), currentPlayer, false);
+            dbStorer.storeShotToDB(room.getRoomId(), room.getPlayer2Id(), x, y, MISS);
         }
     }
 
@@ -277,28 +257,21 @@ public class TurnMaker {
         }
     }
 
-    private void storeShotToDB(UUID roomId, UUID playerId, int x, int y, int value){
-        Shot shot = new Shot();
-        shot.setRoomId(roomId);
-        shot.setPlayerId(playerId);
-        shot.setX(x);
-        shot.setY(y);
-        shot.setValue(value);
-        shotRepo.save(shot);
-    }
-
-    private void storeGameToDB(UUID roomId, ArrayList<ArrayList<BoardCell>> ships, int currentPlayer, boolean hit) throws JsonProcessingException {
-        Game game = gameRepo.findByRoomId(roomId);
-        if (currentPlayer == 1){
-            game.setPlayer2Ships(objectMapper.writeValueAsString(ships));
-        } else {
-            game.setPlayer1Ships(objectMapper.writeValueAsString(ships));
-        }
-        if (!hit) {
-            currentPlayer = currentPlayer == 1 ? 2 : 1;
-        }
-        game.setCurrentPlayer(currentPlayer);
+    private void actionOnWinnerState(Room room, ShotResponseWrapper response, int status){
+        room.setWinner(room.getCurrentPlayer());
+        response.setRemainingEnemyShips(remainingShips.getDestroyedShips());
+        Game game = gameRepo.findByRoomId(room.getRoomId());
+        game.setWinner(game.getCurrentPlayer());
         gameRepo.save(game);
+        int winner = room.getCurrentPlayer();
+        int thisPlayer = 1;
+        response.setWinner(thisPlayer);
+        if (winner == 1){
+            scoreboardSaver.storeScoreboard(room.getPlayer1Name(), room.getPlayer2Name());
+        } else {
+            scoreboardSaver.storeScoreboard(room.getPlayer2Name(), room.getPlayer1Name());
+        }
+        setRoomCurrentPlayer(room, status);
     }
 
 }

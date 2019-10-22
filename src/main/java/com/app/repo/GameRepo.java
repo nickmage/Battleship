@@ -18,4 +18,5 @@ public interface GameRepo extends JpaRepository<Game, UUID> {
     List<Game> findFreeGamesWithType(String playerName, GameType type);
 
     Game findByRoomNameAndPlayer2IdIsNull(String roomName);
+
 }
